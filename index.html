@@ -43,6 +43,7 @@ nav button.on{color:var(--ac);font-weight:700}
 #map{height:62vh;min-height:320px;border-radius:16px;border:1px solid var(--bd)}.dist{color:var(--ac);font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
 .st{display:inline-block;position:relative;margin-right:1px}.sb{color:var(--mut);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--ac)}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px}.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end}.ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
@@ -50,13 +51,14 @@ nav button.on{color:var(--ac);font-weight:700}
 <div class="hd"><h1>🍽️ Ligue Resto</h1><div id="hsub">Découvre et note les restos</div></div>
 <div id="app"></div>
 <nav id="nav"></nav>
+<div id="sheet"></div>
 <script>
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
 var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Chef’s kiss","🐜 Invités surprise","🤏 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🏃 Je reviens demain","🍷 Vin de camping","🔥 Ça pique !"];
 var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
-var S={tab:"explore",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub"},pf:"all",guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
+var S={tab:"explore",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -75,14 +77,14 @@ function go(t){S.tab=t;S.sel=null;S.focus=null;render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
-S.dept=ls("lr_dept")||"";try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
+S.dept=ls("lr_dept")||"";try{S.blocked=JSON.parse(ls("lr_blocked")||"[]")}catch(e){}try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
-function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_dept",S.dept||"");ls("lr_home",JSON.stringify(S.home||null));
-if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null}).catch(function(){})}
+function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_home",JSON.stringify(S.home||null));
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null,blocked:S.blocked}).catch(function(){})}
 function nav(){var T=[["explore","🔎","Explorer"],["map","🗺️","Carte"],["add","➕","Noter"],["league","👥","Ligue"],["me","⚙️","Profil"]];
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("")}
 function route(){var u=S.user;if(!S.authReady)return "load";if(u&&!u.isAnonymous){if(!S.profLoaded)return "load";return ls("lr_onb_"+u.uid)?"app":"onb"}return S.guest?"app":"welcome"}
-function render(){if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
+function render(){S.rvl=[];if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
 var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();return}
 nav();if(!S.pseudo)S.tab="me";
 document.getElementById("hsub").textContent=S.tab==="league"&&S.league?("Ligue "+S.league):"Découvre et note les restos";
@@ -93,7 +95,21 @@ function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.ta
 if(S.tab==="explore"||S.tab==="league")render();else if(S.tab==="map"&&S.mlayer)drawMarkers()}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div></div>'}
+return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':'')+'</div>'}
+function ri(x){S.rvl.push(x);return S.rvl.length-1}
+var REASONS=["🤬 Insulte ou harcèlement","🗑️ Faux avis ou spam","🚫 Contenu inapproprié","❓ Autre"];
+function ridOf(x){return x._p?"l_"+x._lg+"_"+x._id:"p_"+x._id}
+function isB(u){return S.blocked.some(function(b){return b.u===u})}
+function vis(x){return !isB(x.uid)&&(S.flags[ridOf(x)]||0)<3}
+function closeSheet(){document.getElementById("sheet").innerHTML=""}
+function rep(i){var x=S.rvl[i];if(!x)return;if(!S.user||S.user.isAnonymous){alert("Crée un compte pour signaler un avis.");return}
+S.rx=x;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:10px">Pourquoi signaler cet avis ?</div>'+REASONS.map(function(r,k){return '<button class="btn alt" style="margin-bottom:8px" onclick="sendRep('+k+')">'+r+'</button>'}).join("")+'<button class="back" onclick="closeSheet()">Annuler</button></div></div>'}
+function sendRep(k){var x=S.rx;closeSheet();if(!x||!S.fdb)return;var rid=ridOf(x),u=S.user.uid;
+S.fdb.collection("reports").doc(u+"__"+rid).set({rid:rid,path:x._p?"leagues/"+x._lg+"/reviews/"+x._id:"reviews/"+x._id,reporter:u,reviewUid:x.uid,reason:REASONS[k],resto:x.resto,avis:x.avis||"",ts:Date.now()})
+.then(function(){return S.fdb.collection("flags").doc(rid).set({by:firebase.firestore.FieldValue.arrayUnion(u)},{merge:true})})
+.then(function(){alert("Merci, l’avis a été signalé.")}).catch(function(){alert("Tu as déjà signalé cet avis, ou l’envoi a échoué.")})}
+function blk(i){var x=S.rvl[i];if(!x)return;if(!confirm("Bloquer "+(x.pseudo||"cet utilisateur")+" ? Tu ne verras plus ses avis."))return;S.blocked.push({u:x.uid,n:x.pseudo||"?"});save();render()}
+function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
 function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
@@ -184,6 +200,7 @@ var h='<h2>Mon profil</h2><div class="card"><input id="ps" placeholder="Ton pseu
 if(acc)h+='<h2>Mon compte</h2><div class="card"><div class="sub">Connecté : <b>'+esc(S.user.email)+'</b></div><button class="btn" onclick="logout()">Changer de compte / Se déconnecter</button><button class="btn alt" style="margin-top:8px" onclick="delAcc()">Supprimer mon compte</button></div>';
 else h+='<h2>Mon compte</h2><div class="card"><div class="sub">Tu utilises l’appli sans compte : tes avis et tes ligues restent sur cet appareil.</div><button class="btn" onclick="S.guest=false;render()">Se connecter / S’inscrire</button></div>';
 h+='<h2>Ma zone</h2><div class="card"><input id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="btn alt" onclick="setHome()">Enregistrer ma zone</button>'+(S.loc?'<div class="sub" style="margin-top:8px">✅ Position activée</div>':'<button class="btn alt" style="margin-top:8px" onclick="getLoc()">📍 Activer ma position</button>')+'</div>';
+if(S.blocked.length)h+='<h2>Utilisateurs bloqués</h2>'+S.blocked.map(function(b,k){return '<div class="card row"><b>'+esc(b.n)+'</b><button class="chip" onclick="unblk('+k+')">Débloquer</button></div>'}).join("");
 if(S.leagues.length)h+='<h2>Mes ligues</h2>'+S.leagues.map(function(c){return '<div class="card row"><b>'+esc(c)+'</b><button class="chip" onclick="share(\''+esc(c)+'\')">Inviter</button></div>'}).join("");
 return h+'<div class="sub" style="margin-top:12px">'+(S.state==="ready"?"✅ Connecté : les avis sont partagés en ligne.":S.state==="error"?"⚠️ Connexion impossible"+(S.errMsg?" ("+esc(S.errMsg)+")":"")+".":"Connexion…")+'</div>'}
 function loadv(){if(S.state==="error")return '<div class="card"><div class="resto">⚠️ Connexion impossible</div><div class="sub" style="margin:6px 0">'+esc(S.errMsg||"")+'</div>'+(location.hostname.indexOf("github.io")<0?'<div class="sub">Tu ouvres peut-être l’appli depuis un aperçu qui bloque les services externes. Ouvre-la depuis son adresse : https://4rb7vpvc8k-collab.github.io/ligue-resto</div>':'')+'<button class="btn" onclick="location.reload()">Réessayer</button></div>';return '<div class="empty">Chargement…</div>'}
@@ -204,20 +221,20 @@ function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
 function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
 alert(m[e&&e.code]||"Une erreur est survenue, réessaie.")}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
-function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
+function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
 function delAcc(){if(!confirm("Supprimer définitivement ton compte ? Tes avis déjà publiés resteront affichés."))return;var u=firebase.auth().currentUser;
-S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.profLoaded=false;S.guest=false;save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
+S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.profLoaded=false;S.guest=false;save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Il faut un pseudo");return}S.pseudo=p;save();S.tab="explore";render()}
-function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a}
-function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[])}
-function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=1;return x});refresh()},function(){})})}
+function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a.filter(vis)}
+function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
+function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=1;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";S.errMsg="chargement de "+u[i].split("/").pop();render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
 function startDB(){S.fdb=firebase.firestore();S.state="ready";
-S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(e){S.state="error";S.errMsg=(e&&(e.code||e.message))||"";render()});subL()}
+S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){var x=d.data();x._id=d.id;return x});S.state="ready";refresh()},function(e){S.state="error";S.errMsg=(e&&(e.code||e.message))||"";render()});S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(function(d){S.flags[d.id]=(d.data().by||[]).length});refresh()},function(){});subL()}
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(e){S.errMsg=(e&&e.code)||""}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"explore":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(e){S.errMsg=(e&&e.code)||""}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"explore":"me";render()})}
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
