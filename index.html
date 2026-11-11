@@ -40,7 +40,9 @@ nav button.on{color:var(--ac);font-weight:700}
 .code{font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;color:var(--ac);margin:6px 0}
 .tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:99px;background:var(--ac2)}
 .seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1}.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}.back{background:none;border:0;color:var(--ac);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit}
+#map{height:62vh;min-height:320px;border-radius:16px;border:1px solid var(--bd)}.dist{color:var(--ac);font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
 <div class="hd"><h1>🍽️ Ligue Resto</h1><div id="hsub">Découvre et note les restos</div></div>
@@ -48,52 +50,107 @@ nav button.on{color:var(--ac);font-weight:700}
 <nav id="nav"></nav>
 <script>
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
-var STICKERS=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Chef’s kiss","🐜 Invités surprise","🤏 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🏃 Je reviens demain","🍷 Vin de camping","🔥 Ça pique !"];
-var S={tab:"explore",q:"",open:null,gl:[],lv:"feed",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},form:{note:0,st:[],vis:"pub"},fdb:null,user:null,state:"loading"};
+var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Chef’s kiss","🐜 Invités surprise","🤏 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🏃 Je reviens demain","🍷 Vin de camping","🔥 Ça pique !"];
+var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
+function stk(){return S.form.mode==="deliv"?STL:STP}
+var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
+var S={tab:"explore",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub"},pf:"all",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function stars(n){n=Math.round(n);return "★".repeat(n)+"☆".repeat(5-n)}
 function lg(x){return x.leagues||(x.league?[x.league]:[])}
-function go(t){S.tab=t;S.open=null;render()}
+function num(v){return typeof v==="number"&&isFinite(v)}
+function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+function fmtD(k){return k<1?Math.round(k*1000)+" m":k.toFixed(1)+" km"}
+function go(t){S.tab=t;S.sel=null;S.focus=null;render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
 function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));
 if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues}).catch(function(){})}
-function nav(){var T=[["explore","🔎","Explorer"],["add","➕","Noter"],["league","👥","Ligue"],["me","⚙️","Profil"]];
+function nav(){var T=[["explore","🔎","Explorer"],["map","🗺️","Carte"],["add","➕","Noter"],["league","👥","Ligue"],["me","⚙️","Profil"]];
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("")}
-function render(){nav();if(!S.pseudo)S.tab="me";
+function render(){if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
+nav();if(!S.pseudo)S.tab="me";
 document.getElementById("hsub").textContent=S.tab==="league"&&S.league?("Ligue "+S.league):"Découvre et note les restos";
-var h=S.tab==="explore"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
-document.getElementById("app").innerHTML=h}
+var h=S.tab==="explore"?explore():S.tab==="map"?mapv():S.tab==="add"?add():S.tab==="league"?league():me();
+document.getElementById("app").innerHTML=h;
+if(S.tab==="map")initMap()}
+function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;
+if(S.tab==="explore"||S.tab==="league")render();else if(S.tab==="map"&&S.mlayer)drawMarkers()}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible. Recharge la page.</div>':""}
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.addr?' · 📍 '+esc(x.addr):(x.lat?' · 📍 position':''))+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div></div>'}
-function groups(list,q){var g={};q=(q||"").toLowerCase().trim();
-list.forEach(function(x){var k=x.resto.toLowerCase().trim();if(q&&k.indexOf(q)<0&&(x.addr||"").toLowerCase().indexOf(q)<0)return;var o=g[k]=g[k]||{n:x.resto,a:"",s:0,c:0,t:0,rv:[]};o.s+=x.note;o.c++;o.rv.push(x);if(x.addr)o.a=x.addr;if(x.ts>o.t)o.t=x.ts});
-return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
-function results(){var G=S.gl=groups(allv(),S.q);
-if(!G.length)return '<div class="empty">'+(S.q?'Aucun resto trouvé.<br><br><button class="btn" onclick="S.form.resto=S.q;go(\'add\')">Noter « '+esc(S.q)+' »</button>':S.state==="loading"?'Chargement…':'Aucun avis pour l’instant.<br>Sois le premier à noter un resto 🍕')+'</div>';
-return G.map(function(o,i){return '<div class="card" onclick="S.open='+i+';render()"><div class="row"><div class="resto">'+esc(o.n)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join("")}
-function explore(){if(S.open!==null&&S.gl[S.open]){var o=S.gl[S.open];
-return '<button class="back" onclick="S.open=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(o.n)+'</div><div class="stars" style="font-size:20px">'+stars(o.s/o.c)+' <span class="who">'+(o.s/o.c).toFixed(1)+'/5 · '+o.c+' avis</span></div>'+(o.a?'<div class="who">📍 '+esc(o.a)+'</div>':'')+'<button class="btn" style="margin-top:10px" onclick="S.form.resto=\''+o.n.replace(/\\/g,"").replace(/'/g,"")+'\';S.form.addr=\''+o.a.replace(/\\/g,"").replace(/'/g,"")+'\';go(\'add\')">Noter ce resto</button></div>'+o.rv.sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join("")}
-return status()+'<div class="sr"><input id="q" placeholder="🔎 Cherche un resto ou une ville" value="'+esc(S.q)+'" oninput="S.q=this.value;document.getElementById(\'res\').innerHTML=results()" style="margin:0"></div><div id="res">'+results()+'</div>'}
-function add(){var f=S.form;
-return '<h2>J’ai mangé où ?</h2><input placeholder="Nom du restaurant" value="'+esc(f.resto||"")+'" oninput="S.form.resto=this.value"><input placeholder="Ville ou adresse (optionnel)" value="'+esc(f.addr||"")+'" oninput="S.form.addr=this.value"><button class="btn alt" onclick="locate()">'+(f.lat?'✅ Position enregistrée':'📍 Utiliser ma position')+'</button><div class="rate">'+[1,2,3,4,5].map(function(n){return '<button class="'+(f.note>=n?"on":"")+'" onclick="S.form.note='+n+';render()">⭐</button>'}).join("")+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+STICKERS.map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+'<div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Ma ligue seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+((f.tl||S.league)===c?"on":"")+'" onclick="S.form.tl=\''+esc(c)+'\';render()">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
-function tog(i){var s=STICKERS[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
-function locate(){try{navigator.geolocation.getCurrentPosition(function(p){S.form.lat=p.coords.latitude;S.form.lng=p.coords.longitude;render()},function(){alert("Localisation indisponible. Autorise-la dans les réglages, ou écris l’adresse.")})}catch(e){alert("Localisation indisponible ici.")}}
-function send(){var f=S.form;if(!(f.resto||"").trim()||!f.note){alert("Il faut un nom de resto et une note !");return}
+return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div></div>'}
+function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
+function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
+function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
+function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
+return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
+function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
+function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:x.name||(x.display_name||"").split(",")[0],a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon)}})}
+function nom(q,bounded){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
+if(S.loc){var d=.5;u+="&viewbox="+[S.loc.lng-d,S.loc.lat+d,S.loc.lng+d,S.loc.lat-d].join(",")+(bounded?"&bounded=1":"")}
+return fetch(u).then(function(r){return r.json()}).then(conv)}
+function searchPlaces(q){var p=nom(q,!!S.loc);if(!S.loc)return p;
+return p.then(function(a){if(a.length>=8)return a;return new Promise(function(r){setTimeout(r,1100)}).then(function(){return nom(q,false)}).then(function(b){var seen={};a.forEach(function(x){seen[x.pid]=1});return a.concat(b.filter(function(x){return!seen[x.pid]}))})})}
+function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;if(q.length<2){alert("Écris au moins 2 lettres");return}
+S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
+searchPlaces(q).then(function(r){S.sr=sortP(r);S.busy=false;upRes()}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
+function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML()}
+function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
+var h=S.err?'<div class="sub">⚠️ La recherche de lieux a échoué, réessaie dans un instant.</div>':"";
+if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé pour « '+esc(S.sq)+' ».</div>';
+h+=S.sr.map(function(p,i){return '<div class="card" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(p.d!=null?' · <span class="dist">'+fmtD(p.d)+'</span>':'')+(p.c?' · '+p.c+' avis · '+p.avg.toFixed(1)+'/5':'')+'</div></div>'}).join("");
+if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
+function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;render()}else{S.sel=p;render()}}
+function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
+navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
+function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position désactivée : les restos sont triés par note.</div>';
+return '<div class="card"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
+function sbar(){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="Nom du restaurant" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button></div>'}
+function explore(){if(S.sel)return place(S.sel);
+var h=status()+locCard()+sbar()+'<div id="res">'+resHTML()+'</div>';
+if(S.sr===null&&!S.busy){var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
+G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
+h+='<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card" onclick="S.sel={pid:S.gl['+i+'].pid,n:S.gl['+i+'].n,a:S.gl['+i+'].a,lat:S.gl['+i+'].lat,lng:S.gl['+i+'].lng};render()"><div class="row"><div class="resto">'+esc(o.n)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
+return h}
+function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><button class="btn" style="margin-top:10px" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">Noter ce resto</button>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
+function mapv(){return locCard()+'<div id="map"></div><div class="sub" style="margin-top:6px">🟠 restos déjà notés · ⚪ résultats de ta dernière recherche · © OpenStreetMap</div>'}
+function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
+function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
+var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:5;
+var m=S.map=L.map("map").setView(c,z);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
+S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#2b7de9",fillColor:"#2b7de9",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
+drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
+function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
+Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
+L.circleMarker([o.lat,o.lng],{radius:9,color:"#ff6b35",fillColor:"#ff6b35",fillOpacity:.85}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
+(S.sr||[]).forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
+L.circleMarker([p.lat,p.lng],{radius:6,color:"#888",fillColor:"#ccc",fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
+function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng};S.tab="explore";render()}
+function openR(i){var p=S.sr&&S.sr[i];if(!p)return;S.sel=p;S.tab="explore";render()}
+function add(){var f=S.form;if(!f.place){
+var h='<h2>J’ai mangé où ?</h2>'+locCard();
+if(S.manual)return h+'<div class="card"><div class="sub">Ton resto n’est pas dans la base ? Ajoute-le toi-même.</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse (ex : 12 rue Victor Hugo, Lyon)"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour à la recherche</button></div>';
+return h+sbar()+'<div id="res">'+resHTML()+'</div>'}
+var p=f.place;
+return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="rate">'+[1,2,3,4,5].map(function(n){return '<button class="'+(f.note>=n?"on":"")+'" onclick="S.form.note='+n+';render()">⭐</button>'}).join("")+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Ma ligue seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+((f.tl||S.league)===c?"on":"")+'" onclick="S.form.tl=\''+esc(c)+'\';render()">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
+function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
+var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined};S.manual=false;render()}
+function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
+function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
+function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion, réessaie dans un instant.");return}
-var priv=f.vis==="lg",tl=f.tl||S.league;
-if(priv&&!tl){alert("Crée ou rejoins d’abord une ligue (onglet Ligue).");return}
-var r={uid:S.uid,pseudo:S.pseudo,resto:f.resto.trim(),note:f.note,avis:(f.avis||"").trim(),addr:(f.addr||"").trim(),st:f.st.slice(),leagues:priv?[tl]:S.leagues.slice(),ts:Date.now()};
-if(priv)r.pub=false;
-if(f.lat){r.lat=f.lat;r.lng=f.lng}
+var priv=f.vis==="lg",tl=f.tl||S.league;if(priv&&!tl){alert("Crée ou rejoins d’abord une ligue (onglet Ligue).");return}
+var r={uid:S.uid,pseudo:S.pseudo,pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?[tl]:S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 var col=priv?S.fdb.collection("leagues/"+tl+"/reviews"):S.fdb.collection("reviews");
-col.add(r).then(function(){S.form={note:0,st:[],vis:f.vis};S.q="";if(priv){S.league=tl;S.lv="feed";save();S.tab="league"}else S.tab="explore";render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
+col.add(r).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode};S.sr=null;S.sq="";if(priv){S.league=tl;S.lv="feed";save();S.tab="league"}else S.tab="explore";render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
-var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y}),"").sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
+var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
 if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
 var med=["🥇","🥈","🥉"];
@@ -130,16 +187,16 @@ S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Il faut un pseudo");return}S.pseudo=p;save();S.tab="explore";render()}
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[])}
-function refresh(){if(S.tab==="explore"&&S.open===null&&document.getElementById("res"))document.getElementById("res").innerHTML=results();else if(S.tab==="explore"||S.tab==="league")render()}
 function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=1;return x});refresh()},function(){})})}
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
-render();
 function startDB(){S.fdb=firebase.firestore();S.state="ready";
 S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(){S.state="error";render()});subL()}
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo)S.pseudo=p.pseudo;(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
 if(!S.league&&S.leagues.length)S.league=S.leagues[0];save();subL();S.tab=S.pseudo?"explore":"me";render()}).catch(function(){render()})}
+render();
+try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
 if(!u){firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
