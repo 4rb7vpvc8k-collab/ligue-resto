@@ -54,7 +54,7 @@ var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Ch
 var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
-var S={tab:"explore",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub"},pf:"all",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
+var S={tab:"explore",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub"},pf:"all",authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function stars(n){n=Math.round(n);return "★".repeat(n)+"☆".repeat(5-n)}
@@ -66,12 +66,15 @@ function go(t){S.tab=t;S.sel=null;S.focus=null;render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
+S.dept=ls("lr_dept")||"";try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
-function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));
-if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues}).catch(function(){})}
+function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_dept",S.dept||"");ls("lr_home",JSON.stringify(S.home||null));
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null}).catch(function(){})}
 function nav(){var T=[["explore","🔎","Explorer"],["map","🗺️","Carte"],["add","➕","Noter"],["league","👥","Ligue"],["me","⚙️","Profil"]];
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("")}
+function route(){var u=S.user;if(!S.authReady)return "load";if(u&&!u.isAnonymous){if(!S.profLoaded)return "load";return ls("lr_onb_"+u.uid)?"app":"onb"}return ls("lr_guest")==="1"?"app":"welcome"}
 function render(){if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
+var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();return}
 nav();if(!S.pseudo)S.tab="me";
 document.getElementById("hsub").textContent=S.tab==="league"&&S.league?("Ligue "+S.league):"Découvre et note les restos";
 var h=S.tab==="explore"?explore():S.tab==="map"?mapv():S.tab==="add"?add():S.tab==="league"?league():me();
@@ -79,7 +82,7 @@ document.getElementById("app").innerHTML=h;
 if(S.tab==="map")initMap()}
 function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;
 if(S.tab==="explore"||S.tab==="league")render();else if(S.tab==="map"&&S.mlayer)drawMarkers()}
-function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible. Recharge la page.</div>':""}
+function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
 return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div></div>'}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
@@ -90,7 +93,7 @@ return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;retu
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:x.name||(x.display_name||"").split(",")[0],a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon)}})}
 function nom(q,bounded){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
-if(S.loc){var d=.5;u+="&viewbox="+[S.loc.lng-d,S.loc.lat+d,S.loc.lng+d,S.loc.lat-d].join(",")+(bounded?"&bounded=1":"")}
+var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")+(bounded&&S.loc?"&bounded=1":"")}
 return fetch(u).then(function(r){return r.json()}).then(conv)}
 function searchPlaces(q){var p=nom(q,!!S.loc);if(!S.loc)return p;
 return p.then(function(a){if(a.length>=8)return a;return new Promise(function(r){setTimeout(r,1100)}).then(function(){return nom(q,false)}).then(function(b){var seen={};a.forEach(function(x){seen[x.pid]=1});return a.concat(b.filter(function(x){return!seen[x.pid]}))})})}
@@ -106,7 +109,7 @@ if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je
 function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;render()}else{S.sel=p;render()}}
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
-function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position désactivée : les restos sont triés par note.</div>';
+function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée : les restos sont triés par note. Pour l’activer : Réglages de l’iPhone → Confidentialité → Service de localisation → Safari.</div>';
 return '<div class="card"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
 function sbar(){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="Nom du restaurant" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button></div>'}
 function explore(){if(S.sel)return place(S.sel);
@@ -121,7 +124,7 @@ function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+
 function mapv(){return locCard()+'<div id="map"></div><div class="sub" style="margin-top:6px">🟠 restos déjà notés · ⚪ résultats de ta dernière recherche · © OpenStreetMap</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
-var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:5;
+var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:S.home?10:5;
 var m=S.map=L.map("map").setView(c,z);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#2b7de9",fillColor:"#2b7de9",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
@@ -170,38 +173,49 @@ try{navigator.clipboard.writeText(t);alert("Copié : "+t)}catch(e){prompt("Copie
 function me(){var acc=S.user&&!S.user.isAnonymous;
 var h='<h2>Mon profil</h2><div class="card"><input id="ps" placeholder="Ton pseudo (ex : Léo)" value="'+esc(S.pseudo)+'"><button class="btn" onclick="setP()">Enregistrer</button></div>';
 if(acc)h+='<h2>Mon compte</h2><div class="card"><div class="sub">Connecté : <b>'+esc(S.user.email)+'</b></div><button class="btn alt" onclick="logout()">Se déconnecter</button><button class="btn alt" style="margin-top:8px" onclick="delAcc()">Supprimer mon compte</button></div>';
-else h+='<h2>Mon compte</h2><div class="card"><div class="sub">Crée un compte pour garder tes avis et tes ligues, et te connecter sur un autre téléphone.</div><input id="em" type="email" placeholder="E-mail" autocomplete="email"><input id="pw" type="password" placeholder="Mot de passe (6 caractères min.)" autocomplete="current-password"><button class="btn" onclick="authIn(\'up\')">Créer mon compte</button><button class="btn alt" style="margin-top:8px" onclick="authIn(\'in\')">J’ai déjà un compte</button><button class="back" onclick="resetPw()">Mot de passe oublié ?</button></div>';
+else h+='<h2>Mon compte</h2><div class="card"><div class="sub">Tu utilises l’appli sans compte : tes avis et tes ligues restent sur cet appareil.</div><button class="btn" onclick="ls(\'lr_guest\',\'0\');render()">Se connecter / S’inscrire</button></div>';
+h+='<h2>Ma zone</h2><div class="card"><input id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="btn alt" onclick="setHome()">Enregistrer ma zone</button>'+(S.loc?'<div class="sub" style="margin-top:8px">✅ Position activée</div>':'<button class="btn alt" style="margin-top:8px" onclick="getLoc()">📍 Activer ma position</button>')+'</div>';
 if(S.leagues.length)h+='<h2>Mes ligues</h2>'+S.leagues.map(function(c){return '<div class="card row"><b>'+esc(c)+'</b><button class="chip" onclick="share(\''+esc(c)+'\')">Inviter</button></div>'}).join("");
-return h+'<div class="sub" style="margin-top:12px">'+(S.state==="ready"?"✅ Connecté : les avis sont partagés en ligne.":S.state==="error"?"⚠️ Connexion impossible.":"Connexion…")+'</div>'}
+return h+'<div class="sub" style="margin-top:12px">'+(S.state==="ready"?"✅ Connecté : les avis sont partagés en ligne.":S.state==="error"?"⚠️ Connexion impossible"+(S.errMsg?" ("+esc(S.errMsg)+")":"")+".":"Connexion…")+'</div>'}
+function loadv(){if(S.state==="error")return '<div class="card"><div class="resto">⚠️ Connexion impossible</div><div class="sub" style="margin:6px 0">'+esc(S.errMsg||"")+'</div>'+(location.hostname.indexOf("github.io")<0?'<div class="sub">Tu ouvres peut-être l’appli depuis un aperçu qui bloque les services externes. Ouvre-la depuis son adresse : https://4rb7vpvc8k-collab.github.io/ligue-resto</div>':'')+'<button class="btn" onclick="location.reload()">Réessayer</button></div>';return '<div class="empty">Chargement…</div>'}
+function welcome(){var up=S.wm==="up";
+return '<div class="card"><div class="seg"><button class="chip '+(!up?"on":"")+'" onclick="S.wm=\'in\';render()">Connexion</button><button class="chip '+(up?"on":"")+'" onclick="S.wm=\'up\';render()">Inscription</button></div>'+(up?'<input id="wps" placeholder="Ton pseudo (ex : Léo)" autocomplete="nickname" value="'+esc(S.pseudo)+'">':'')+'<input id="wem" type="email" placeholder="E-mail" autocomplete="email"><input id="pw" type="password" placeholder="Mot de passe'+(up?" (6 caractères min.)":"")+'" autocomplete="'+(up?"new-password":"current-password")+'"><button class="btn" onclick="wSubmit()">'+(up?"Créer mon compte":"Se connecter")+'</button>'+(up?'':'<button class="back" onclick="resetPw()">Mot de passe oublié ?</button>')+'</div><div style="text-align:center"><button class="back" onclick="ls(\'lr_guest\',\'1\');render()">Continuer sans compte</button></div>'+(S.state==="error"?'<div class="sub">⚠️ Connexion au serveur instable'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'.</div>':'')}
+function onb(){return '<h2>Bienvenue '+esc(S.pseudo)+' 👋</h2><div class="card"><div class="sub">📍 Pour te proposer les restos les plus proches de toi :</div>'+(S.loc?'<div class="sub">✅ Position activée</div>':S.locDenied?'<div class="sub">Position refusée. Tu pourras l’activer plus tard dans les réglages de ton téléphone.</div>':'<button class="btn" onclick="getLoc()">Activer ma position</button>')+'<div class="sub" style="margin-top:12px">Ton département ou ta ville (facultatif) : ça centre ta carte au départ.</div><input id="odp" placeholder="Ex : Rhône, Lyon, 69…" value="'+esc(S.dept)+'" oninput="S.dept=this.value"><button class="btn" onclick="onbDone()">Continuer</button><button class="back" onclick="S.dept=\'\';onbDone()">Passer</button></div>'}
+function geocode(q,cb){fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=fr&countrycodes=fr&q="+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(a){cb(a&&a[0]?{lat:parseFloat(a[0].lat),lng:parseFloat(a[0].lon)}:null)}).catch(function(){cb(null)})}
+function onbDone(){var d=(S.dept||"").trim(),u=S.user;function fin(){if(u)ls("lr_onb_"+u.uid,"1");S.tab="explore";save();render()}
+if(!d){S.home=null;fin();return}
+geocode(d,function(h){if(h)S.home=h;else alert("Je n’ai pas trouvé ce lieu, tu pourras le modifier dans ton profil.");fin()})}
+function setHome(){var d=val("dp");S.dept=d;if(!d){S.home=null;save();render();return}geocode(d,function(h){if(h)S.home=h;else alert("Lieu introuvable.");save();render()})}
+function wSubmit(){var up=S.wm==="up",e=val("wem"),p=document.getElementById("pw")?document.getElementById("pw").value:"",n=up?val("wps"):"";
+if(!e||!p||(up&&!n)){alert(up?"Pseudo, e-mail et mot de passe requis":"E-mail et mot de passe requis");return}
+var a=firebase.auth();if(!up){a.signInWithEmailAndPassword(e,p).catch(authErr);return}
+var cu=a.currentUser,cr=firebase.auth.EmailAuthProvider.credential(e,p);
+(cu&&cu.isAnonymous?cu.linkWithCredential(cr).then(function(r){return r.user}):a.createUserWithEmailAndPassword(e,p).then(function(r){return r.user})).then(function(u){S.user=u;S.uid=u.uid;S.pseudo=n;S.profLoaded=true;ls("lr_guest","0");save();render()}).catch(authErr)}
 function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
 function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
 alert(m[e&&e.code]||"Une erreur est survenue, réessaie.")}
-function authIn(mode){var e=val("em"),p=document.getElementById("pw")?document.getElementById("pw").value:"";if(!e||!p){alert("E-mail et mot de passe requis");return}
-var a=firebase.auth();
-if(mode==="up"){a.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(e,p)).then(function(r){S.user=r.user;save();render();alert("Compte créé ✅")}).catch(authErr)}
-else a.signInWithEmailAndPassword(e,p).catch(authErr)}
-function resetPw(){var e=val("em");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
-function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
+function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
+function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.profLoaded=false;ls("lr_guest","0");save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
 function delAcc(){if(!confirm("Supprimer définitivement ton compte ? Tes avis déjà publiés resteront affichés."))return;var u=firebase.auth().currentUser;
-S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
+S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.profLoaded=false;ls("lr_guest","0");save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Il faut un pseudo");return}S.pseudo=p;save();S.tab="explore";render()}
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[])}
 function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=1;return x});refresh()},function(){})})}
-function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
+function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";S.errMsg="chargement de "+u[i].split("/").pop();render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
 function startDB(){S.fdb=firebase.firestore();S.state="ready";
-S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(){S.state="error";render()});subL()}
+S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(e){S.state="error";S.errMsg=(e&&(e.code||e.message))||"";render()});subL()}
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
-if(p.pseudo)S.pseudo=p.pseudo;(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];save();subL();S.tab=S.pseudo?"explore":"me";render()}).catch(function(){render()})}
+if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(e){S.errMsg=(e&&e.code)||""}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"explore":"me";render()})}
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
-if(!u){firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
+if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(e){S.state="error";S.errMsg=(e&&e.code)||"auth";render()});return}
 S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
-if(!u.isAnonymous)loadProfile(u);else render()})}catch(e){S.state="error";render()}});
+if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";S.errMsg=e.message;render()}});
 </script>
 </body>
 </html>
