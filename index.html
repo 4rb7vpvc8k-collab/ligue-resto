@@ -49,7 +49,7 @@ nav button.on{color:var(--ac);font-weight:700}
 <script>
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
 var STICKERS=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Chef’s kiss","🐜 Invités surprise","🤏 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🏃 Je reviens demain","🍷 Vin de camping","🔥 Ça pique !"];
-var S={tab:"explore",q:"",open:null,gl:[],lv:"feed",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},form:{note:0,st:[],vis:"pub"},fdb:null,state:"loading"};
+var S={tab:"explore",q:"",open:null,gl:[],lv:"feed",pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},form:{note:0,st:[],vis:"pub"},fdb:null,user:null,state:"loading"};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function stars(n){n=Math.round(n);return "★".repeat(n)+"☆".repeat(5-n)}
@@ -59,7 +59,8 @@ S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.u
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
-function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues))}
+function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues}).catch(function(){})}
 function nav(){var T=[["explore","🔎","Explorer"],["add","➕","Noter"],["league","👥","Ligue"],["me","⚙️","Profil"]];
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("")}
 function render(){nav();if(!S.pseudo)S.tab="me";
@@ -109,7 +110,23 @@ function join(){var l=document.getElementById("lg").value.trim().toUpperCase().r
 function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);save();subL();S.tab="league";render()}
 function share(c){var t="Rejoins ma ligue resto ! Code : "+c;try{if(navigator.share){navigator.share({text:t});return}}catch(e){}
 try{navigator.clipboard.writeText(t);alert("Copié : "+t)}catch(e){prompt("Copie ce message :",t)}}
-function me(){return '<h2>Mon profil</h2><div class="card"><input id="ps" placeholder="Ton pseudo (ex : Léo)" value="'+esc(S.pseudo)+'"><button class="btn" onclick="setP()">Enregistrer</button></div>'+(S.leagues.length?'<h2>Mes ligues</h2>'+S.leagues.map(function(c){return '<div class="card row"><b>'+esc(c)+'</b><button class="chip" onclick="share(\''+esc(c)+'\')">Inviter</button></div>'}).join(""):'')+'<div class="sub" style="margin-top:12px">'+(S.state==="ready"?"✅ Connecté : les avis sont partagés en ligne.":S.state==="error"?"⚠️ Connexion impossible.":"Connexion…")+'</div>'}
+function me(){var acc=S.user&&!S.user.isAnonymous;
+var h='<h2>Mon profil</h2><div class="card"><input id="ps" placeholder="Ton pseudo (ex : Léo)" value="'+esc(S.pseudo)+'"><button class="btn" onclick="setP()">Enregistrer</button></div>';
+if(acc)h+='<h2>Mon compte</h2><div class="card"><div class="sub">Connecté : <b>'+esc(S.user.email)+'</b></div><button class="btn alt" onclick="logout()">Se déconnecter</button><button class="btn alt" style="margin-top:8px" onclick="delAcc()">Supprimer mon compte</button></div>';
+else h+='<h2>Mon compte</h2><div class="card"><div class="sub">Crée un compte pour garder tes avis et tes ligues, et te connecter sur un autre téléphone.</div><input id="em" type="email" placeholder="E-mail" autocomplete="email"><input id="pw" type="password" placeholder="Mot de passe (6 caractères min.)" autocomplete="current-password"><button class="btn" onclick="authIn(\'up\')">Créer mon compte</button><button class="btn alt" style="margin-top:8px" onclick="authIn(\'in\')">J’ai déjà un compte</button><button class="back" onclick="resetPw()">Mot de passe oublié ?</button></div>';
+if(S.leagues.length)h+='<h2>Mes ligues</h2>'+S.leagues.map(function(c){return '<div class="card row"><b>'+esc(c)+'</b><button class="chip" onclick="share(\''+esc(c)+'\')">Inviter</button></div>'}).join("");
+return h+'<div class="sub" style="margin-top:12px">'+(S.state==="ready"?"✅ Connecté : les avis sont partagés en ligne.":S.state==="error"?"⚠️ Connexion impossible.":"Connexion…")+'</div>'}
+function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
+function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
+alert(m[e&&e.code]||"Une erreur est survenue, réessaie.")}
+function authIn(mode){var e=val("em"),p=document.getElementById("pw")?document.getElementById("pw").value:"";if(!e||!p){alert("E-mail et mot de passe requis");return}
+var a=firebase.auth();
+if(mode==="up"){a.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(e,p)).then(function(r){S.user=r.user;save();render();alert("Compte créé ✅")}).catch(authErr)}
+else a.signInWithEmailAndPassword(e,p).catch(authErr)}
+function resetPw(){var e=val("em");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
+function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
+function delAcc(){if(!confirm("Supprimer définitivement ton compte ? Tes avis déjà publiés resteront affichés."))return;var u=firebase.auth().currentUser;
+S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Il faut un pseudo");return}S.pseudo=p;save();S.tab="explore";render()}
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[])}
@@ -118,11 +135,16 @@ function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])re
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
 render();
+function startDB(){S.fdb=firebase.firestore();S.state="ready";
+S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(){S.state="error";render()});subL()}
+function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
+if(p.pseudo)S.pseudo=p.pseudo;(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];save();subL();S.tab=S.pseudo?"explore":"me";render()}).catch(function(){render()})}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
-try{firebase.initializeApp(CFG);firebase.auth().signInAnonymously().then(function(){
-S.fdb=firebase.firestore();S.state="ready";
-S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){return d.data()});S.state="ready";refresh()},function(){S.state="error";render()});subL()
-}).catch(function(){S.state="error";render()})}catch(e){S.state="error";render()}});
+try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
+if(!u){firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
+S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
+if(!u.isAnonymous)loadProfile(u);else render()})}catch(e){S.state="error";render()}});
 </script>
 </body>
 </html>
