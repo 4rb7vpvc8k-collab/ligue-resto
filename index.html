@@ -13,7 +13,7 @@ body{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .hd h1{font-size:24px;margin:0;color:#F2E4CC}.hd div{opacity:.95;font-size:13px;margin-top:2px;color:#F2E4CC}
 h2{font-size:16px;margin:14px 0 8px}
 .sub{color:var(--mut);font-size:13px;margin-bottom:8px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);position:relative}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .who{font-size:12px;color:var(--mut)}
 .resto{font-weight:700;font-size:16px}
@@ -48,11 +48,18 @@ nav button.on{color:var(--acd);font-weight:700}
 .podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0}.pod{flex:1;border-radius:12px 12px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px 4px;text-align:center;color:#F2E4CC;font-weight:700}.pn{font-size:28px;font-weight:900}.pl{font-size:12px;line-height:1.15;word-break:break-word}.pod2{display:flex;flex-direction:column;gap:8px}.pr{display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;font-weight:700;color:#F2E4CC}
 .lr{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-top:1px solid var(--bd);font-size:17px}.lr b{color:var(--mut);font-weight:600}.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.gr .pt{height:auto;aspect-ratio:2/3;padding:6px}.gr .pt b{font-size:22px;top:6px;left:6px}.gr .pt small{font-size:10px}
 .mh{background:var(--ac2);padding:8px 14px;font-size:13px;letter-spacing:.1em;font-weight:700;margin:12px -14px 0}.dr{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}.dd{width:46px;height:46px;border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mut);flex:0 0 46px}.dt{width:46px;height:62px;border-radius:6px;color:#F2E4CC;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}.di{flex:1;min-width:0}.tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
+.dot-badge{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
-<div class="hd"><h1>🍽️ Ligue Resto</h1><div id="hsub">Découvre et note les restos</div></div>
+<div class="hd">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h1>🍽️ Ligue Resto</h1>
+    <button class="chip" onclick="openLegend()" style="background:#F2E4CC;color:#2448C7;font-weight:700;border:none">ℹ️ Légende</button>
+  </div>
+  <div id="hsub">Découvre et note les restos</div>
+</div>
 <div id="app"></div>
 <nav id="nav"></nav>
 <div id="sheet"></div>
@@ -62,7 +69,36 @@ var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Ch
 var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
-var S={col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[]},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
+var S={col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
+
+// Gestion des catégories et couleurs demandées
+var CATS={
+  fast:{label:"Restauration rapide",color:"#D97706"},     // Orange
+  trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},// Bleu clair
+  trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},// Bleu foncé
+  bistro:{label:"Bistronomie",color:"#7C3AED"},              // Violet
+  gastronomy:{label:"Haute gastronomie",color:"#D97706"}     // Doré / Or (Utilise un bel or chaud)
+};
+// Ajustement de la couleur or pour haute gastronomie
+CATS.gastronomy.color = "#CA8A04";
+
+function getRestoCat(name, type){
+  var n=(name||"").toLowerCase();
+  if(type==="fast_food"||n.includes("tacos")||n.includes("kebab")||n.includes("burger")||n.includes("fast")||n.includes("pizza")||n.includes("sandwich")) return "fast";
+  if(n.includes("gastrono")||n.includes("michelin")||n.includes("palace")||n.includes("etoile")) return "gastronomy";
+  if(n.includes("bistro")||n.includes("bistrot")||n.includes("comptoir")) return "bistro";
+  if(n.includes("gastronomique")||n.includes("chic")||n.includes("le grand")||n.includes("chateau")) return "trad_high";
+  return "trad_low";
+}
+function getRestoColor(p){
+  var c = p.cat || getRestoCat(p.n||p.resto, p.type);
+  return (CATS[c]||CATS.trad_low).color;
+}
+
+function openLegend(){
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🎨 Légende des couleurs</div>'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<div class="row" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><span class="dot-badge" style="background:'+cat.color+'"></span><span>'+cat.label+'</span></div></div>'}).join("")+'<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>';
+}
+
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -99,7 +135,8 @@ function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.ta
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
+var color=getRestoColor(x);
+return '<div class="card"><span class="dot-badge" style="background:'+color+';position:absolute;top:12px;right:12px"></span><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
 function del(i){var x=S.rvl[i];if(!x||!x._id||!S.fdb)return;if(!confirm("Supprimer définitivement cet avis ?"))return;
 var col=x._p?S.fdb.collection("leagues/"+x._lg+"/reviews"):S.fdb.collection("reviews");
 col.doc(x._id).delete().then(function(){if(x._p&&S.priv[x._lg])S.priv[x._lg]=S.priv[x._lg].filter(function(y){return y._id!==x._id});S.all=S.all.filter(function(y){return y._id!==x._id||x._p});render()}).catch(function(){alert("Suppression impossible. Les anciens avis publiés avant la création des comptes ne peuvent pas être supprimés depuis l’appli.")})}
@@ -118,19 +155,20 @@ S.fdb.collection("reports").doc(u+"__"+rid).set({rid:rid,path:x._p?"leagues/"+x.
 function blk(i){var x=S.rvl[i];if(!x)return;if(!confirm("Bloquer "+(x.pseudo||"cet utilisateur")+" ? Tu ne verras plus ses avis."))return;S.blocked.push({u:x.uid,n:x.pseudo||"?"});save();render()}
 function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
-function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
+function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
-function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
+function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else p.cat=getRestoCat(p.n,p.type);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
 return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
-function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:x.name||(x.display_name||"").split(",")[0],a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon)}})}
+function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cat:getRestoCat(n,x.type)}})}
 function nomRaw(q,bounded){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
 var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")+(bounded&&S.loc?"&bounded=1":"")}
 return fetch(u).then(function(r){return r.json()})}
 function isArea(x){return ["highway","place","boundary","building"].indexOf(x.category)>-1}
 function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
 function overpass(lat,lng,rad){var q='[out:json][timeout:20];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 60;';
-return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){return{pid:"osm:"+e.type.charAt(0)+e.id,n:e.tags.name,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon}})})}
+return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})
+}
 function searchPlaces(q){S.mapC=null;var p=nomRaw(q,!!S.loc);
 p=p.then(function(a){if(conv(a).length>=8||!S.loc)return a;return new Promise(function(r){setTimeout(r,1100)}).then(function(){return nomRaw(q,false)}).then(function(b){var seen={};a.forEach(function(x){seen[x.place_id]=1});return a.concat(b.filter(function(x){return!seen[x.place_id]}))})});
 return p.then(function(raw){var r=conv(raw);if(r.length>=3)return r;var ar=raw.filter(isArea)[0];if(!ar)return r;var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon);S.mapC={lat:lat,lng:lng};
@@ -144,7 +182,7 @@ function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML()
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
 var h=S.err?'<div class="sub">⚠️ La recherche de lieux a échoué, réessaie dans un instant.</div>':"";
 if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé pour « '+esc(S.sq)+' ».</div>';
-h+=S.sr.map(function(p,i){return '<div class="card" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(p.d!=null?' · <span class="dist">'+fmtD(p.d)+'</span>':'')+(p.c?' · '+p.c+' avis · '+p.avg.toFixed(1)+'/5':'')+'</div></div>'}).join("");
+h+=S.sr.map(function(p,i){var color=getRestoColor(p);return '<div class="card" onclick="tap('+i+')"><span class="dot-badge" style="background:'+color+';position:absolute;top:12px;right:12px"></span><div class="row"><div class="resto">'+esc(p.n)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(p.d!=null?' · <span class="dist">'+fmtD(p.d)+'</span>':'')+(p.c?' · '+p.c+' avis · '+p.avg.toFixed(1)+'/5':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;render()}else{S.sel=p;render()}}
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
@@ -154,50 +192,54 @@ return '<div class="card"><div class="sub">📍 Autorise ta position pour voir l
 function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom du restaurant")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button></div>'}
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
 G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
-return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
-function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng};render()}
+return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){var color=getRestoColor(o);return '<div class="card" onclick="openG('+i+')"><span class="dot-badge" style="background:'+color+';position:absolute;top:12px;right:12px"></span><div class="row"><div class="resto">'+esc(o.n)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
+function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar("Restaurant ou rue (ex : rue de Rivoli)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res">'+resHTML()+'</div><div id="cl">'+commList()+'</div>'}
+return status()+sbar("Restaurant ou rue (ex : rue de Rivoli)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res"></div><div id="cl"></div>';}
+setTimeout(function(){if(S.tab==="map"&&!S.sel)upRes()},50);
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+var color=getRestoColor(p);
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><span class="dot-badge" style="background:'+color+';position:absolute;top:12px;right:12px"></span><div class="resto" style="font-size:20px">'+esc(p.n)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:S.home?10:5;
 var m=S.map=L.map("map").setView(c,z);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#2448C7",fillColor:"#2448C7",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
-drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
+drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200);upRes()})}
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
-L.circleMarker([o.lat,o.lng],{radius:9,color:"#2448C7",fillColor:"#2448C7",fillOpacity:.85}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
+var col=getRestoColor(o);
+L.circleMarker([o.lat,o.lng],{radius:9,color:col,fillColor:col,fillOpacity:.85}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
 (S.sr||[]).forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
-L.circleMarker([p.lat,p.lng],{radius:6,color:"#888",fillColor:"#ccc",fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
-function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng};S.tab="map";render()}
+var col=getRestoColor(p);
+L.circleMarker([p.lat,p.lng],{radius:6,color:col,fillColor:col,fillOpacity:.7}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
+function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function openR(i){var p=S.sr&&S.sr[i];if(!p)return;S.sel=p;S.tab="map";render()}
 function togLgForm(c){if(!S.form.tls)S.form.tls=S.league?[S.league]:[];var i=S.form.tls.indexOf(c);if(i>-1)S.form.tls.splice(i,1);else S.form.tls.push(c);render()}
 function add(){var f=S.form;if(!f.tls)f.tls=S.league?[S.league]:[];if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
 if(S.manual)return h+'<div class="card"><div class="sub">Ton resto n’est pas dans la base ? Ajoute-le toi-même.</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse (ex : 12 rue Victor Hugo, Lyon)"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour à la recherche</button></div>';
-return h+sbar()+'<div id="res">'+resHTML()+'</div>'}
+return h+sbar()+'<div id="res"></div>'}
 var p=f.place;
-return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';if(!S.form.tls||!S.form.tls.length)S.form.tls=S.league?[S.league]:[];render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Sélectionne une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(f.tls.indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
+return '<h2>J’ai mangé où ?</h2><div class="card"><span class="dot-badge" style="background:'+CATS[f.cat].color+';position:absolute;top:12px;right:12px"></span><div class="row"><div><div class="resto">'+esc(p.n)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie / Budget :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<button class="chip '+(f.cat===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()"><span style="width:8px;height:8px;border-radius:50%;background:'+cat.color+';display:inline-block;margin-right:4px"></span>'+cat.label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';if(!S.form.tls||!S.form.tls.length)S.form.tls=S.league?[S.league]:[];render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Sélectionne une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(f.tls.indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
-var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined};S.manual=false;render()}
+var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined,cat:S.form.cat};S.manual=false;render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
 function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion, réessaie dans un instant.");return}
 var priv=f.vis==="lg",tls=(f.tls&&f.tls.length)?f.tls:(S.league?[S.league]:[]);if(priv&&!tls.length){alert("Sélectionne au moins une ligue (ou crée-en une dans l’onglet Ligue).");return}
-var baseR={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+var baseR={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){baseR.lat=p.lat;baseR.lng=p.lng}if(priv)baseR.pub=false;
 var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},baseR))}):[S.fdb.collection("reviews").add(baseR)];
-Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice()};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
+Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low"};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
 var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
 if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
 var med=["🥇","🥈","🥉"];
-return h+G.map(function(x,i){return '<div class="card rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
+return h+G.map(function(x,i){var color=getRestoColor(x);return '<div class="card rank"><span class="dot-badge" style="background:'+color+';position:absolute;top:12px;right:12px"></span><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
 function leaveLeague(c){if(!confirm("Quitter la ligue « "+c+" » ?"))return;
 var idx=S.leagues.indexOf(c);if(idx>-1)S.leagues.splice(idx,1);
 if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}
@@ -217,7 +259,7 @@ function join(){var l=document.getElementById("lg").value.trim().toUpperCase().r
 function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);save();subL();S.tab="league";render()}
 function share(c){var t="Rejoins ma ligue resto ! Code : "+c;try{if(navigator.share){navigator.share({text:t});return}}catch(e){}
 try{navigator.clipboard.writeText(t);alert("Copié : "+t)}catch(e){prompt("Copie ce message :",t)}}
-function openO(i){var o=S.hl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng};S.tab="map";render()}
+function openO(i){var o=S.hl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function settings(){var acc=S.user&&!S.user.isAnonymous,mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
 var h='<button class="back" onclick="S.pt=\'prof\';render()">← Retour</button>';
 h+='<h2>Mon pseudo</h2><div class="card"><input id="ps" placeholder="Ton pseudo (ex : Léo)" value="'+esc(S.pseudo)+'"><button class="btn" onclick="setP()">Enregistrer</button></div>';
@@ -235,16 +277,16 @@ function colOf(x){return x.col||hashColor(String(x.uid||x.pseudo||"?"))}
 function newCol(){S.col=newColor();save();render()}
 function tl(n){return 'background:'+hashColor(n||"?")}
 function ini(n){return esc(((n||"").replace(/[^A-Za-zÀ-ÿ0-9 ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(function(w){return w.charAt(0).toUpperCase()}).join(""))||"🍽️")}
-function pl(x){var o={pid:x.pid,n:x.resto,a:x.addr||""};if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}return o}
-function cp(p){var o={pid:p.pid||("n:"+p.n.toLowerCase().trim()),n:p.n,a:p.a||""};if(num(p.lat)&&num(p.lng)){o.lat=p.lat;o.lng=p.lng}return o}
+function pl(x){var o={pid:x.pid,n:x.resto,a:x.addr||"",cat:x.cat||getRestoCat(x.resto)};if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}return o}
+function cp(p){var o={pid:p.pid||("n:"+p.n.toLowerCase().trim()),n:p.n,a:p.a||"",cat:p.cat||getRestoCat(p.n)};if(num(p.lat)&&num(p.lng)){o.lat=p.lat;o.lng=p.lng}return o}
 function has(l,p){var k=keyOf(p);return l.some(function(x){return keyOf(x)===k})}
 function tgl(l,p){var k=keyOf(p),i=-1;l.forEach(function(x,j){if(keyOf(x)===k)i=j});if(i>-1)l.splice(i,1);else l.unshift(cp(p));save();render()}
 function togL(){tgl(S.likes,S.sel)}
 function togW(){tgl(S.wish,S.sel)}
 function hp(p){return S.hl.push(p)-1}
-function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'"><b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
+function pc(p,meta,bg,big){var col=getRestoColor(p);return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'"><span class="dot-badge" style="background:'+col+';position:absolute;top:10px;right:10px"></span><b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
 function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<div class="sub">'+empty+'</div>'}
-function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'"><b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
+function grid(l){return '<div class="gr">'+l.map(function(p){var col=getRestoColor(p);return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'+position:relative"><span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span><b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
@@ -255,26 +297,27 @@ return status()+'<div class="big">Resto du moment</div>'
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Tes amis n’ont pas encore noté de resto."):'<div class="card"><div class="sub">Rejoins une ligue pour voir les avis de tes amis.</div><button class="btn" onclick="go(\'league\')">Créer ou rejoindre une ligue</button></div>')
 +'<div class="sh">Nos recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Les meilleurs restos du mois apparaîtront ici.")}
 var PC=["#c99a0c","#8b96a3","#b56a2c","#3b82d6","#2f9e63"],PH=[130,100,80];
-function slot(i){var p=S.top[i];if(i<3)return '<div class="pod" style="background:'+PC[i]+';height:'+PH[i]+'px" onclick="pickTop('+i+')"><div class="pn">'+(i+1)+'</div><div class="pl">'+(p?esc(p.n):'＋')+'</div></div>';
-return '<div class="pr" style="background:'+PC[i]+'" onclick="pickTop('+i+')"><span class="pn" style="font-size:20px">'+(i+1)+'</span><span>'+(p?esc(p.n):'＋ Choisir un resto')+'</span></div>'}
+function slot(i){var p=S.top[i];var col=p?getRestoColor(p):"";if(i<3)return '<div class="pod" style="background:'+PC[i]+';height:'+PH[i]+'px;position:relative" onclick="pickTop('+i+')">'+(p?'<span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span>':'')+'<div class="pn">'+(i+1)+'</div><div class="pl">'+(p?esc(p.n):'＋')+'</div></div>';
+return '<div class="pr" style="background:'+PC[i]+';position:relative" onclick="pickTop('+i+')">'+(p?'<span class="dot-badge" style="background:'+col+';position:absolute;top:10px;right:10px"></span>':'')+'<span class="pn" style="font-size:20px">'+(i+1)+'</span><span>'+(p?esc(p.n):'＋ Choisir un resto')+'</span></div>'}
 function pickTop(i){var mr=groups(allv().filter(function(x){return x.uid===S.uid})).sort(function(a,b){return b.s/b.c-a.s/a.c});
-S.pkl=mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng}});
+S.pkl=mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});
 document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:70vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Place n°'+(i+1)+'</div>'+(S.pkl.length?S.pkl.map(function(p,k){return '<button class="btn alt" style="margin-bottom:8px" onclick="setTop('+i+','+k+')">'+esc(p.n)+'</button>'}).join(""):'<div class="sub">Note d’abord quelques restos pour pouvoir les classer.</div>')+(S.top[i]?'<button class="btn alt" style="margin-bottom:8px" onclick="setTop('+i+',-1)">Retirer</button>':'')+'<button class="back" onclick="closeSheet()">Annuler</button></div></div>'}
 function setTop(i,k){closeSheet();var t=S.top.slice();while(t.length<5)t.push(null);if(k<0)t[i]=null;else{var p=cp(S.pkl[k]);for(var j=0;j<5;j++)if(t[j]&&keyOf(t[j])===keyOf(p))t[j]=null;t[i]=p}S.top=t;save();render()}
 function editBio(){var b=prompt("Ta bio (160 caractères max)",S.bio||"");if(b===null)return;S.bio=b.trim().slice(0,160);save();render()}
 function agenda(mine){if(!mine.length)return '<div class="empty">Ton agenda est vide.<br>Chaque avis que tu publies s’y ajoute.</div>';var h="",cur="";
 mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
-h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
+var col=getRestoColor(x);
+h+='<div class="card" onclick="openO('+hp(pl(x))+')" style="display:flex;gap:12px;align-items:center;padding:12px"><span class="dot-badge" style="background:'+col+';position:absolute;top:12px;right:12px"></span><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
 function me(){if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
 var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()">⚙️</button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Ta liste est vide.<br>Ouvre la fiche d’un resto et appuie sur 🔖 À tester.</div>');
-if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien pour l’instant.</div>')}
+if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien pour l’instant.</div>')}
 h+='<div class="card"><div class="av" style="background:'+(S.col||"#2448C7")+';color:#F2E4CC">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas encore de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">✏️ Modifier la bio</button><button class="back" style="display:block;margin:0 auto" onclick="newCol()">🎲 Changer ma couleur</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
-h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+'"><b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Tu n’as pas encore noté de resto.</div>');
+h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){var col=getRestoColor(x);return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+';position:relative"><span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span><b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Tu n’as pas encore noté de resto.</div>');
 return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div>'}
 function loadv(){if(S.state==="error")return '<div class="card"><div class="resto">⚠️ Connexion impossible</div><div class="sub" style="margin:6px 0">'+esc(S.errMsg||"")+'</div>'+(location.hostname.indexOf("github.io")<0?'<div class="sub">Tu ouvres peut-être l’appli depuis un aperçu qui bloque les services externes. Ouvre-la depuis son adresse : https://4rb7vpvc8k-collab.github.io/ligue-resto</div>':'')+'<button class="btn" onclick="location.reload()">Réessayer</button></div>';return '<div class="empty">Chargement…</div>'}
 function welcome(){var up=S.wm==="up";
