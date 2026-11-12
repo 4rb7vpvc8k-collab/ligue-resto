@@ -9,8 +9,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,system-ui,"Segoe UI",sans-serif}
 body{max-width:520px;margin:0 auto;padding:0 14px 90px}
-.hd{background:#192A3A;color:#F4F1E9;border-radius:0 0 24px 24px;padding:18px 16px 16px;margin:0 -14px 14px;border-bottom:1px solid var(--bd)}
-.hd h1{font-size:24px;margin:0;color:#E5B83F}.hd div{opacity:.9;font-size:13px;margin-top:2px;color:#F4F1E9}
+.hd{background:#E5B83F;color:#192A3A;border-radius:0 0 24px 24px;padding:18px 16px 16px;margin:0 -14px 14px;border-bottom:1px solid var(--bd)}
+.hd h1{font-size:24px;margin:0;color:#192A3A}.hd div{opacity:.9;font-size:13px;margin-top:2px;color:#192A3A}
 h2{font-size:16px;margin:14px 0 8px;color:#192A3A}
 .sub{color:var(--mut);font-size:13px;margin-bottom:8px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(25,42,58,.06);position:relative}
@@ -20,10 +20,10 @@ h2{font-size:16px;margin:14px 0 8px;color:#192A3A}
 .stars{color:#E5B83F;letter-spacing:1px;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{background:var(--ac2);border-radius:5px;padding:5px 10px;font-size:13px;border:1px solid var(--bd);color:var(--tx);font-family:inherit}
-button.chip.on{border-color:#E5B83F;background:#E5B83F;color:#192A3A;font-weight:700}
+button.chip.on{border-color:#192A3A;background:#E5B83F;color:#192A3A;font-weight:700}
 input,textarea{width:100%;padding:11px;border-radius:5px;border:1px solid var(--bd);background:#FFFFFF;color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
 textarea{min-height:70px;resize:vertical}
-.btn{width:100%;background:#192A3A;color:#F4F1E9;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
+.btn{width:100%;background:#E5B83F;color:#192A3A;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
 .btn.alt{background:var(--ac2);color:var(--tx);border:1px solid var(--bd)}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#192A3A;border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto}
 nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:#A3B1C2;font-family:inherit}
@@ -56,7 +56,7 @@ nav button.on{color:#E5B83F;font-weight:700}
 <div class="hd">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <h1>🍽️ Ligue Resto</h1>
-    <button class="chip" onclick="openLegend()" style="background:#E5B83F;color:#192A3A;font-weight:700;border:none">🏷️ Catégorie</button>
+    <button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Catégorie</button>
   </div>
   <div id="hsub">Découvre et note les restos</div>
 </div>
@@ -358,6 +358,7 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
+
 
 
 
