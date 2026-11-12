@@ -3,63 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ligue Resto</title>
+<title>Belly</title>
 <style>
-:root{color-scheme:light;--bg:#F4F1E9;--card:#FFFFFF;--tx:#192A3A;--mut:#5A6B7C;--ac:#E5B83F;--ac2:#E8E2D2;--bd:#D5CEBE;--acd:#E5B83F;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:light;--bg:#F4F1E9;--card:#F4F1E9;--tx:#192A3A;--mut:rgba(25,42,58,.62);--ac:#E5B83F;--ac2:rgba(25,42,58,.08);--bd:rgba(25,42,58,.2);--acd:#192A3A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,system-ui,"Segoe UI",sans-serif}
 body{max-width:520px;margin:0 auto;padding:0 14px 90px}
-.hd{background:#E5B83F;color:#192A3A;border-radius:0 0 24px 24px;padding:18px 16px 16px;margin:0 -14px 14px;border-bottom:1px solid var(--bd)}
-.hd h1{font-size:24px;margin:0;color:#192A3A}.hd div{opacity:.9;font-size:13px;margin-top:2px;color:#192A3A}
-h2{font-size:16px;margin:14px 0 8px;color:#192A3A}
+.hd{background:#E5B83F;color:#192A3A;border-radius:0 0 24px 24px;padding:18px 16px 16px;margin:0 -14px 14px}
+.hd h1{font-size:24px;margin:0}.hd div{opacity:.9;font-size:13px;margin-top:2px}
+h2{font-size:16px;margin:14px 0 8px}
 .sub{color:var(--mut);font-size:13px;margin-bottom:8px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(25,42,58,.06);position:relative}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .who{font-size:12px;color:var(--mut)}
-.resto{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px;color:#192A3A}
-.stars{color:#E5B83F;letter-spacing:1px;white-space:nowrap}
+.resto{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px}.dot-badge{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.stars{color:var(--ac);letter-spacing:1px;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{background:var(--ac2);border-radius:5px;padding:5px 10px;font-size:13px;border:1px solid var(--bd);color:var(--tx);font-family:inherit}
-button.chip.on{border-color:#192A3A;background:#E5B83F;color:#192A3A;font-weight:700}
-input,textarea{width:100%;padding:11px;border-radius:5px;border:1px solid var(--bd);background:#FFFFFF;color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
+.chip{background:var(--ac2);border-radius:5px;padding:5px 10px;font-size:13px;border:1px solid transparent;color:var(--tx);font-family:inherit}
+button.chip.on{border-color:var(--ac);background:var(--ac);color:#192A3A}
+input,textarea{width:100%;padding:11px;border-radius:5px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
 textarea{min-height:70px;resize:vertical}
-.btn{width:100%;background:#E5B83F;color:#192A3A;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
-.btn.alt{background:var(--ac2);color:var(--tx);border:1px solid var(--bd)}
+.btn{width:100%;background:var(--ac);color:#192A3A;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
+.btn.alt{background:var(--ac2);color:var(--tx)}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#192A3A;border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto}
-nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:#A3B1C2;font-family:inherit}
+nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:rgba(244,241,233,.65);font-family:inherit}
 nav button span{display:block;font-size:22px}
 nav button.on{color:#E5B83F;font-weight:700}
 .rate{display:flex;gap:4px;justify-content:center;margin:6px 0 12px}
 .rate button{font-size:34px;background:none;border:0;opacity:.3;padding:2px}
 .rate button.on{opacity:1}
 .rank{display:flex;align-items:center;gap:10px}
-.pos{font-size:24px;width:36px;text-align:center;color:#192A3A}
+.pos{font-size:24px;width:36px;text-align:center}
 .empty{text-align:center;color:var(--mut);padding:30px 10px}
-.code{font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;color:#192A3A;margin:6px 0}
-.tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:99px;background:#E5B83F;color:#192A3A;font-weight:700}
-.seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1}.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}.back{background:none;border:0;color:#E5B83F;font-size:15px;font-weight:700;padding:6px 0;font-family:inherit}
-#map{height:38vh;min-height:240px;border-radius:16px;border:1px solid var(--bd)}.dist{color:#E5B83F;font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
-.st{display:inline-block;position:relative;margin-right:1px}.sb{color:#E5B83F;opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:#E5B83F}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
+.code{font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;color:var(--ac);margin:6px 0}
+.tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:99px;background:var(--ac2)}
+.seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1}.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}.back{background:none;border:0;color:var(--acd);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit}
+#map{height:38vh;min-height:240px;border-radius:16px;border:1px solid var(--bd)}.dist{color:var(--acd);font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
+.st{display:inline-block;position:relative;margin-right:1px}.sb{color:var(--mut);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--ac)}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:#E5B83F;font-size:12px;font-weight:600}.ov{position:fixed;inset:0;background:rgba(25,42,58,.5);z-index:50;display:flex;align-items:flex-end}.ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--bd)}
-.av{width:64px;height:64px;border-radius:50%;background:#192A3A;color:#F4F1E9;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}.pc{flex:0 0 132px;scroll-snap-align:start}.pt{height:176px;border-radius:12px;color:#F4F1E9;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(25,42,58,.15)}.pt b{font-size:38px;line-height:1;position:absolute;top:10px;left:10px;opacity:.9}.pt small{font-size:13px;font-weight:700;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.5)}.pm{margin-top:6px;font-size:12px;color:var(--mut)}.pm .stars{font-size:13px;display:block}.big{font-size:32px;font-weight:900;margin:14px 0 0;color:#192A3A}.sh{margin:18px 0 8px;font-size:20px;font-weight:800;color:#192A3A}
-.tabs{display:flex;background:var(--ac2);border-radius:6px;padding:4px;margin:8px 0 12px;border:1px solid var(--bd)}.tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit}.tabs button.on{background:#E5B83F;color:#192A3A}.gear{background:none;border:0;font-size:26px;width:34px;color:var(--tx)}
+.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px}.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end}.ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.av{width:64px;height:64px;border-radius:50%;background:var(--ac);color:#192A3A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}.pc{flex:0 0 132px;scroll-snap-align:start}.pt{height:176px;border-radius:12px;color:#F4F1E9;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}.pt b{font-size:38px;line-height:1;position:absolute;top:10px;left:10px;opacity:.9}.pt small{font-size:13px;font-weight:700;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.45)}.pm{margin-top:6px;font-size:12px;color:var(--mut)}.pm .stars{font-size:13px;display:block}.big{font-size:32px;font-weight:900;margin:14px 0 0}.sh{margin:18px 0 8px;font-size:20px;font-weight:800}
+.tabs{display:flex;background:var(--ac2);border-radius:6px;padding:4px;margin:8px 0 12px}.tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit}.tabs button.on{background:var(--ac);color:#192A3A}.gear{background:none;border:0;font-size:26px;width:34px}
 .podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0}.pod{flex:1;border-radius:12px 12px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px 4px;text-align:center;color:#192A3A;font-weight:700}.pn{font-size:28px;font-weight:900}.pl{font-size:12px;line-height:1.15;word-break:break-word}.pod2{display:flex;flex-direction:column;gap:8px}.pr{display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;font-weight:700;color:#192A3A}
-.lr{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-top:1px solid var(--bd);font-size:17px;color:#192A3A}.lr b{color:#E5B83F;font-weight:700}.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.gr .pt{height:auto;aspect-ratio:2/3;padding:6px}.gr .pt b{font-size:22px;top:6px;left:6px}.gr .pt small{font-size:10px}
-.mh{background:var(--ac2);padding:8px 14px;font-size:13px;letter-spacing:.1em;font-weight:700;margin:12px -14px 0;color:var(--tx);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}.dr{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}.dd{width:46px;height:46px;border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mut);flex:0 0 46px;background:#FFF}.dt{width:46px;height:62px;border-radius:6px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}.di{flex:1;min-width:0}.tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
-.dot-badge{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.lr{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-top:1px solid var(--bd);font-size:17px}.lr b{color:var(--mut);font-weight:600}.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.gr .pt{height:auto;aspect-ratio:2/3;padding:6px}.gr .pt b{font-size:22px;top:6px;left:6px}.gr .pt small{font-size:10px}
+.mh{background:var(--ac2);padding:8px 14px;font-size:13px;letter-spacing:.1em;font-weight:700;margin:12px -14px 0}.dr{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}.dd{width:46px;height:46px;border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mut);flex:0 0 46px}.dt{width:46px;height:62px;border-radius:6px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}.di{flex:1;min-width:0}.tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
-<div class="hd">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <h1>🍽️ Ligue Resto</h1>
-    <button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Catégorie</button>
-  </div>
-  <div id="hsub">Découvre et note les restos</div>
-</div>
+<div class="hd"><div style="display:flex;justify-content:space-between;align-items:center"><h1>🍽️ Belly</h1><button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Catégorie</button></div><div id="hsub">Découvre et note les restos</div></div>
 <div id="app"></div>
 <nav id="nav"></nav>
 <div id="sheet"></div>
@@ -69,33 +62,17 @@ var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Ch
 var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
-var S={col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
-
-var CATS={
-  fast:{label:"Restauration rapide",color:"#D97706"},     // Orange
-  trad_low:{label:"Traditionnel petit budget",color:"#2563EB"},// Bleu vif
-  trad_high:{label:"Traditionnel grand budget",color:"#1D4ED8"},// Bleu foncé
-  bistro:{label:"Bistronomie",color:"#7C3AED"},              // Violet
-  gastronomy:{label:"Haute gastronomie",color:"#E5B83F"}     // Or
-};
-
-function getRestoCat(name, type){
-  var n=(name||"").toLowerCase();
-  if(type==="fast_food"||n.includes("tacos")||n.includes("kebab")||n.includes("burger")||n.includes("fast")||n.includes("pizza")||n.includes("sandwich")) return "fast";
-  if(n.includes("gastrono")||n.includes("michelin")||n.includes("palace")||n.includes("etoile")) return "gastronomy";
-  if(n.includes("bistro")||n.includes("bistrot")||n.includes("comptoir")) return "bistro";
-  if(n.includes("gastronomique")||n.includes("chic")||n.includes("le grand")||n.includes("chateau")) return "trad_high";
-  return "trad_low";
-}
-function getRestoColor(p){
-  var c = p.cat || getRestoCat(p.n||p.resto, p.type);
-  return (CATS[c]||CATS.trad_low).color;
-}
-
-function openLegend(){
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🏷️ Catégories</div>'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<div class="row" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><span class="dot-badge" style="background:'+cat.color+'"></span><span>'+cat.label+'</span></div></div>'}).join("")+'<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>';
-}
-
+var CATS={fast:{label:"Restauration rapide",color:"#D97706"},trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},bistro:{label:"Bistronomie",color:"#7C3AED"},gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}};
+function getRestoCat(name,type){var n=(name||"").toLowerCase();
+if(type==="fast_food"||/tacos|kebab|burger|fast|pizza|sandwich/.test(n))return "fast";
+if(/gastrono|michelin|palace|etoile|étoile/.test(n))return "gastronomy";
+if(/bistro|comptoir/.test(n))return "bistro";
+if(/gastronomique|chic|chateau|château/.test(n))return "trad_high";
+return "trad_low"}
+function getRestoColor(p){var c=p.cat||getRestoCat(p.n||p.resto,p.type);return (CATS[c]||CATS.trad_low).color}
+function dot(p,st){return '<span class="dot-badge" style="background:'+getRestoColor(p)+(st?';'+st:'')+'"></span>'}
+function openLegend(){document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🏷️ Catégories</div>'+Object.keys(CATS).map(function(k){return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="dot-badge" style="background:'+CATS[k].color+'"></span><span>'+CATS[k].label+'</span></div>'}).join("")+'<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>'}
+var S={filt:{rad:500,cats:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -132,9 +109,9 @@ function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.ta
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-var color=getRestoColor(x);
-return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
+return '<div class="card"><div class="row"><div class="resto">'+esc(showR?x.resto:x.pseudo)+(showR?dot(x):'')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?esc(x.pseudo)+' · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
 function del(i){var x=S.rvl[i];if(!x||!x._id||!S.fdb)return;if(!confirm("Supprimer définitivement cet avis ?"))return;
+if(x._p&&x.leagues&&x.leagues.length>1){x.leagues.forEach(function(c){S.fdb.collection("leagues/"+c+"/reviews").where("uid","==",x.uid).where("ts","==",x.ts).get().then(function(q){q.forEach(function(d){d.ref.delete()})}).catch(function(){})});return}
 var col=x._p?S.fdb.collection("leagues/"+x._lg+"/reviews"):S.fdb.collection("reviews");
 col.doc(x._id).delete().then(function(){if(x._p&&S.priv[x._lg])S.priv[x._lg]=S.priv[x._lg].filter(function(y){return y._id!==x._id});S.all=S.all.filter(function(y){return y._id!==x._id||x._p});render()}).catch(function(){alert("Suppression impossible. Les anciens avis publiés avant la création des comptes ne peuvent pas être supprimés depuis l’appli.")})}
 function ri(x){S.rvl.push(x);return S.rvl.length-1}
@@ -154,96 +131,115 @@ function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
 function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
-function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else p.cat=getRestoCat(p.n,p.type);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
+function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
 return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cat:getRestoCat(n,x.type)}})}
-function nomRaw(q,bounded){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
-var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")+(bounded&&S.loc?"&bounded=1":"")}
+function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
+var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")}
 return fetch(u).then(function(r){return r.json()})}
-function isArea(x){return ["highway","place","boundary","building"].indexOf(x.category)>-1}
+function areaKind(x){var c=x.category,t=x.type;if(c==="amenity"&&FOOD.indexOf(t)>-1)return "";if(c==="highway")return "street";if(c==="building"||t==="house"||(x.address&&x.address.house_number&&c!=="amenity"))return "address";if(t==="postcode"||t==="postal_code")return "postcode";if(c==="place"||c==="boundary")return "city";return ""}
+function strip(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
+function bboxOf(x,span){var b=(x.boundingbox||[]).map(parseFloat);if(b.length<4||b.some(isNaN)){var la=parseFloat(x.lat),ln=parseFloat(x.lon);b=[la-.01,la+.01,ln-.015,ln+.015]}var s=b[0],n=b[1],w=b[2],e=b[3],cy=(s+n)/2,cx=(w+e)/2;
+if(n-s>span){s=cy-span/2;n=cy+span/2}if(e-w>span){w=cx-span/2;e=cx+span/2}if(n-s<.01){s=cy-.005;n=cy+.005}if(e-w<.015){w=cx-.0075;e=cx+.0075}return [s,w,n,e]}
+var AM='nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"]';
 function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
-function overpass(lat,lng,rad){var q='[out:json][timeout:20];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 60;';
-return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})
-}
-function searchPlaces(q){S.mapC=null;var p=nomRaw(q,!!S.loc);
-p=p.then(function(a){if(conv(a).length>=8||!S.loc)return a;return new Promise(function(r){setTimeout(r,1100)}).then(function(){return nomRaw(q,false)}).then(function(b){var seen={};a.forEach(function(x){seen[x.place_id]=1});return a.concat(b.filter(function(x){return!seen[x.place_id]}))})});
-return p.then(function(raw){var r=conv(raw);if(r.length>=3)return r;var ar=raw.filter(isArea)[0];if(!ar)return r;var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon);S.mapC={lat:lat,lng:lng};
-return overpass(lat,lng,(ar.category==="highway"||ar.category==="building")?400:900).then(function(o){var seen={};return r.concat(o).filter(function(x){if(seen[x.pid])return false;seen[x.pid]=1;return true})}).catch(function(){return r})})}
+function ovPost(q){return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})}
+function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=S.filt.rad,c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.25):null;
+S.smode=kind;S.sc=c;S.mapC=c;S.slabel=(ar.display_name||"").split(",").slice(0,2).join(",").trim();var pr;
+if(b)pr=ovPost('[out:json][timeout:30];'+AM+'('+b.join(",")+');out center 200;');
+else if(kind==="street"){var pre='[out:json][timeout:25];way["highway"]["name"="'+nm+'"](around:2500,'+lat+','+lng+')->.s;';
+pr=Promise.all([ovPost(pre+AM+'(around.s:'+R+');out center 150;'),ovPost(pre+AM+'(around.s:35);out center 150;').catch(function(){return[]})]).then(function(r){var on={};r[1].forEach(function(p){on[p.pid]=1});r[0].forEach(function(p){p.on=!!on[p.pid]});return r[0]})}
+else pr=ovPost('[out:json][timeout:25];'+AM+'(around:'+R+','+lat+','+lng+');out center 120;');
+return pr.catch(function(){return[]}).then(function(list){var seen={};list.forEach(function(p){seen[p.pid]=1});
+groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
+var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
+var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;list.push(p)});return list})}
+function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";return nomRaw(q).then(function(raw){if(!raw||!raw.length)return[];var top=raw[0],kind=areaKind(top),poi=conv(raw);
+if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)})}
+function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){return !f.cats.length||f.cats.indexOf(p.cat||getRestoCat(p.n,p.type))>-1});sortP(a);
+a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
+var so=f.sort==="auto"?((m==="poi"&&S.loc)?"near":"best"):f.sort;
+function dd(p){return p.d!=null?p.d:(p.dc!=null?p.dc:1e9)}
+return a.sort(function(x,y){if(m==="street"&&!!x.on!==!!y.on)return x.on?-1:1;
+if(so==="near")return dd(x)-dd(y);
+if(so==="worst"){var ax=x.avg<0?99:x.avg,ay=y.avg<0?99:y.avg;return ax-ay||y.c-x.c||dd(x)-dd(y)}
+return y.avg-x.avg||y.c-x.c||dd(x)-dd(y)})}
 function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;if(q.length<2){alert("Écris au moins 2 lettres");return}
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
-searchPlaces(q).then(function(r){S.sr=sortP(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
+searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
+function fmtR(m){return m>=1000?(m/1000).toFixed(1).replace(".",",")+" km":m+" m"}
+function filtOn(){return S.filt.cats.length>0||S.filt.sort!=="auto"||S.filt.rad!==500}
+function catChips(){return Object.keys(CATS).map(function(k){return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')"><span class="dot-badge" style="background:'+CATS[k].color+';margin-right:4px"></span>'+CATS[k].label+'</button>'}).join("")}
+function sortChips(){return [["auto","Auto"],["best","Meilleures notes d’abord"],["worst","Moins bien notés d’abord"],["near","Plus proches d’abord"]].map(function(t){return '<button class="chip '+(S.filt.sort===t[0]?"on":"")+'" onclick="setSort(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")}
+function togFC(k){var a=S.filt.cats,i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.push(k);document.getElementById("fc").innerHTML=catChips()}
+function setSort(v){S.filt.sort=v;document.getElementById("fs").innerHTML=sortChips()}
+function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">⚙️ Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div class="sub">Catégories (plusieurs possibles, aucune = toutes) :</div><div class="chips" style="margin:0 0 12px" id="fc">'+catChips()+'</div><div class="sub">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
+function applyFilters(){closeSheet();if(S.sq)doSearch();else render()}
+function resetFilters(){S.filt={rad:500,cats:[],sort:"auto"};openFilters()}
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
 var h=S.err?'<div class="sub">⚠️ La recherche de lieux a échoué, réessaie dans un instant.</div>':"";
+var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
+if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b>'+((S.smode==="street"||S.smode==="address")?' · rayon '+fmtR(S.filt.rad):'')+(S.filt.cats.length?' · '+S.filt.cats.length+' catégorie(s)':'')+' · '+S.sr.length+' resto(s)</div>';
 if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé pour « '+esc(S.sq)+' ».</div>';
-h+=S.sr.map(function(p,i){var color=getRestoColor(p);return '<div class="card" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(p.d!=null?' · <span class="dist">'+fmtD(p.d)+'</span>':'')+(p.c?' · '+p.c+' avis · '+p.avg.toFixed(1)+'/5':'')+'</div></div>'}).join("");
+h+=S.sr.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+(p.on?' · <span class="tag">sur la rue</span>':'')+(p.c?' · '+p.c+' avis · '+p.avg.toFixed(1)+'/5':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
-function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;render()}else{S.sel=p;render()}}
+function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type);render()}else{S.sel=p;render()}}
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
 function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée : les restos sont triés par note. Pour l’activer : Réglages de l’iPhone → Confidentialité → Service de localisation → Safari.</div>';
 return '<div class="card"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
-function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom du restaurant")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button></div>'}
+function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button><button class="btn alt" onclick="openFilters()">⚙️'+(filtOn()?'•':'')+'</button></div>'}
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
 G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
-return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){var color=getRestoColor(o);return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
+return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar("Restaurant ou rue (ex : rue de Rivoli)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res"></div><div id="cl"></div>';}
-setTimeout(function(){if(S.tab==="map"&&!S.sel)upRes()},50);
+return status()+sbar("Restaurant, adresse, rue, ville, code postal")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">Pastilles = catégorie (bouton 🏷️ en haut) · gros points = restos notés · © OpenStreetMap</div>'+locCard()+'<div id="res">'+resHTML()+'</div><div id="cl">'+commList()+'</div>'}
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
-var color=getRestoColor(p);
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:S.home?10:5;
 var m=S.map=L.map("map").setView(c,z);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
-drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200);upRes()})}
+drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
-var col=getRestoColor(o);
-L.circleMarker([o.lat,o.lng],{radius:9,color:col,fillColor:col,fillOpacity:.85}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
+L.circleMarker([o.lat,o.lng],{radius:9,color:getRestoColor(o),fillColor:getRestoColor(o),fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
 (S.sr||[]).forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
-var col=getRestoColor(p);
-L.circleMarker([p.lat,p.lng],{radius:6,color:col,fillColor:col,fillOpacity:.7}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
+L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
 function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function openR(i){var p=S.sr&&S.sr[i];if(!p)return;S.sel=p;S.tab="map";render()}
-function togLgForm(c){if(!S.form.tls)S.form.tls=S.league?[S.league]:[];var i=S.form.tls.indexOf(c);if(i>-1)S.form.tls.splice(i,1);else S.form.tls.push(c);render()}
-function add(){var f=S.form;if(!f.tls)f.tls=S.league?[S.league]:[];if(!f.place){
+function add(){var f=S.form;if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
 if(S.manual)return h+'<div class="card"><div class="sub">Ton resto n’est pas dans la base ? Ajoute-le toi-même.</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse (ex : 12 rue Victor Hugo, Lyon)"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour à la recherche</button></div>';
-return h+sbar()+'<div id="res"></div>'}
+return h+sbar()+'<div id="res">'+resHTML()+'</div>'}
 var p=f.place;
-return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+'<span class="dot-badge" style="background:'+CATS[f.cat].color+'"></span></div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie / Budget :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<button class="chip '+(f.cat===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()"><span class="dot-badge" style="background:'+cat.color+';margin-right:4px"></span>'+cat.label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';if(!S.form.tls||!S.form.tls.length)S.form.tls=S.league?[S.league]:[];render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Sélectionne une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(f.tls.indexOf(c) > -1 ? "on" : "")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
+return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie / Budget :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()"><span class="dot-badge" style="background:'+CATS[k].color+';margin-right:4px"></span>'+CATS[k].label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
+function tlsOf(){return S.form.tls&&S.form.tls.length?S.form.tls:(S.league?[S.league]:[])}
+function togLgForm(c){var t=tlsOf().slice(),i=t.indexOf(c);if(i>-1)t.splice(i,1);else t.push(c);S.form.tls=t;render()}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
-var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined,cat:S.form.cat};S.manual=false;render()}
+var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined,cat:S.form.cat||"trad_low"};S.manual=false;render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
 function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion, réessaie dans un instant.");return}
-var priv=f.vis==="lg",tls=(f.tls&&f.tls.length)?f.tls:(S.league?[S.league]:[]);if(priv&&!tls.length){alert("Sélectionne au moins une ligue (ou crée-en une dans l’onglet Ligue).");return}
-var baseR={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
-if(num(p.lat)&&num(p.lng)){baseR.lat=p.lat;baseR.lng=p.lng}if(priv)baseR.pub=false;
-var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},baseR))}):[S.fdb.collection("reviews").add(baseR)];
+var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne au moins une ligue (ou crée-en une dans l’onglet Ligue).");return}
+var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
+var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
 Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low"};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
 var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
 if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
 var med=["🥇","🥈","🥉"];
-return h+G.map(function(x,i){var color=getRestoColor(x);return '<div class="card rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
-function leaveLeague(c){if(!confirm("Quitter la ligue « "+c+" » ?"))return;
-var idx=S.leagues.indexOf(c);if(idx>-1)S.leagues.splice(idx,1);
-if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}
-delete S.priv[c];
-if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});
-if(S.league===c)S.league=S.leagues[0]||"";
-save();render()}
+return h+G.map(function(x,i){return '<div class="card rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+dot(x)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
 function league(){
 var join='<div class="card"><input id="lg" placeholder="Code d’une ligue à créer ou rejoindre" autocapitalize="characters"><button class="btn" onclick="join()">Créer / rejoindre</button></div>';
 if(!S.leagues.length)return '<h2>Ma ligue</h2><div class="sub">Crée une ligue avec tes amis pour voir leurs avis et faire un classement du mois. Invente un code (ex : LES-GOURMANDS) et partage-le.</div>'+join;
@@ -252,9 +248,10 @@ var h='<div class="chips" style="margin:0 0 10px">'+S.leagues.map(function(c){re
 h+='<div class="seg"><button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button><button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button><button class="chip" onclick="share(\''+esc(S.league)+'\')">Inviter</button><button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button></div>';
 if(S.lv==="rank")return h+rank(L);
 return h+(L.length?L.map(function(x){return rc(x,true)}).join(""):'<div class="empty">Aucun avis dans cette ligue.<br>Note un resto : tes avis publics et ceux réservés à la ligue apparaîtront ici 🍕</div>')+'<h2>Rejoindre une autre ligue</h2>'+join}
+function leaveLeague(c){if(!confirm("Quitter la ligue « "+c+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";save();render()}
 function join(){var l=document.getElementById("lg").value.trim().toUpperCase().replace(/\s+/g,"-").replace(/[\/.]/g,"");if(!l){alert("Entre un code");return}pick(l)}
 function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);save();subL();S.tab="league";render()}
-function share(c){var t="Rejoins ma ligue resto ! Code : "+c;try{if(navigator.share){navigator.share({text:t});return}}catch(e){}
+function share(c){var t="Rejoins ma ligue sur Belly ! Code : "+c;try{if(navigator.share){navigator.share({text:t});return}}catch(e){}
 try{navigator.clipboard.writeText(t);alert("Copié : "+t)}catch(e){prompt("Copie ce message :",t)}}
 function openO(i){var o=S.hl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function settings(){var acc=S.user&&!S.user.isAnonymous,mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
@@ -281,9 +278,9 @@ function tgl(l,p){var k=keyOf(p),i=-1;l.forEach(function(x,j){if(keyOf(x)===k)i=
 function togL(){tgl(S.likes,S.sel)}
 function togW(){tgl(S.wish,S.sel)}
 function hp(p){return S.hl.push(p)-1}
-function pc(p,meta,bg,big){var col=getRestoColor(p);return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'"><span class="dot-badge" style="background:'+col+';position:absolute;top:10px;right:10px"></span><b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
+function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'">'+dot(p,'position:absolute;top:10px;right:10px')+'<b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
 function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<div class="sub">'+empty+'</div>'}
-function grid(l){return '<div class="gr">'+l.map(function(p){var col=getRestoColor(p);return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+';position:relative"><span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span><b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
+function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
@@ -293,9 +290,9 @@ return status()+'<div class="big">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas encore assez d’avis récents.")
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Tes amis n’ont pas encore noté de resto."):'<div class="card"><div class="sub">Rejoins une ligue pour voir les avis de tes amis.</div><button class="btn" onclick="go(\'league\')">Créer ou rejoindre une ligue</button></div>')
 +'<div class="sh">Nos recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Les meilleurs restos du mois apparaîtront ici.")}
-var PC=["#192A3A","#2C3E50","#3F5368","#52677F","#657B96"],PH=[130,100,80];
-function slot(i){var p=S.top[i];var col=p?getRestoColor(p):"";if(i<3)return '<div class="pod" style="background:'+PC[i]+';height:'+PH[i]+'px;position:relative" onclick="pickTop('+i+')">'+(p?'<span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span>':'')+'<div class="pn">'+(i+1)+'</div><div class="pl">'+(p?esc(p.n):'＋')+'</div></div>';
-return '<div class="pr" style="background:'+PC[i]+';position:relative" onclick="pickTop('+i+')">'+(p?'<span class="dot-badge" style="background:'+col+';position:absolute;top:10px;right:10px"></span>':'')+'<span class="pn" style="font-size:20px">'+(i+1)+'</span><span>'+(p?esc(p.n):'＋ Choisir un resto')+'</span></div>'}
+var PC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PH=[130,100,80];
+function slot(i){var p=S.top[i];if(i<3)return '<div class="pod" style="background:'+PC[i]+';height:'+PH[i]+'px" onclick="pickTop('+i+')"><div class="pn">'+(i+1)+'</div><div class="pl">'+(p?esc(p.n):'＋')+'</div></div>';
+return '<div class="pr" style="background:'+PC[i]+'" onclick="pickTop('+i+')"><span class="pn" style="font-size:20px">'+(i+1)+'</span><span>'+(p?esc(p.n):'＋ Choisir un resto')+'</span></div>'}
 function pickTop(i){var mr=groups(allv().filter(function(x){return x.uid===S.uid})).sort(function(a,b){return b.s/b.c-a.s/a.c});
 S.pkl=mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});
 document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:70vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Place n°'+(i+1)+'</div>'+(S.pkl.length?S.pkl.map(function(p,k){return '<button class="btn alt" style="margin-bottom:8px" onclick="setTop('+i+','+k+')">'+esc(p.n)+'</button>'}).join(""):'<div class="sub">Note d’abord quelques restos pour pouvoir les classer.</div>')+(S.top[i]?'<button class="btn alt" style="margin-bottom:8px" onclick="setTop('+i+',-1)">Retirer</button>':'')+'<button class="back" onclick="closeSheet()">Annuler</button></div></div>'}
@@ -303,8 +300,7 @@ function setTop(i,k){closeSheet();var t=S.top.slice();while(t.length<5)t.push(nu
 function editBio(){var b=prompt("Ta bio (160 caractères max)",S.bio||"");if(b===null)return;S.bio=b.trim().slice(0,160);save();render()}
 function agenda(mine){if(!mine.length)return '<div class="empty">Ton agenda est vide.<br>Chaque avis que tu publies s’y ajoute.</div>';var h="",cur="";
 mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
-var col=getRestoColor(x);
-h+='<div class="card" onclick="openO('+hp(pl(x))+')" style="display:flex;gap:12px;align-items:center;padding:12px"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+'<span class="dot-badge" style="background:'+col+'"></span></div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
+h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+dot(x)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
 function me(){if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
 var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()">⚙️</button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
@@ -312,9 +308,9 @@ h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À teste
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Ta liste est vide.<br>Ouvre la fiche d’un resto et appuie sur 🔖 À tester.</div>');
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien pour l’instant.</div>')}
-h+='<div class="card"><div class="av" style="background:'+(S.col||"#192A3A")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas encore de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">✏️ Modifier la bio</button><button class="back" style="display:block;margin:0 auto" onclick="newCol()">🎲 Changer ma couleur</button></div>';
+h+='<div class="card"><div class="av" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas encore de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">✏️ Modifier la bio</button><button class="back" style="display:block;margin:0 auto" onclick="newCol()">🎲 Changer ma couleur</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
-h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){var col=getRestoColor(x);return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+';position:relative"><span class="dot-badge" style="background:'+col+';position:absolute;top:6px;right:6px"></span><b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Tu n’as pas encore noté de resto.</div>');
+h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+'">'+dot(x,'position:absolute;top:6px;right:6px')+'<b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Tu n’as pas encore noté de resto.</div>');
 return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div>'}
 function loadv(){if(S.state==="error")return '<div class="card"><div class="resto">⚠️ Connexion impossible</div><div class="sub" style="margin:6px 0">'+esc(S.errMsg||"")+'</div>'+(location.hostname.indexOf("github.io")<0?'<div class="sub">Tu ouvres peut-être l’appli depuis un aperçu qui bloque les services externes. Ouvre-la depuis son adresse : https://4rb7vpvc8k-collab.github.io/ligue-resto</div>':'')+'<button class="btn" onclick="location.reload()">Réessayer</button></div>';return '<div class="empty">Chargement…</div>'}
 function welcome(){var up=S.wm==="up";
@@ -338,7 +334,7 @@ function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.d
 function delAcc(){if(!confirm("Supprimer définitivement ton compte ? Tes avis déjà publiés resteront affichés."))return;var u=firebase.auth().currentUser;
 S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();alert("Compte supprimé.");render()}).catch(function(e){alert(e&&e.code==="auth/requires-recent-login"?"Pour ta sécurité, déconnecte-toi, reconnecte-toi puis réessaie.":"Suppression impossible.")})}
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Il faut un pseudo");return}S.pseudo=p;save();S.pt="prof";S.tab="home";render()}
-function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});return a.filter(vis)}
+function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});var seen={};return a.filter(vis).filter(function(x){var k=x.uid+'|'+x.ts+'|'+(x.pid||x.resto);if(seen[k])return false;seen[k]=1;return true})}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
 function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=1;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";S.errMsg="chargement de "+u[i].split("/").pop();render()};document.head.appendChild(s)}
@@ -358,7 +354,3 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
-
-
-
-
