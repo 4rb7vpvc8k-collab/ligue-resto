@@ -21,7 +21,7 @@ h2{font-size:16px;margin:14px 0 8px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{background:var(--ac2);border-radius:5px;padding:5px 10px;font-size:13px;border:1px solid transparent;color:var(--tx);font-family:inherit}
 button.chip.on{border-color:var(--ac);background:var(--ac);color:#F2E4CC}
-input,textarea{width:100%;padding:11px;border-radius:5px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
+input,textarea,select{width:100%;padding:11px;border-radius:5px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
 textarea{min-height:70px;resize:vertical}
 .btn{width:100%;background:var(--ac);color:#F2E4CC;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
 .btn.alt{background:var(--ac2);color:var(--tx)}
@@ -71,12 +71,15 @@ function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
 var S={col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 
+// Filtres de recherche avancés
+var Sfilt={radius:2000,cats:[],sort:"desc"}; // radius en mètres par défaut (2km), sort: desc ou asc
+
 var CATS={
-  fast:{label:"Restauration rapide",color:"#D97706"},     // Orange
-  trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},// Bleu clair
-  trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},// Bleu foncé
-  bistro:{label:"Bistronomie",color:"#7C3AED"},              // Violet
-  gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}     // Doré / Or
+  fast:{label:"Restauration rapide",color:"#D97706"},
+  trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},
+  trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},
+  bistro:{label:"Bistronomie",color:"#7C3AED"},
+  gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}
 };
 
 function getRestoCat(name, type){
@@ -96,6 +99,19 @@ function openLegend(){
   document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🏷️ Catégories</div>'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<div class="row" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:10px"><span class="dot-badge" style="background:'+cat.color+'"></span><span>'+cat.label+'</span></div></div>'}).join("")+'<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>';
 }
 
+function openSearchFilters(){
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">⚙️ Filtres de recherche</div>'+
+    '<div class="sub">Rayon de recherche : <b>'+(Sfilt.radius>=1000?(Sfilt.radius/1000)+' km':Sfilt.radius+' m')+'</b></div>'+
+    '<input type="range" min="200" max="10000" step="200" value="'+Sfilt.radius+'" oninput="Sfilt.radius=parseInt(this.value);this.previousElementSibling.querySelector(\'b\').textContent=(Sfilt.radius>=1000?(Sfilt.radius/1000)+\' km\':Sfilt.radius+\' m\')">'+
+    '<div class="sub" style="margin-top:10px">Catégories (plusieurs choix) :</div>'+
+    '<div class="chips" style="margin-bottom:12px">'+Object.keys(CATS).map(function(k){var cat=CATS[k],on=Sfilt.cats.indexOf(k)>-1;return '<button class="chip '+(on?"on":"")+'" onclick="toggleFiltCat(\''+k+'\')"><span class="dot-badge" style="background:'+cat.color+';margin-right:4px"></span>'+cat.label+'</button>'}).join("")+'</div>'+
+    '<div class="sub">Classement par note :</div>'+
+    '<div class="seg"><button class="chip '+(Sfilt.sort==="desc"?"on":"")+'" onclick="Sfilt.sort=\'desc\';render()">Du meilleur au moins bon</button><button class="chip '+(Sfilt.sort==="asc"?"on":"")+'" onclick="Sfilt.sort=\'asc\';render()">Du moins bon au meilleur</button></div>'+
+    '<button class="btn" style="margin-top:12px" onclick="closeSheet();doSearch()">Appliquer les filtres</button></div></div>';
+}
+
+function toggleFiltCat(k){var i=Sfilt.cats.indexOf(k);if(i>-1)Sfilt.cats.splice(i,1);else Sfilt.cats.push(k);openSearchFilters()}
+
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -108,8 +124,8 @@ function rmove(e){if(S.rd)rset(e)}
 function rup(){S.rd=false}
 function lg(x){return x.leagues||(x.league?[x.league]:[])}
 function num(v){return typeof v==="number"&&isFinite(v)}
-function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
-function fmtD(k){return k<1?Math.round(k*1000)+" m":k.toFixed(1)+" km"}
+function dist(a,b,c,d){var R=6371000,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+function fmtD(k){return k<1000?Math.round(k)+" m":(k/1000).toFixed(1)+" km"}
 function go(t){S.tab=t;S.sel=null;S.focus=null;S.sub=null;render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
@@ -154,26 +170,110 @@ function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
 function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
-function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else p.cat=getRestoCat(p.n,p.type);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
-return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
-function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
+
+function sortP(arr, targetLat, targetLng, searchStr){
+  var g=gmap(allv());
+  var query=(searchStr||"").toLowerCase().trim();
+  var isStreetQuery = query.includes("rue") || query.includes("avenue") || query.includes("boulevard") || query.includes("bd") || query.includes("av");
+
+  arr.forEach(function(p){
+    var o=g[keyOf(p)];
+    p.c=o?o.c:0;
+    p.avg=o?o.s/o.c:-1;
+    if(o&&o.cat)p.cat=o.cat; else p.cat=getRestoCat(p.n,p.type);
+    
+    // Calcul de la distance par rapport au point recherché (ou position GPS)
+    var latRef = targetLat != null ? targetLat : (S.loc ? S.loc.lat : null);
+    var lngRef = targetLng != null ? targetLng : (S.loc ? S.loc.lng : null);
+    p.d = (latRef!=null && lngRef!=null && num(p.lat) && num(p.lng)) ? dist(latRef, lngRef, p.lat, p.lng) : null;
+  });
+
+  // Filtrer par catégorie si des filtres sont actifs dans Sfilt
+  if(Sfilt.cats.length > 0){
+    arr = arr.filter(function(p){return Sfilt.cats.indexOf(p.cat)>-1});
+  }
+
+  // Filtrer par rayon si un rayon géographique est appliqué
+  var latRef = targetLat != null ? targetLat : (S.loc ? S.loc.lat : null);
+  var lngRef = targetLng != null ? targetLng : (S.loc ? S.loc.lng : null);
+  if(latRef != null && lngRef != null && Sfilt.radius){
+    arr = arr.filter(function(p){return p.d == null || p.d <= Sfilt.radius});
+  }
+
+  return arr.sort(function(a,b){
+    // Priorité rue / avenue si cherché
+    if(query && isStreetQuery){
+      var aMatch = (a.a||"").toLowerCase().includes(query) ? 0 : 1;
+      var bMatch = (b.a||"").toLowerCase().includes(query) ? 0 : 1;
+      if(aMatch !== bMatch) return aMatch - bMatch;
+    }
+
+    // Tri par note (décroissante ou croissante selon Sfilt.sort)
+    var diff = Sfilt.sort === "asc" ? (a.avg - b.avg) : (b.avg - a.avg);
+    if(diff !== 0) return diff;
+
+    // Ensuite par nombre d'avis
+    if(b.c !== a.c) return b.c - a.c;
+
+    // Ensuite par distance la plus proche
+    if(a.d != null && b.d != null) return a.d - b.d;
+
+    return a.n.localeCompare(b.n);
+  });
+}
+
+function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();return [l1,l2].filter(Boolean).join(", ")||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cat:getRestoCat(n,x.type)}})}
-function nomRaw(q,bounded){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
-var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")+(bounded&&S.loc?"&bounded=1":"")}
+
+function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
 return fetch(u).then(function(r){return r.json()})}
-function isArea(x){return ["highway","place","boundary","building"].indexOf(x.category)>-1}
-function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
+
 function overpass(lat,lng,rad){var q='[out:json][timeout:20];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 60;';
 return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})
 }
-function searchPlaces(q){S.mapC=null;var p=nomRaw(q,!!S.loc);
-p=p.then(function(a){if(conv(a).length>=8||!S.loc)return a;return new Promise(function(r){setTimeout(r,1100)}).then(function(){return nomRaw(q,false)}).then(function(b){var seen={};a.forEach(function(x){seen[x.place_id]=1});return a.concat(b.filter(function(x){return!seen[x.place_id]}))})});
-return p.then(function(raw){var r=conv(raw);if(r.length>=3)return r;var ar=raw.filter(isArea)[0];if(!ar)return r;var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon);S.mapC={lat:lat,lng:lng};
-return overpass(lat,lng,(ar.category==="highway"||ar.category==="building")?400:900).then(function(o){var seen={};return r.concat(o).filter(function(x){if(seen[x.pid])return false;seen[x.pid]=1;return true})}).catch(function(){return r})})}
-function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;if(q.length<2){alert("Écris au moins 2 lettres");return}
-S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
-searchPlaces(q).then(function(r){S.sr=sortP(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
-function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
+function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
+
+function searchPlaces(q){
+  S.mapC=null;
+  return nomRaw(q).then(function(raw){
+    if(!raw || !raw.length){
+      // Si la recherche textuelle nominatim ne donne rien, on cherche via les restos de la commu ou Overpass
+      return [];
+    }
+    var top = raw[0];
+    var lat = parseFloat(top.lat), lng = parseFloat(top.lon);
+    var isAreaOrStreet = ["highway", "place", "boundary", "building", "amenity", "shop"].indexOf(top.category) > -1 || top.type === "postcode" || top.display_name.toLowerCase().includes("rue") || top.display_name.toLowerCase().includes("avenue") || top.display_name.toLowerCase().includes("boulevard");
+
+    S.mapC = {lat:lat, lng:lng};
+
+    // Si c'est une adresse, une rue, une ville ou un code postal : on récupère les restos autour de ce point selon le rayon
+    return overpass(lat, lng, Sfilt.radius).then(function(o){
+      var r = conv(raw);
+      var seen={};
+      var combined = r.concat(o).filter(function(x){if(seen[x.pid])return false;seen[x.pid]=1;return true});
+      return {results: combined, lat: lat, lng: lng};
+    });
+  }).catch(function(){
+    return {results:[], lat:null, lng:null};
+  });
+}
+
+function doSearch(){
+  var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
+  if(q.length<2){alert("Écris au moins 2 lettres");return}
+  S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
+
+  searchPlaces(q).then(function(resObj){
+    S.sr = sortP(resObj.results, resObj.lat, resObj.lng, q);
+    S.busy=false;
+    upRes();
+    if(S.tab==="map"){drawMarkers();fitResults()}
+  }).catch(function(){
+    S.busy=false;S.err=true;S.sr=[];upRes();
+  });
+}
+
+function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],15);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
@@ -186,17 +286,20 @@ function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
 function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée : les restos sont triés par note. Pour l’activer : Réglages de l’iPhone → Confidentialité → Service de localisation → Safari.</div>';
 return '<div class="card"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
-function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom du restaurant")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button></div>'}
-function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
-G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
+
+function sbar(ph){
+  return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom, rue, ville, code postal...")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button><button class="btn alt" onclick="openSearchFilters()" style="padding:11px 12px">⚙️</button></div>';
+}
+
+function commList(){if(S.sr!==null||S.busy)return "";var G=sortP(groups(allv()), null, null, "");S.gl=G;
 return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){var color=getRestoColor(o);return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar("Restaurant ou rue (ex : rue de Rivoli)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res"></div><div id="cl"></div>';}
+return status()+sbar("Nom, rue, ville ou code postal (ex: Lyon, 75011, Burger)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res"></div><div id="cl"></div>';}
 setTimeout(function(){if(S.tab==="map"&&!S.sel)upRes()},50);
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
 var color=getRestoColor(p);
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0];render()'+'\''+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
@@ -219,7 +322,7 @@ var h='<h2>J’ai mangé où ?</h2>'+locCard();
 if(S.manual)return h+'<div class="card"><div class="sub">Ton resto n’est pas dans la base ? Ajoute-le toi-même.</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse (ex : 12 rue Victor Hugo, Lyon)"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour à la recherche</button></div>';
 return h+sbar()+'<div id="res"></div>'}
 var p=f.place;
-return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+'<span class="dot-badge" style="background:'+CATS[f.cat].color+'"></span></div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie / Budget :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<button class="chip '+(f.cat===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()"><span class="dot-badge" style="background:'+cat.color+';margin-right:4px"></span>'+cat.label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';if(!S.form.tls||!S.form.tls.length)S.form.tls=S.league?[S.league]:[];render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Sélectionne une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(f.tls.indexOf(c) > -1 ? "on" : "")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
+return '<h2>J’ai mangé où ?</h2><div class="card"><div class="row"><div><div class="resto">'+esc(p.n)+'<span class="dot-badge" style="background:'+CATS[f.cat].color+'"></span></div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie / Budget :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){var cat=CATS[k];return '<button class="chip '+(f.cat===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()"><span class="dot-badge" style="background:'+cat.color+';margin-right:4px"></span>'+cat.label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis (honnête, on ne dira rien…)" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Tu as mangé…</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 En livraison</button></div><div class="sub">Colle des stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Qui peut voir cet avis ?</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';if(!S.form.tls||!S.form.tls.length)S.form.tls=S.league?[S.league]:[];render()">🔒 Mes ligues seulement</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Sélectionne une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(f.tls.indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Tu n’as pas encore de ligue. Crée-en une dans l’onglet Ligue.</div>'):'')+'<div style="height:6px"></div><button class="btn" onclick="send()">Publier mon avis</button>'}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
 var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug+(S.loc?":"+S.loc.lat.toFixed(2)+","+S.loc.lng.toFixed(2):""),n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined,cat:S.form.cat};S.manual=false;render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
@@ -232,7 +335,7 @@ if(num(p.lat)&&num(p.lng)){baseR.lat=p.lat;baseR.lng=p.lng}if(priv)baseR.pub=fal
 var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},baseR))}):[S.fdb.collection("reviews").add(baseR)];
 Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low"};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible, réessaie.")})}
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
-var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
+var G=sortP(groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})), null, null, "");
 var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
 if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
 var med=["🥇","🥈","🥉"];
