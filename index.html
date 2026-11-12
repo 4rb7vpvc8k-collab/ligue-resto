@@ -288,7 +288,7 @@ function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 fr.sort(function(a,b){return b.ts-a.ts});fr=fr.slice(0,12);
-var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c})[span_0](start_span)[span_0](end_span).slice(0,12);
+var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c})[span_1](start_span)[span_1](end_span).slice(0,12);
 return status()+'<div class="big">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas encore assez d’avis récents.")
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Tes amis n’ont pas encore noté de resto."):'<div class="card"><div class="sub">Rejoins une ligue pour voir les avis de tes amis.</div><button class="btn" onclick="go(\'league\')">Créer ou rejoindre une ligue</button></div>')
