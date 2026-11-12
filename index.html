@@ -223,8 +223,10 @@ function sortP(arr, targetLat, targetLng, searchStr){
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();return [l1,l2].filter(Boolean).join(", ")||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cat:getRestoCat(n,x.type)}})}
 
-function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
-return fetch(u).then(function(r){return r.json()})}
+function nomRaw(q){
+  var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&countrycodes=fr&q="+encodeURIComponent(q);
+  return fetch(u).then(function(r){return r.json()})
+}
 
 function overpass(lat,lng,rad){var q='[out:json][timeout:25];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 80;';
 return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})
@@ -239,9 +241,7 @@ function searchPlaces(q){
     var lat = parseFloat(top.lat), lng = parseFloat(top.lon);
     S.mapC = {lat:lat, lng:lng};
     
-    // Si c'est un code postal ou une ville, on élargit le rayon par défaut à 4km si le rayon demandé est petit
     var searchRad = Sfilt.radius;
-    var qLower = q.toLowerCase();
     var isPostalOrCity = /^\d{5}$/.test(q.trim()) || top.type === "city" || top.type === "administrative" || top.class === "boundary" || top.display_name.toLowerCase().includes("paris") || top.display_name.toLowerCase().includes("lyon");
     if(isPostalOrCity && searchRad < 4000) searchRad = 4000;
 
@@ -290,7 +290,7 @@ function sbar(ph){
 }
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=sortP(groups(allv()), null, null, "");S.gl=G;
-return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){var color=getRestoColor(o);return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
+return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){var color=getRestoColor(o);return '<div class="card" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'<span class="dot-badge" style="background:'+color+'"></span></div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>'}
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
 return status()+sbar("Nom, rue, ville ou code postal (ex: Lyon, 75011, Burger)")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">🔵 restos notés · ⚪ résultats de recherche · © OpenStreetMap</div>'+locCard()+'<div id="res"></div><div id="cl"></div>';}
@@ -432,7 +432,7 @@ var a=firebase.auth();if(!up){a.signInWithEmailAndPassword(e,p).catch(authErr);r
 var cu=a.currentUser,cr=firebase.auth.EmailAuthProvider.credential(e,p);
 (cu&&cu.isAnonymous?cu.linkWithCredential(cr).then(function(r){return r.user}):a.createUserWithEmailAndPassword(e,p).then(function(r){return r.user})).then(function(u){S.user=u;S.uid=u.uid;S.pseudo=n;S.col=newColor();S.profLoaded=true;S.guest=false;save();render()}).catch(authErr)}
 function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
-function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».", "auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
+function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
 alert(m[e&&e.code]||"Une erreur est survenue, réessaie.")}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
 function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
