@@ -71,8 +71,7 @@ function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
 var S={col:"",likes:[],wish:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[]};
 
-// Filtres de recherche avancés
-var Sfilt={radius:2000,cats:[],sort:"desc"}; // radius en mètres par défaut (2km), sort: desc ou asc
+var Sfilt={radius:2000,cats:[],sort:"desc"};
 
 var CATS={
   fast:{label:"Restauration rapide",color:"#D97706"},
@@ -182,18 +181,15 @@ function sortP(arr, targetLat, targetLng, searchStr){
     p.avg=o?o.s/o.c:-1;
     if(o&&o.cat)p.cat=o.cat; else p.cat=getRestoCat(p.n,p.type);
     
-    // Calcul de la distance par rapport au point recherché (ou position GPS)
     var latRef = targetLat != null ? targetLat : (S.loc ? S.loc.lat : null);
     var lngRef = targetLng != null ? targetLng : (S.loc ? S.loc.lng : null);
     p.d = (latRef!=null && lngRef!=null && num(p.lat) && num(p.lng)) ? dist(latRef, lngRef, p.lat, p.lng) : null;
   });
 
-  // Filtrer par catégorie si des filtres sont actifs dans Sfilt
   if(Sfilt.cats.length > 0){
     arr = arr.filter(function(p){return Sfilt.cats.indexOf(p.cat)>-1});
   }
 
-  // Filtrer par rayon si un rayon géographique est appliqué
   var latRef = targetLat != null ? targetLat : (S.loc ? S.loc.lat : null);
   var lngRef = targetLng != null ? targetLng : (S.loc ? S.loc.lng : null);
   if(latRef != null && lngRef != null && Sfilt.radius){
@@ -201,21 +197,17 @@ function sortP(arr, targetLat, targetLng, searchStr){
   }
 
   return arr.sort(function(a,b){
-    // Priorité rue / avenue si cherché
     if(query && isStreetQuery){
       var aMatch = (a.a||"").toLowerCase().includes(query) ? 0 : 1;
       var bMatch = (b.a||"").toLowerCase().includes(query) ? 0 : 1;
       if(aMatch !== bMatch) return aMatch - bMatch;
     }
 
-    // Tri par note (décroissante ou croissante selon Sfilt.sort)
     var diff = Sfilt.sort === "asc" ? (a.avg - b.avg) : (b.avg - a.avg);
     if(diff !== 0) return diff;
 
-    // Ensuite par nombre d'avis
     if(b.c !== a.c) return b.c - a.c;
 
-    // Ensuite par distance la plus proche
     if(a.d != null && b.d != null) return a.d - b.d;
 
     return a.n.localeCompare(b.n);
@@ -236,17 +228,10 @@ function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+
 function searchPlaces(q){
   S.mapC=null;
   return nomRaw(q).then(function(raw){
-    if(!raw || !raw.length){
-      // Si la recherche textuelle nominatim ne donne rien, on cherche via les restos de la commu ou Overpass
-      return [];
-    }
+    if(!raw || !raw.length){return {results:[], lat:null, lng:null};}
     var top = raw[0];
     var lat = parseFloat(top.lat), lng = parseFloat(top.lon);
-    var isAreaOrStreet = ["highway", "place", "boundary", "building", "amenity", "shop"].indexOf(top.category) > -1 || top.type === "postcode" || top.display_name.toLowerCase().includes("rue") || top.display_name.toLowerCase().includes("avenue") || top.display_name.toLowerCase().includes("boulevard");
-
     S.mapC = {lat:lat, lng:lng};
-
-    // Si c'est une adresse, une rue, une ville ou un code postal : on récupère les restos autour de ce point selon le rayon
     return overpass(lat, lng, Sfilt.radius).then(function(o){
       var r = conv(raw);
       var seen={};
@@ -299,7 +284,7 @@ return status()+sbar("Nom, rue, ville ou code postal (ex: Lyon, 75011, Burger)")
 setTimeout(function(){if(S.tab==="map"&&!S.sel)upRes()},50);
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
 var color=getRestoColor(p);
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0];render()'+'\''+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card"><div class="resto" style="font-size:20px">'+esc(p.n)+'<span class="dot-badge" style="background:'+color+'"></span></div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
