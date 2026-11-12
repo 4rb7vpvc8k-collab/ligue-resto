@@ -14,7 +14,7 @@ body{max-width:520px;margin:0 auto;padding:0 14px 90px}
 h2{font-size:16px;margin:14px 0 8px}
 .sub{color:var(--mut);font-size:13px;margin-bottom:8px}
 
-/* FORMES DE CARTES MOINS RONDES (STYLE RECTANGULAIRE / GÉOMÉTRIQUE) */
+/* FORMES DE CARTES GÉOMÉTRIQUES ET MOINS RONDES */
 .card{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .card.asym{border-radius:12px 4px 12px 4px}
 .card.strict{border-radius:4px}
@@ -31,10 +31,10 @@ textarea{min-height:70px;resize:vertical}
 .btn{width:100%;background:var(--ac);color:#192A3A;border:0;border-radius:4px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
 .btn.alt{background:var(--ac2);color:var(--tx)}
 
-/* BARRE DE NAVIGATION STYLE LETTERBOXD (ICÔNES VECTORIELLES MINIMALISTES) */
+/* BARRE DE NAVIGATION STYLE LETTERBOXD (ICÔNES VECTORIELLES FINES) */
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#192A3A;border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto}
-nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:rgba(244,241,233,.65);font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:rgba(244,241,233,.65);font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
+nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:#E5B83F;font-weight:700}
 
 .rate{display:flex;gap:4px;justify-content:center;margin:6px 0 12px}
@@ -45,24 +45,56 @@ nav button.on{color:#E5B83F;font-weight:700}
 .empty{text-align:center;color:var(--mut);padding:30px 10px}
 .code{font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;color:var(--ac);margin:6px 0}
 .tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:4px;background:var(--ac2)}
-.seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1;border-radius:4px}.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}.back{background:none;border:0;color:var(--acd);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit}
-#map{height:38vh;min-height:240px;border-radius:6px;border:1px solid var(--bd)}.dist{color:var(--acd);font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
+.seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1;border-radius:4px}
+.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}
+.back{background:none;border:0;color:var(--acd);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit;cursor:pointer}
+#map{height:38vh;min-height:240px;border-radius:6px;border:1px solid var(--bd)}
+.dist{color:var(--acd);font-weight:700}
+.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
 .st{display:inline-block;position:relative;margin-right:1px}.sb{color:var(--mut);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--ac)}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px}
+.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px;cursor:pointer}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end}
 .ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:12px 12px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
 .av{width:64px;height:64px;border-radius:6px;background:var(--ac);color:#192A3A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}.pc{flex:0 0 132px;scroll-snap-align:start}.pt{height:176px;border-radius:6px;color:#F4F1E9;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}.pt b{font-size:38px;line-height:1;position:absolute;top:10px;left:10px;opacity:.9}.pt small{font-size:13px;font-weight:700;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.45)}.pm{margin-top:6px;font-size:12px;color:var(--mut)}.pm .stars{font-size:13px;display:block}.big{font-size:32px;font-weight:900;margin:14px 0 0}.sh{margin:18px 0 8px;font-size:20px;font-weight:800}
-.tabs{display:flex;background:var(--ac2);border-radius:4px;padding:4px;margin:8px 0 12px}.tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit}.tabs button.on{background:var(--ac);color:#192A3A}.gear{background:none;border:0;font-size:26px;width:34px}
-.podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0}.pod{flex:1;border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px 4px;text-align:center;color:#192A3A;font-weight:700}.pn{font-size:28px;font-weight:900}.pl{font-size:12px;line-height:1.15;word-break:break-word}.pod2{display:flex;flex-direction:column;gap:8px}.pr{display:flex;align-items:center;gap:10px;border-radius:6px;padding:10px 12px;font-weight:700;color:#192A3A}
-.lr{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-top:1px solid var(--bd);font-size:17px}.lr b{color:var(--mut);font-weight:600}.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.gr .pt{height:auto;aspect-ratio:2/3;padding:6px}.gr .pt b{font-size:22px;top:6px;left:6px}.gr .pt small{font-size:10px}
-.mh{background:var(--ac2);padding:8px 14px;font-size:13px;letter-spacing:.1em;font-weight:700;margin:12px -14px 0}.dr{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)}.dd{width:46px;height:46px;border:1px solid var(--bd);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mut);flex:0 0 46px}.dt{width:46px;height:62px;border-radius:4px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}.di{flex:1;min-width:0}.tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
+.hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}
+.pc{flex:0 0 132px;scroll-snap-align:start}
+.pt{height:176px;border-radius:6px;color:#F4F1E9;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.pt b{font-size:38px;line-height:1;position:absolute;top:10px;left:10px;opacity:.9}
+.pt small{font-size:13px;font-weight:700;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.pm{margin-top:6px;font-size:12px;color:var(--mut)}
+.pm .stars{font-size:13px;display:block}
+.big{font-size:32px;font-weight:900;margin:14px 0 0}
+.sh{margin:18px 0 8px;font-size:20px;font-weight:800}
+.tabs{display:flex;background:var(--ac2);border-radius:4px;padding:4px;margin:8px 0 12px}
+.tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#192A3A}
+.gear{background:none;border:0;font-size:20px;width:34px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0}
+.pod{flex:1;border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px 4px;text-align:center;color:#192A3A;font-weight:700}
+.pn{font-size:28px;font-weight:900}
+.pl{font-size:12px;line-height:1.15;word-break:break-word}
+.pod2{display:flex;flex-direction:column;gap:8px}
+.pr{display:flex;align-items:center;gap:10px;border-radius:6px;padding:10px 12px;font-weight:700;color:#192A3A}
+.lr{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-top:1px solid var(--bd);font-size:17px;cursor:pointer}.lr b{color:var(--mut);font-weight:600}
+.gr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.gr .pt{height:auto;aspect-ratio:2/3;padding:6px}.gr .pt b{font-size:22px;top:6px;left:6px}.gr .pt small{font-size:10px}
+.mh{background:var(--ac2);padding:8px 14px;font-size:13px;letter-spacing:.1em;font-weight:700;margin:12px -14px 0}
+.dr{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.dd{width:46px;height:46px;border:1px solid var(--bd);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--mut);flex:0 0 46px}
+.dt{width:46px;height:62px;border-radius:4px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}
+.di{flex:1;min-width:0}
+.tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
 <body>
-<div class="hd"><div style="display:flex;justify-content:space-between;align-items:center"><h1>🍽️ Belly</h1><button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Catégorie</button></div><div id="hsub">Découvre et note les restos</div></div>
+<div class="hd">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h1>🍽️ Belly</h1>
+    <button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Catégorie</button>
+  </div>
+  <div id="hsub">Découvre et note les restos</div>
+</div>
 <div id="app"></div>
 <nav id="nav"></nav>
 <div id="sheet"></div>
@@ -106,13 +138,13 @@ if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
 function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
 if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
 
-/* ICÔNES VECTORIELLES STYLE LETTERBOXD POUR LA NAVIGATION */
+/* NAVIGATION AVEC ICÔNES VECTORIELLES FINES (STYLE LETTERBOXD) */
 function nav(){
 var T=[
   ["home", '<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>', "Accueil"],
   ["map", '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>', "Carte"],
   ["add", '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>', "Noter"],
-  ["league", '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>', "Ligue"],
+  ["league", '<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>', "Ligue"],
   ["me", '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>', "Profil"]
 ];
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')">'+t[1]+'<span>'+t[2]+'</span></button>'}).join("")}
@@ -197,7 +229,7 @@ function catChips(){return Object.keys(CATS).map(function(k){return '<button cla
 function sortChips(){return [["auto","Auto"],["best","Meilleures notes d’abord"],["worst","Moins bien notés d’abord"],["near","Plus proches d’abord"]].map(function(t){return '<button class="chip '+(S.filt.sort===t[0]?"on":"")+'" onclick="setSort(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")}
 function togFC(k){var a=S.filt.cats,i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.push(k);document.getElementById("fc").innerHTML=catChips()}
 function setSort(v){S.filt.sort=v;document.getElementById("fs").innerHTML=sortChips()}
-function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">⚙️ Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div class="sub">Catégories (plusieurs possibles, aucune = toutes) :</div><div class="chips" style="margin:0 0 12px" id="fc">'+catChips()+'</div><div class="sub">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
+function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2;margin-right:4px" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div class="sub">Catégories (plusieurs possibles, aucune = toutes) :</div><div class="chips" style="margin:0 0 12px" id="fc">'+catChips()+'</div><div class="sub">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
 function applyFilters(){closeSheet();if(S.sq)doSearch();else render()}
 function resetFilters(){S.filt={rad:500,cats:[],sort:"auto"};openFilters()}
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
@@ -212,7 +244,7 @@ function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
 function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée : les restos sont triés par note. Pour l’activer : Réglages de l’iPhone → Confidentialité → Service de localisation → Safari.</div>';
 return '<div class="card strict"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
-function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button><button class="btn alt" onclick="openFilters()">⚙️'+(filtOn()?'•':'')+'</button></div>'}
+function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()"><svg style="width:18px;height:18px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button><button class="btn alt" onclick="openFilters()"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>'+(filtOn()?'•':'')+'</button></div>'}
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
 G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
 return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card strict" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+(o.d!=null?'<span class="dist">'+fmtD(o.d)+'</span> · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier à le noter 🍕</div>')}
@@ -220,7 +252,7 @@ function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.
 function explore(){if(S.sel)return place(S.sel);
 return status()+sbar("Restaurant, adresse, rue, ville, code postal")+'<div id="map"></div><div class="sub" style="margin:4px 0 8px">Pastilles = catégorie (bouton 🏷️ en haut) · gros points = restos notés · © OpenStreetMap</div>'+locCard()+'<div id="res">'+resHTML()+'</div><div id="cl">'+commList()+'</div>'}
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0];return t[1]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
@@ -323,7 +355,7 @@ mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{m
 h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+dot(x)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
 function me(){if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()">⚙️</button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
+var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Ta liste est vide.<br>Ouvre la fiche d’un resto et appuie sur 🔖 À tester.</div>');
@@ -374,4 +406,5 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
+
 
