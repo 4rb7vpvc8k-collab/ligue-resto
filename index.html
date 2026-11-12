@@ -25,7 +25,7 @@ input,textarea,select{width:100%;padding:11px;border-radius:5px;border:1px solid
 textarea{min-height:70px;resize:vertical}
 .btn{width:100%;background:var(--ac);color:#F2E4CC;border:0;border-radius:5px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
 .btn.alt{background:var(--ac2);color:var(--tx)}
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto;z-index:40}
 nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:var(--mut);font-family:inherit}
 nav button span{display:block;font-size:22px}
 nav button.on{color:var(--acd);font-weight:700}
@@ -38,10 +38,16 @@ nav button.on{color:var(--acd);font-weight:700}
 .code{font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;color:var(--ac);margin:6px 0}
 .tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:99px;background:var(--ac2)}
 .seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1}.sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}.back{background:none;border:0;color:var(--acd);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit}
-#map{height:38vh;min-height:240px;border-radius:16px;border:1px solid var(--bd)}.dist{color:var(--acd);font-weight:700}.row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
+#map{height:38vh;min-height:240px;border-radius:16px;border:1px solid var(--bd);margin-bottom:10px;z-index:1}
+.dist{color:var(--acd);font-weight:700}
+.row2{display:flex;gap:6px;align-items:center}
+.row2 input{margin:0;flex:1}
+.row2 .btn{width:auto;padding:11px 12px;margin:0;white-space:nowrap;font-size:14px}
 .st{display:inline-block;position:relative;margin-right:1px}.sb{color:var(--mut);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--ac)}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px}.ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50;display:flex;align-items:flex-end}.ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:flex-end}
+.ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow-y:auto}
 .av{width:64px;height:64px;border-radius:50%;background:var(--ac);color:#F2E4CC;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
 .hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}.pc{flex:0 0 132px;scroll-snap-align:start}.pt{height:176px;border-radius:12px;color:#F2E4CC;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}.pt b{font-size:38px;line-height:1;position:absolute;top:10px;left:10px;opacity:.9}.pt small{font-size:13px;font-weight:700;line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.25)}.pm{margin-top:6px;font-size:12px;color:var(--mut)}.pm .stars{font-size:13px;display:block}.big{font-size:32px;font-weight:900;margin:14px 0 0}.sh{margin:18px 0 8px;font-size:20px;font-weight:800}
 .tabs{display:flex;background:var(--ac2);border-radius:6px;padding:4px;margin:8px 0 12px}.tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit}.tabs button.on{background:var(--ac);color:#F2E4CC}.gear{background:none;border:0;font-size:26px;width:34px}
@@ -220,7 +226,7 @@ function conv(list){return (list||[]).filter(function(x){return x.category==="am
 function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
 return fetch(u).then(function(r){return r.json()})}
 
-function overpass(lat,lng,rad){var q='[out:json][timeout:20];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 60;';
+function overpass(lat,lng,rad){var q='[out:json][timeout:25];nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"](around:'+rad+','+lat+','+lng+');out center 80;';
 return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})
 }
 function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
@@ -232,7 +238,14 @@ function searchPlaces(q){
     var top = raw[0];
     var lat = parseFloat(top.lat), lng = parseFloat(top.lon);
     S.mapC = {lat:lat, lng:lng};
-    return overpass(lat, lng, Sfilt.radius).then(function(o){
+    
+    // Si c'est un code postal ou une ville, on élargit le rayon par défaut à 4km si le rayon demandé est petit
+    var searchRad = Sfilt.radius;
+    var qLower = q.toLowerCase();
+    var isPostalOrCity = /^\d{5}$/.test(q.trim()) || top.type === "city" || top.type === "administrative" || top.class === "boundary" || top.display_name.toLowerCase().includes("paris") || top.display_name.toLowerCase().includes("lyon");
+    if(isPostalOrCity && searchRad < 4000) searchRad = 4000;
+
+    return overpass(lat, lng, searchRad).then(function(o){
       var r = conv(raw);
       var seen={};
       var combined = r.concat(o).filter(function(x){if(seen[x.pid])return false;seen[x.pid]=1;return true});
@@ -258,7 +271,7 @@ function doSearch(){
   });
 }
 
-function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],15);return}
+function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],14);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
@@ -273,7 +286,7 @@ function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">�
 return '<div class="card"><div class="sub">📍 Autorise ta position pour voir les restos les plus proches en premier.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
 
 function sbar(ph){
-  return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom, rue, ville, code postal...")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button><button class="btn alt" onclick="openSearchFilters()" style="padding:11px 12px">⚙️</button></div>';
+  return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Nom, rue, ville, code postal...")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔎</button><button class="btn alt" onclick="openSearchFilters()">⚙️ Trier</button></div>';
 }
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=sortP(groups(allv()), null, null, "");S.gl=G;
@@ -419,7 +432,7 @@ var a=firebase.auth();if(!up){a.signInWithEmailAndPassword(e,p).catch(authErr);r
 var cu=a.currentUser,cr=firebase.auth.EmailAuthProvider.credential(e,p);
 (cu&&cu.isAnonymous?cu.linkWithCredential(cr).then(function(r){return r.user}):a.createUserWithEmailAndPassword(e,p).then(function(r){return r.user})).then(function(u){S.user=u;S.uid=u.uid;S.pseudo=n;S.col=newColor();S.profLoaded=true;S.guest=false;save();render()}).catch(authErr)}
 function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
-function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
+function authErr(e){var m={"auth/email-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».", "auth/credential-already-in-use":"Cet e-mail a déjà un compte. Utilise « J’ai déjà un compte ».","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/invalid-email":"Adresse e-mail invalide.","auth/wrong-password":"E-mail ou mot de passe incorrect.","auth/invalid-credential":"E-mail ou mot de passe incorrect.","auth/user-not-found":"Aucun compte avec cet e-mail.","auth/operation-not-allowed":"La connexion par e-mail n’est pas activée dans Firebase.","auth/too-many-requests":"Trop d’essais, réessaie plus tard."};
 alert(m[e&&e.code]||"Une erreur est survenue, réessaie.")}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail d’abord");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️ (regarde aussi les spams)")}).catch(authErr)}
 function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
