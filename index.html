@@ -144,13 +144,15 @@ function bboxOf(x,span){var b=(x.boundingbox||[]).map(parseFloat);if(b.length<4|
 if(n-s>span){s=cy-span/2;n=cy+span/2}if(e-w>span){w=cx-span/2;e=cx+span/2}if(n-s<.01){s=cy-.005;n=cy+.005}if(e-w<.015){w=cx-.0075;e=cx+.0075}return [s,w,n,e]}
 var AM='nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"]';
 function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
-function ovPost(q){return fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)}).then(function(r){return r.json()}).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})}
-function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=S.filt.rad,c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.25):null;
+var OVS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
+function ovFetch(q,i){i=i||0;var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},9000);return fetch(OVS[i],{method:"POST",body:"data="+encodeURIComponent(q),signal:ctl.signal}).then(function(r){clearTimeout(t);if(r.ok===false)throw 0;return r.json()}).catch(function(e){clearTimeout(t);if(i+1<OVS.length)return ovFetch(q,i+1);throw e})}
+function ovPost(q){return ovFetch(q).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var n=e.tags.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(e.tags),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:e.tags.amenity,cat:getRestoCat(n,e.tags.amenity)}})})}
+function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=S.filt.rad,c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.12):null;
 S.smode=kind;S.sc=c;S.mapC=c;S.slabel=(ar.display_name||"").split(",").slice(0,2).join(",").trim();var pr;
-if(b)pr=ovPost('[out:json][timeout:30];'+AM+'('+b.join(",")+');out center 200;');
-else if(kind==="street"){var pre='[out:json][timeout:25];way["highway"]["name"="'+nm+'"](around:2500,'+lat+','+lng+')->.s;';
-pr=Promise.all([ovPost(pre+AM+'(around.s:'+R+');out center 150;'),ovPost(pre+AM+'(around.s:35);out center 150;').catch(function(){return[]})]).then(function(r){var on={};r[1].forEach(function(p){on[p.pid]=1});r[0].forEach(function(p){p.on=!!on[p.pid]});return r[0]})}
-else pr=ovPost('[out:json][timeout:25];'+AM+'(around:'+R+','+lat+','+lng+');out center 120;');
+if(b)pr=ovPost('[out:json][timeout:12];'+AM+'('+b.join(",")+');out center 120;');
+else if(kind==="street"){var pre='[out:json][timeout:12];way["highway"]["name"="'+nm+'"](around:1500,'+lat+','+lng+')->.s;';
+pr=ovPost(pre+AM+'(around.s:'+R+');out center 100;').then(function(r){r.forEach(function(p){p.on=strip(p.a).indexOf(strip(nm))>-1});return r})}
+else pr=ovPost('[out:json][timeout:12];'+AM+'(around:'+R+','+lat+','+lng+');out center 100;');
 return pr.catch(function(){return[]}).then(function(list){var seen={};list.forEach(function(p){seen[p.pid]=1});
 groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
 var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
