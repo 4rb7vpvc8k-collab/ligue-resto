@@ -152,7 +152,6 @@ var CUISINE_CAT_MAP={
   mexican:{label:"Mexicain"}
 };
 
-// DÉTECTION ÉTENDUE : Reconnaît automatiquement pizzeria/pasta/pizza comme italien
 function getRestoCat(name,type,priceLunch,cuisineTag){
   var n=(name||"").toLowerCase();
   var c=(cuisineTag||"").toLowerCase();
@@ -347,11 +346,14 @@ searchPlaces(q).then(function(r){
   S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
 })}
 
+// CLIQUER SUR UN STYLE/CUISINE DEPUIS L'ACCUEIL LANCE DIRECTEMENT LA RECHERCHE ET FILTRE
 function searchCat(catKey){
   S.sq = "";
   S.filt.cats = [catKey];
   S.filt.sort = "auto";
   S.smode = "poi";
+  S.tab = "map"; // Bascule instantanément sur l'onglet Carte/Recherche
+  
   var loc = S.loc || S.home;
   if(!loc) {
     if(navigator.geolocation) {
@@ -373,9 +375,8 @@ function searchCat(catKey){
 function executeCatSearch(loc) {
   S.sc = loc;
   S.mapC = loc;
-  S.tab = "map";
-  render();
-  areaSearch("city", {lat:loc.lat, lon:loc.lon, display_name:"Autour de moi"}).then(function(r){
+  render(); // Affiche la vue carte immédiatement avec le loader
+  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
     S.sr = applyFilt(r);
     S.busy = false;
     upRes();
@@ -457,7 +458,6 @@ function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[48.8566,2.3522],z=S.focus?16:S.loc?14:S.home?10:13;
 var m=S.map=L.map("map").setView(c,z);
-// FOND DE CARTE OPENSTREETMAP FRANCE (Gratuit, propre et sans clé)
 L.tileLayer("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",{maxZoom:20,attribution:"© OpenStreetMap France | © OpenStreetMap contributors"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
@@ -652,3 +652,4 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
+
