@@ -78,6 +78,7 @@ nav button.on{color:#E5B83F;font-weight:700}
 .tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit;cursor:pointer}
 .tabs button.on{background:var(--ac);color:#192A3A}
 .gear{background:none;border:0;font-size:20px;width:34px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.gear svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .podium{display:flex;align-items:flex-end;gap:8px;margin:8px 0}
 .pod{flex:1;border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:8px 4px;text-align:center;color:#192A3A;font-weight:700}
 .pn{font-size:28px;font-weight:900}
@@ -535,7 +536,7 @@ return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restauran
 function me(){if(S.viewUser)return userView(S.viewUser);
 if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()">⚙️</button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
+var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
@@ -577,7 +578,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
@@ -589,4 +590,3 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
-
