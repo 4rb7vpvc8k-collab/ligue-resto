@@ -65,6 +65,15 @@ nav button.on{color:#E5B83F;font-weight:700}
 .pm .stars{font-size:13px;display:block}
 .big{font-size:32px;font-weight:900;margin:14px 0 0}
 .sh{margin:18px 0 8px;font-size:20px;font-weight:800}
+
+/* Styles pour les carrousels de catégories avec de vraies images circulaires */
+.cat-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:4px 14px 10px}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-item{flex:0 0 76px;display:flex;flex-direction:column;align-items:center;cursor:pointer;scroll-snap-align:start}
+.cat-circle{width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid var(--bd);box-shadow:0 2px 6px rgba(0,0,0,0.08);background:#ddd}
+.cat-circle img{width:100%;height:100%;object-fit:cover}
+.cat-name{font-size:12px;font-weight:600;text-align:center;margin-top:5px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+
 .tabs{display:flex;background:var(--ac2);border-radius:4px;padding:4px;margin:8px 0 12px}
 .tabs button{flex:1;border:0;background:none;padding:10px 0;border-radius:4px;font-size:15px;font-weight:700;color:var(--mut);font-family:inherit;cursor:pointer}
 .tabs button.on{background:var(--ac);color:#192A3A}
@@ -103,25 +112,42 @@ var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Ch
 var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastrophe","🫗 Sauce partout","🏠 Livré chez le voisin","🤏 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","🧩 Commande incomplète","🤌 Chef’s kiss","🏃 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
-var CATS={fast:{label:"Restauration rapide",color:"#D97706"},trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},bistro:{label:"Bistronomie",color:"#7C3AED"},gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}};
 
-// Liste des catégories rapides pour la page d'accueil
-var HOME_CATS=[
-  {label:"🍔 Fast-food", q:"restauration rapide"},
-  {label:"🍕 Italien", q:"italien"},
-  {label:"🌮 Mexicain", q:"mexicain"},
-  {label:"🥩 Bistrot", q:"bistrot"},
-  {label:"⭐ Gastronomie", q:"gastronomie"},
-  {label:"🍣 Asiatique", q:"asiatique"}
+// Catégories styles/budgets avec de vraies photos de plats (URLs Unsplash stables)
+var STYLE_CATS=[
+  {label:"Restauration rapide", key:"fast", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"},
+  {label:"Petit budget", key:"trad_low", img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80"},
+  {label:"Grand budget", key:"trad_high", img:"https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80"},
+  {label:"Bistronomie", key:"bistro", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Haute gastronomie", key:"gastronomy", img:"https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=200&q=80"}
 ];
 
-function getRestoCat(name,type){var n=(name||"").toLowerCase();
-if(type==="fast_food"||/tacos|kebab|burger|fast|pizza|sandwich/.test(n))return "fast";
-if(/gastrono|michelin|palace|etoile|étoile/.test(n))return "gastronomy";
-if(/bistro|comptoir/.test(n))return "bistro";
-if(/gastronomique|chic|chateau|château/.test(n))return "trad_high";
-return "trad_low"}
-function getRestoColor(p){var c=p.cat||getRestoCat(p.n||p.resto,p.type);return (CATS[c]||CATS.trad_low).color}
+// Catégories du monde avec de vraies photos de plats
+var WORLD_CATS=[
+  {label:"Français", q:"francais", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Asiatique", q:"asiatique", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
+  {label:"Italien", q:"italien", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
+  {label:"Japonais", q:"japonais", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Oriental", q:"oriental", img:"https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80"},
+  {label:"Indien", q:"indien", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
+  {label:"Végétarien", q:"vegetarien", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
+  {label:"Mexicain", q:"mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+];
+
+var CATS={fast:{label:"Restauration rapide",color:"#D97706"},trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},bistro:{label:"Bistronomie",color:"#7C3AED"},gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}};
+
+// Règle de classification : Grand budget si menu midi > 25€ (ou mots-clés spécifiques)
+function getRestoCat(name,type,priceLunch){
+  var n=(name||"").toLowerCase();
+  if(priceLunch && priceLunch > 25) return "trad_high";
+  if(type==="fast_food"||/tacos|kebab|burger|fast|pizza|sandwich/.test(n))return "fast";
+  if(/gastrono|michelin|palace|etoile|étoile/.test(n))return "gastronomy";
+  if(/bistro|comptoir/.test(n))return "bistro";
+  if(/gastronomique|chic|chateau|château|grand /.test(n))return "trad_high";
+  return "trad_low"
+}
+
+function getRestoColor(p){var c=p.cat||getRestoCat(p.n||p.resto,p.type,p.priceLunch);return (CATS[c]||CATS.trad_low).color}
 function dot(p,st){return '<span class="dot-badge" style="background:'+getRestoColor(p)+(st?';'+st:'')+'"></span>'}
 function openLegend(){document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🏷️ Catégories</div>'+Object.keys(CATS).map(function(k){return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="dot-badge" style="background:'+CATS[k].color+'"></span><span>'+CATS[k].label+'</span></div>'}).join("")+'<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>'}
 var S={filt:{rad:500,cats:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null};
@@ -197,9 +223,9 @@ S.fdb.collection("reports").doc(u+"__"+rid).set({rid:rid,path:x._p?"leagues/"+x.
 function blk(i){var x=S.rvl[i];if(!x)return;if(!confirm("Bloquer "+(x.pseudo||"cet utilisateur")+" ?"))return;S.blocked.push({u:x.uid,n:x.pseudo||"?"});save();render()}
 function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
-function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
+function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
-function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
+function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type,p.priceLunch);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null});
 return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cat:getRestoCat(n,x.type)}})}
@@ -230,7 +256,7 @@ var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p
 function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";return nomRaw(q).then(function(raw){if(!raw||!raw.length)return[];var top=raw[0],kind=areaKind(top),poi=conv(raw);
 if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)})}
 
-function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){return !f.cats.length||f.cats.indexOf(p.cat||getRestoCat(p.n,p.type))>-1});sortP(a);
+function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){return !f.cats.length||f.cats.indexOf(p.cat||getRestoCat(p.n,p.type,p.priceLunch))>-1});sortP(a);
 a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
 var so=f.sort==="auto"?((m==="poi"&&S.loc)?"near":"best"):f.sort;
 function dd(p){return p.d!=null?p.d:(p.dc!=null?p.dc:1e9)}
@@ -243,12 +269,19 @@ function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
 searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
-// Fonction déclenchée lors du clic sur une catégorie depuis l'accueil
-function searchCat(q){
-  S.sq = q;
-  S.tab = "map";
-  render();
-  doSearch();
+// Recherche par style ou catégorie mondiale
+function searchCat(q, isStyle){
+  if(isStyle){
+    S.filt.cats = [q];
+    S.tab = "map";
+    render();
+    if(S.sq) doSearch();
+  } else {
+    S.sq = q;
+    S.tab = "map";
+    render();
+    doSearch();
+  }
 }
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
@@ -273,13 +306,12 @@ if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé pour « '+esc(S.sq)+'
 h+=S.sr.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 
-function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type);render()}else{S.sel=p;render()}}
+function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch);render()}else{S.sel=p;render()}}
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
 function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée.</div>';
 return '<div class="card strict"><div class="sub">📍 Autorise ta position pour voir les restos proches.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
 
-// Nouveau logo filtre (entonnoir/sliders) pour remplacer l'ancienne icône de paramètre
 function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()" title="Filtres"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>'+(filtOn()?'•':'')+'</button></div>'}
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
@@ -327,7 +359,7 @@ function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion.");return}
 var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne une ligue.");return}
-var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
 Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low"};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible.")})}
@@ -370,8 +402,8 @@ function colOf(x){return x.col||hashColor(String(x.uid||x.pseudo||"?"))}
 function newCol(){S.col=newColor();save();render()}
 function tl(n){return 'background:'+hashColor(n||"?")}
 function ini(n){return esc(((n||"").replace(/[^A-Za-zÀ-ÿ0-9 ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(function(w){return w.charAt(0).toUpperCase()}).join(""))||"🍽️")}
-function pl(x){var o={pid:x.pid,n:x.resto,a:x.addr||"",cat:x.cat||getRestoCat(x.resto)};if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}return o}
-function cp(p){var o={pid:p.pid||("n:"+p.n.toLowerCase().trim()),n:p.n,a:p.a||"",cat:p.cat||getRestoCat(p.n)};if(num(p.lat)&&num(p.lng)){o.lat=p.lat;o.lng=p.lng}return o}
+function pl(x){var o={pid:x.pid,n:x.resto,a:x.addr||"",cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch)};if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}return o}
+function cp(p){var o={pid:p.pid||("n:"+p.n.toLowerCase().trim()),n:p.n,a:p.a||"",cat:p.cat||getRestoCat(p.n,p.type,p.priceLunch)};if(num(p.lat)&&num(p.lng)){o.lat=p.lat;o.lng=p.lng}return o}
 function has(l,p){var k=keyOf(p);return l.some(function(x){return keyOf(x)===k})}
 function tgl(l,p){var k=keyOf(p),i=-1;l.forEach(function(x,j){if(keyOf(x)===k)i=j});if(i>-1)l.splice(i,1);else l.unshift(cp(p));save();render()}
 function togL(){tgl(S.likes,S.sel)}
@@ -391,16 +423,22 @@ function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 fr.sort(function(a,b){return b.ts-a.ts});fr=fr.slice(0,12);
-var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c})
+var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 
-// Affichage des catégories de restaurants sur la page d'accueil
-var catChipsHTML = '<div class="sh">Explorer par catégorie</div><div class="chips" style="margin-bottom:14px">' +
-  HOME_CATS.map(function(c){
-    return '<button class="chip" onclick="searchCat(\''+c.q+'\')" style="font-weight:600;padding:8px 12px">'+c.label+'</button>';
+// Ligne 1 : Styles / Budgets
+var stylesHtml = '<div class="sh">Styles & Budgets</div><div class="cat-scroll">' +
+  STYLE_CATS.map(function(c){
+    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\', true)"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
   }).join("") + '</div>';
 
-return status() + catChipsHTML 
-+'<div class="big">Resto du moment</div>'
+// Ligne 2 : Catégories du monde
+var worldHtml = '<div class="sh" style="margin-top:10px">Cuisine du monde</div><div class="cat-scroll">' +
+  WORLD_CATS.map(function(c){
+    return '<div class="cat-item" onclick="searchCat(\''+c.q+'\', false)"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+  }).join("") + '</div>';
+
+return status() + stylesHtml + worldHtml
++'<div class="big" style="margin-top:20px">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Aucun avis d'amis."):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
 +'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
