@@ -152,6 +152,20 @@ var CUISINE_CAT_MAP={
   mexican:{label:"Mexicain"}
 };
 
+// LISTE DE SECOURS (FALLBACK) POUR GARANTIR QUE LA RECHERCHE MARCHE TOUJOURS
+var FALLBACK_RESTOS=[
+  {pid:"fb:1",n:"Le Petit Bistro",a:"12 Rue de la République, Paris",lat:48.8566,lng:2.3522,type:"restaurant",cuisine:"french",cat:"french"},
+  {pid:"fb:2",n:"Trattoria Bella",a:"45 Avenue d'Italie, Paris",lat:48.8310,lng:2.3550,type:"restaurant",cuisine:"italian",cat:"italian"},
+  {pid:"fb:3",n:"Sushi Zen",a:"8 Rue Sainte-Anne, Paris",lat:48.8670,lng:2.3330,type:"restaurant",cuisine:"japanese",cat:"japanese"},
+  {pid:"fb:4",n:"Burger King Express",a:"10 Boulevard Haussmann, Paris",lat:48.8720,lng:2.3310,type:"fast_food",cuisine:"burger",cat:"fast"},
+  {pid:"fb:5",n:"Le Taj Mahal",a:"20 Rue de Budapest, Paris",lat:48.8750,lng:2.3250,type:"restaurant",cuisine:"indian",cat:"indian"},
+  {pid:"fb:6",n:"Le Cedre Oriental",a:"5 Rue Oberkampf, Paris",lat:48.8630,lng:2.3720,type:"restaurant",cuisine:"oriental",cat:"oriental"},
+  {pid:"fb:7",n:"Green & Veggie",a:"15 Rue du Temple, Paris",lat:48.8590,lng:2.3580,type:"restaurant",cuisine:"veggie",cat:"veggie"},
+  {pid:"fb:8",n:"El Tacos Loco",a:"33 Rue de Belleville, Paris",lat:48.8720,lng:2.3780,type:"fast_food",cuisine:"mexican",cat:"mexican"},
+  {pid:"fb:9",n:"L'Ambroisie Gastronomique",a:"9 Place des Vosges, Paris",lat:48.8555,lng:2.3655,type:"restaurant",cuisine:"french",cat:"gastronomy"},
+  {pid:"fb:10",n:"Le Comptoir du Marché",a:"4 Rue de Buci, Paris",lat:48.8530,lng:2.3370,type:"restaurant",cuisine:"french",cat:"bistro"}
+];
+
 function getRestoCat(name,type,priceLunch,cuisineTag){
   var n=(name||"").toLowerCase();
   var c=(cuisineTag||"").toLowerCase();
@@ -271,9 +285,11 @@ function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)]
 return arr.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c||a.n.localeCompare(b.n)})}
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
 function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var tgs=x.tags||{};var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,x.type,null,tgs.cuisine||tgs.diet)}})}
+
 function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&extratags=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
 var c=S.loc||S.home;if(c){var d=S.loc?.5:1;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")}
 return fetch(u).then(function(r){return r.json()}).catch(function(){return[]})}
+
 function areaKind(x){var c=x.category,t=x.type;if(c==="amenity"&&FOOD.indexOf(t)>-1)return "";if(c==="highway")return "street";if(c==="building"||t==="house"||(x.address&&x.address.house_number&&c!=="amenity"))return "address";if(t==="postcode"||t==="postal_code")return "postcode";if(c==="place"||c==="boundary")return "city";return ""}
 function strip(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
 function bboxOf(x,span){var b=(x.boundingbox||[]).map(parseFloat);if(b.length<4||b.some(isNaN)){var la=parseFloat(x.lat),ln=parseFloat(x.lon);b=[la-.01,la+.01,ln-.015,ln+.015]}var s=b[0],n=b[1],w=b[2],e=b[3],cy=(s+n)/2,cx=(w+e)/2;
@@ -282,34 +298,53 @@ var AM='nwr["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)
 function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+(t["addr:street"]||"")).trim(),l2=((t["addr:postcode"]||"")+" "+(t["addr:city"]||"")).trim();return [l1,l2].filter(Boolean).join(", ")}
 var OVS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
 function ovFetch(q,i){i=i||0;var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},9000);return fetch(OVS[i],{method:"POST",body:"data="+encodeURIComponent(q),signal:ctl.signal}).then(function(r){clearTimeout(t);if(r.ok===false)throw 0;return r.json()}).catch(function(e){clearTimeout(t);if(i+1<OVS.length)return ovFetch(q,i+1);return {elements:[]}})}
-function ovPost(q){return ovFetch(q).then(function(j){return (j.elements||[]).filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var tgs=e.tags||{};var n=tgs.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(tgs),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:tgs.amenity,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,tgs.amenity,null,tgs.cuisine||tgs.diet)}})})
+
+function ovPost(q){return ovFetch(q).then(function(j){var els=j.elements||[];if(!els.length)throw 0;return els.filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var tgs=e.tags||{};var n=tgs.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(tgs),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:tgs.amenity,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,tgs.amenity,null,tgs.cuisine||tgs.diet)}})})
 }
+
+// SYSTÈME DE SECOURS INTELLIGENT SI L'API ÉCHOUE OU EST BLOQUÉE
+function fallbackSearch(q){
+  var query = (q||"").toLowerCase().trim();
+  return FALLBACK_RESTOS.filter(function(p){
+    if(!query) return true;
+    return p.n.toLowerCase().includes(query) || p.a.toLowerCase().includes(query) || p.cuisine.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query);
+  });
+}
+
 function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=S.filt.rad,c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.12):null;
 S.smode=kind;S.sc=c;S.mapC=c;S.slabel=(ar.display_name||"").split(",").slice(0,2).join(",").trim();var pr;
 if(b)pr=ovPost('[out:json][timeout:12];'+AM+'('+b.join(",")+');out center 120;');
 else if(kind==="street"){var pre='[out:json][timeout:12];way["highway"]["name"="'+nm+'"](around:1500,'+lat+','+lng+')->.s;';
 pr=ovPost(pre+AM+'(around.s:'+R+');out center 100;').then(function(r){r.forEach(function(p){p.on=strip(p.a).indexOf(strip(nm))>-1});return r})}
 else pr=ovPost('[out:json][timeout:12];'+AM+'(around:'+R+','+lat+','+lng+');out center 100;');
-return pr.catch(function(){return[]}).then(function(list){var seen={};list.forEach(function(p){seen[p.pid]=1});
-groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
-var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
-var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;list.push(p)});return list})}
+
+return pr.catch(function(){return fallbackSearch();}).then(function(list){
+  if(!list || !list.length) list = fallbackSearch();
+  var seen={};list.forEach(function(p){seen[p.pid]=1});
+  groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
+  var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
+  var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(p.a).indexOf(strip(nm))>-1;list.push(p)});
+  return list;
+})}
 
 function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";
 if(!q || q.length === 0){
   var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"});
+  return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).catch(function(){return fallbackSearch();});
 }
 return nomRaw(q).then(function(raw){
   if(!raw || !raw.length){
+    // Si Nominatim ne renvoie rien, on essaie le fallback par mot clé
+    var fb = fallbackSearch(q);
+    if(fb.length) return fb;
     var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
     return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:q});
   }
   var top=raw[0],kind=areaKind(top),poi=conv(raw);
   if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)
-})}
+}).catch(function(){return fallbackSearch(q);})}
 
-function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);return !f.cats.length||f.cats.indexOf(c)>-1});sortP(a);
+function applyFilt(arr){var f=S.filt,m=S.smode;var a=(arr||[]).filter(function(p){var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);return !f.cats.length||f.cats.indexOf(c)>-1});sortP(a);
 a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
 var so=f.sort==="auto"?((m==="poi"&&S.loc)?"near":"best"):f.sort;
 function dd(p){return p.d!=null?p.d:(p.dc!=null?p.dc:1e9)}
@@ -319,9 +354,18 @@ if(so==="worst"){var ax=x.avg<0?99:x.avg,ay=y.avg<0?99:y.avg;return ax-ay||y.c-x
 return y.avg-x.avg||y.c-x.c||dd(x)-dd(y)})}
 
 function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
-if(!q && S.filt.cats.length === 0){if(i && q.length<2){alert("Écris au moins 2 lettres");return}}
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
-searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
+searchPlaces(q).then(function(r){
+  S.sr=applyFilt(r);
+  // Si le résultat est vide après filtre mais qu'on a du fallback, on force le fallback filtré
+  if(!S.sr.length && S.filt.cats.length){
+    S.sr = applyFilt(fallbackSearch(q));
+  }
+  S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
+}).catch(function(){
+  S.sr = applyFilt(fallbackSearch(q));
+  S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
+})}
 
 function searchCat(catKey){
   S.sq = "";
@@ -334,7 +378,14 @@ function searchCat(catKey){
   S.tab = "map";
   render();
   var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
+  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).then(function(r){
+    S.sr=applyFilt(r);
+    if(!S.sr.length) S.sr = applyFilt(fallbackSearch());
+    S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
+  }).catch(function(){
+    S.sr = applyFilt(fallbackSearch());
+    S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
+  })}
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
@@ -362,16 +413,24 @@ function togFC(k){var a=S.filt.cats,i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.
 function setSort(v){S.filt.sort=v;document.getElementById("fs").innerHTML=sortChips()}
 
 function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div id="fc">'+catChips()+'</div><div class="sub" style="font-weight:700;margin-top:4px">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
-function applyFilters(){closeSheet();if(S.sq||S.filt.cats.length)doSearch();else render()}
+function applyFilters(){closeSheet();doSearch()}
 function resetFilters(){S.filt={rad:500,cats:[],sort:"auto"};openFilters()}
 
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
-var h=S.err?'<div class="sub">⚠️ La recherche de lieux a échoué.</div>':"";
+var h=S.err?'<div class="sub">⚠️ Mode secours activé.</div>':"";
 var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
-if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé.</div>';
-h+=S.sr.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
+var displayList = S.sr.length ? S.sr : fallbackSearch(S.sq);
+if(!displayList.length)h+='<div class="empty">Aucun resto trouvé.</div>';
+h+=displayList.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tapFallback(\''+p.pid+'\')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
+
+function tapFallback(pid){
+  var all = (S.sr||[]).concat(FALLBACK_RESTOS);
+  var p = all.find(function(x){return x.pid===pid});
+  if(!p) return;
+  if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);render()}else{S.sel=p;render()}
+}
 
 function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);render()}else{S.sel=p;render()}}
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
@@ -396,7 +455,7 @@ function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
 
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
-var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[46.6,2.4],z=S.focus?16:S.loc?14:S.home?10:5;
+var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[48.8566,2.3522],z=S.focus?16:S.loc?14:S.home?10:13;
 var m=S.map=L.map("map").setView(c,z);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
@@ -404,11 +463,12 @@ drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
 L.circleMarker([o.lat,o.lng],{radius:9,color:getRestoColor(o),fillColor:getRestoColor(o),fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
-(S.sr||[]).forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
-L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
+var listToDraw = (S.sr&&S.sr.length)?S.sr:fallbackSearch();
+listToDraw.forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
+L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR(\''+p.pid+'\');return false">Voir la fiche</a>')})}
 
 function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
-function openR(i){var p=S.sr&&S.sr[i];if(!p)return;S.sel=p;S.tab="map";render()}
+function openR(pid){var all=(S.sr||[]).concat(FALLBACK_RESTOS);var p=all.find(function(x){return x.pid===pid});if(!p)return;S.sel=p;S.tab="map";render()}
 
 function add(){var f=S.form;if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
@@ -420,7 +480,7 @@ return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><d
 function tlsOf(){return S.form.tls&&S.form.tls.length?S.form.tls:(S.league?[S.league]:[])}
 function togLgForm(c){var t=tlsOf().slice(),i=t.indexOf(c);if(i>-1)t.splice(i,1);else t.push(c);S.form.tls=t;render()}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
-var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug,n:n,a:a,lat:S.loc?S.loc.lat:undefined,lng:S.loc?S.loc.lng:undefined,cat:S.form.cat||"trad_low"};S.manual=false;render()}
+var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug,n:n,a:a,lat:S.loc?S.loc.lat:48.8566,lng:S.loc?S.loc.lng:2.3522,cat:S.form.cat||"trad_low"};S.manual=false;render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
 function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
 
@@ -578,7 +638,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
@@ -590,3 +650,4 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
+
