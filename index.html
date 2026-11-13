@@ -377,9 +377,12 @@ function executeCatSearch(loc) {
   S.sc = loc;
   S.mapC = loc;
   S.busy = true;
-  render();
+  render(); // Affiche la vue carte avec le loader
   
-  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
+  // On force une recherche large sur la zone ou par défaut sur Paris si besoin
+  var searchLoc = loc || {lat: 48.8566, lng: 2.3522};
+  
+  areaSearch("city", {lat: searchLoc.lat, lon: searchLoc.lng, display_name: "Autour de moi"}).then(function(r){
     S.sr = applyFilt(r);
     S.busy = false;
     upRes();
@@ -391,6 +394,7 @@ function executeCatSearch(loc) {
     if(S.tab === "map") { drawMarkers(); fitResults(); }
   });
 }
+
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],15);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:15,padding:[24,24]})}catch(e){}}
