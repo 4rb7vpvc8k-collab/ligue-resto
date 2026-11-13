@@ -152,26 +152,16 @@ var CUISINE_CAT_MAP={
   mexican:{label:"Mexicain"}
 };
 
-var FALLBACK_RESTOS=[
-  {pid:"fb:1",n:"Le Petit Bistro",a:"12 Rue de la République, Paris",lat:48.8566,lng:2.3522,type:"restaurant",cuisine:"french",cat:"french"},
-  {pid:"fb:2",n:"Trattoria Bella",a:"45 Avenue d'Italie, Paris",lat:48.8310,lng:2.3550,type:"restaurant",cuisine:"italian",cat:"italian"},
-  {pid:"fb:3",n:"Sushi Zen",a:"8 Rue Sainte-Anne, Paris",lat:48.8670,lng:2.3330,type:"restaurant",cuisine:"japanese",cat:"japanese"},
-  {pid:"fb:4",n:"Burger King Express",a:"10 Boulevard Haussmann, Paris",lat:48.8720,lng:2.3310,type:"fast_food",cuisine:"burger",cat:"fast"},
-  {pid:"fb:5",n:"Le Taj Mahal",a:"20 Rue de Budapest, Paris",lat:48.8750,lng:2.3250,type:"restaurant",cuisine:"indian",cat:"indian"},
-  {pid:"fb:6",n:"Le Cedre Oriental",a:"5 Rue Oberkampf, Paris",lat:48.8630,lng:2.3720,type:"restaurant",cuisine:"oriental",cat:"oriental"},
-  {pid:"fb:7",n:"Green & Veggie",a:"15 Rue du Temple, Paris",lat:48.8590,lng:2.3580,type:"restaurant",cuisine:"veggie",cat:"veggie"},
-  {pid:"fb:8",n:"El Tacos Loco",a:"33 Rue de Belleville, Paris",lat:48.8720,lng:2.3780,type:"fast_food",cuisine:"mexican",cat:"mexican"},
-  {pid:"fb:9",n:"L'Ambroisie Gastronomique",a:"9 Place des Vosges, Paris",lat:48.8555,lng:2.3655,type:"restaurant",cuisine:"french",cat:"gastronomy"},
-  {pid:"fb:10",n:"Le Comptoir du Marché",a:"4 Rue de Buci, Paris",lat:48.8530,lng:2.3370,type:"restaurant",cuisine:"french",cat:"bistro"}
-];
+var FALLBACK_RESTOS=[];
 
+// AMÉLIORATION DE LA DÉTECTION (détecte pizza/trattoria/pasta comme italien automatiquement)
 function getRestoCat(name,type,priceLunch,cuisineTag){
   var n=(name||"").toLowerCase();
   var c=(cuisineTag||"").toLowerCase();
   
+  if(c.includes("ital") || n.includes("pizza") || n.includes("trattoria") || n.includes("pizzeria") || n.includes("pasta") || n.includes("osteria")) return "italian";
   if(c.includes("fran") || n.includes("bistrot français") || n.includes("brasserie")) return "french";
   if(c.includes("jap") || n.includes("sushi") || n.includes("ramen")) return "japanese";
-  if(c.includes("ital") || n.includes("pizzeria") || n.includes("trattoria")) return "italian";
   if(c.includes("asiat") || c.includes("chinois") || c.includes("thaï") || n.includes("wok")) return "asian";
   if(c.includes("orient") || c.includes("couscous") || c.includes("tajine")) return "oriental";
   if(c.includes("indi") || c.includes("curry")) return "indian";
@@ -293,7 +283,6 @@ return arr.sort(function(a,b){
     var ax=a.avg<0?99:a.avg, ay=b.avg<0?99:b.avg;
     return ax-ay || ((a.d!=null?a.d:0)-(b.d!=null?b.d:0));
   }
-  // Mode auto ou best : Priorité à la meilleure note, puis au plus proche
   if(b.avg !== a.avg) return b.avg - a.avg;
   function dxy(x){return x.d!=null?x.d:(x.dc!=null?x.dc:1e9)}
   return dxy(a) - dxy(b);
@@ -318,45 +307,34 @@ function ovFetch(q,i){i=i||0;var ctl=new AbortController(),t=setTimeout(function
 function ovPost(q){return ovFetch(q).then(function(j){var els=j.elements||[];if(!els.length)throw 0;return els.filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var tgs=e.tags||{};var n=tgs.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(tgs),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:tgs.amenity,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,tgs.amenity,null,tgs.cuisine||tgs.diet)}})})
 }
 
-function fallbackSearch(q){
-  var query = (q||"").toLowerCase().trim();
-  return FALLBACK_RESTOS.filter(function(p){
-    if(!query) return true;
-    return p.n.toLowerCase().includes(query) || p.a.toLowerCase().includes(query) || p.cuisine.toLowerCase().includes(query) || p.cat.toLowerCase().includes(query);
-  });
-}
-
 function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=Math.max(S.filt.rad, 3000),c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.15):null;
 S.smode=kind;S.sc=c;S.mapC=c;S.slabel=(ar.display_name||"").split(",").slice(0,2).join(",").trim();var pr;
-if(b)pr=ovPost('[out:json][timeout:15];'+AM+'('+b.join(",")+');out center 200;');
+if(b)pr=ovPost('[out:json][timeout:15];'+AM+'('+b.join(",")+');out center 300;');
 else if(kind==="street"){var pre='[out:json][timeout:15];way["highway"]["name"="'+nm+'"](around:2500,'+lat+','+lng+')->.s;';
-pr=ovPost(pre+AM+'(around.s:'+R+');out center 150;').then(function(r){r.forEach(function(p){p.on=strip(p.a).indexOf(strip(nm))>-1});return r})}
-else pr=ovPost('[out:json][timeout:15];'+AM+'(around:'+R+','+lat+','+lng+');out center 150;');
+pr=ovPost(pre+AM+'(around.s:'+R+');out center 200;').then(function(r){r.forEach(function(p){p.on=strip(p.a).indexOf(strip(nm))>-1});return r})}
+else pr=ovPost('[out:json][timeout:15];'+AM+'(around:'+R+','+lat+','+lng+');out center 200;');
 
-return pr.catch(function(){return fallbackSearch();}).then(function(list){
-  if(!list || !list.length) list = fallbackSearch();
-  var seen={};list.forEach(function(p){seen[p.pid]=1});
+return pr.catch(function(){return [];}).then(function(list){
+  var seen={};(list||[]).forEach(function(p){seen[p.pid]=1});
   groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
   var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
-  var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;list.push(p)});
-  return list;
+  var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;(list||(list=[])).push(p)});
+  return list||[];
 })}
 
 function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";
 if(!q || q.length === 0){
   var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).catch(function(){return fallbackSearch();});
+  return areaSearch("city", {lat:loc.lat, lon:loc.lon || loc.lng, display_name:"Zone actuelle"}).catch(function(){return [];});
 }
 return nomRaw(q).then(function(raw){
   if(!raw || !raw.length){
-    var fb = fallbackSearch(q);
-    if(fb.length) return fb;
     var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
     return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:q});
   }
   var top=raw[0],kind=areaKind(top),poi=conv(raw);
   if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)
-}).catch(function(){return fallbackSearch(q);})}
+}).catch(function(){return [];})}
 
 function applyFilt(arr){var f=S.filt,m=S.smode;var a=(arr||[]).filter(function(p){var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);return !f.cats.length||f.cats.indexOf(c)>-1});sortP(a);
 a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
@@ -366,35 +344,54 @@ function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
 searchPlaces(q).then(function(r){
   S.sr=applyFilt(r);
-  if(!S.sr.length && S.filt.cats.length){
-    S.sr = applyFilt(fallbackSearch(q));
-  }
   S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
 }).catch(function(){
-  S.sr = applyFilt(fallbackSearch(q));
+  S.sr=[];
   S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
 })}
 
-// FONCTION CORRIGÉE : Au clic sur une catégorie depuis l'accueil, applique le filtre et lance direct la recherche
+// CORRIGÉ : Lancement direct et automatique avec géolocalisation ou position enregistrée
 function searchCat(catKey){
   S.sq = "";
   S.filt.cats = [catKey];
   S.filt.sort = "auto";
   S.smode = "poi";
-  S.sc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  S.slabel = "";
+  var loc = S.loc || S.home;
+  if(!loc) {
+    // Si aucune position n'est activée, on demande la géolocalisation ou on prend Paris par défaut
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(p){
+        S.loc = {lat:p.coords.latitude, lng:p.coords.longitude};
+        executeCatSearch(S.loc);
+      }, function(){
+        S.loc = {lat:48.8566, lng:2.3522};
+        executeCatSearch(S.loc);
+      });
+      return;
+    } else {
+      loc = {lat:48.8566, lng:2.3522};
+    }
+  }
+  executeCatSearch(loc);
+}
 
+function executeCatSearch(loc) {
+  S.sc = loc;
+  S.mapC = loc;
   S.tab = "map";
   render();
-  var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).then(function(r){
-    S.sr=applyFilt(r);
-    if(!S.sr.length) S.sr = applyFilt(fallbackSearch());
-    S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
+  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
+    S.sr = applyFilt(r);
+    S.busy = false;
+    upRes();
+    if(S.tab === "map") { drawMarkers(); fitResults(); }
   }).catch(function(){
-    S.sr = applyFilt(fallbackSearch());
-    S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
-  })}
+    S.sr = [];
+    S.busy = false;
+    upRes();
+    if(S.tab === "map") { drawMarkers(); fitResults(); }
+  });
+}
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],15);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:15,padding:[24,24]})}catch(e){}}
@@ -426,16 +423,16 @@ function applyFilters(){closeSheet();doSearch()}
 function resetFilters(){S.filt={rad:3000,cats:[],sort:"auto"};openFilters()}
 
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
-var h=S.err?'<div class="sub">⚠️ Mode secours activé.</div>':"";
+var h=S.err?'<div class="sub">⚠️ Mode secours désactivé.</div>':"";
 var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
-var displayList = S.sr.length ? S.sr : fallbackSearch(S.sq);
-if(!displayList.length)h+='<div class="empty">Aucun resto trouvé.</div>';
+var displayList = S.sr;
+if(!displayList.length)h+='<div class="empty">Aucun resto trouvé dans cette zone. Essaie d\'élargir le rayon ou active ta position.</div>';
 h+=displayList.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tapFallback(\''+p.pid+'\')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 
 function tapFallback(pid){
-  var all = (S.sr||[]).concat(FALLBACK_RESTOS);
+  var all = (S.sr||[]);
   var p = all.find(function(x){return x.pid===pid});
   if(!p) return;
   if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);render()}else{S.sel=p;render()}
@@ -471,12 +468,12 @@ drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
 L.circleMarker([o.lat,o.lng],{radius:9,color:getRestoColor(o),fillColor:getRestoColor(o),fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
-var listToDraw = (S.sr&&S.sr.length)?S.sr:fallbackSearch();
+var listToDraw = (S.sr||[]);
 listToDraw.forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
 L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR(\''+p.pid+'\');return false">Voir la fiche</a>')})}
 
 function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
-function openR(pid){var all=(S.sr||[]).concat(FALLBACK_RESTOS);var p=all.find(function(x){return x.pid===pid});if(!p)return;S.sel=p;S.tab="map";render()}
+function openR(pid){var all=(S.sr||[]);var p=all.find(function(x){return x.pid===pid});if(!p)return;S.sel=p;S.tab="map";render()}
 
 function add(){var f=S.form;if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
@@ -652,7 +649,7 @@ render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
-if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
+if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()};return}
 S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
 if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";render()}});
 </script>
