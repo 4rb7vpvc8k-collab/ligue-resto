@@ -346,15 +346,14 @@ searchPlaces(q).then(function(r){
   S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
 })}
 
-// CLIQUER SUR UN STYLE/CUISINE DEPUIS L'ACCUEIL LANCE DIRECTEMENT LA RECHERCHE ET FILTRE
 function searchCat(catKey){
   S.sq = "";
   S.filt.cats = [catKey];
   S.filt.sort = "auto";
   S.smode = "poi";
-  S.busy = true; // On active le loader tout de suite
-  S.sr = null;   // On vide les anciens résultats pour éviter l'affichage fantôme
-  S.tab = "map"; // Bascule instantanément sur l'onglet Carte/Recherche
+  S.busy = true;
+  S.sr = null;
+  S.tab = "map";
   
   var loc = S.loc || S.home;
   if(!loc) {
@@ -378,7 +377,7 @@ function executeCatSearch(loc) {
   S.sc = loc;
   S.mapC = loc;
   S.busy = true;
-  render(); // Affiche la vue carte avec le loader de recherche en cours
+  render();
   
   areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
     S.sr = applyFilt(r);
@@ -451,7 +450,7 @@ return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i)
 
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · OpenStreetMap France</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
+return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · CartoDB Dark Matter</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
 
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
 return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
@@ -462,8 +461,9 @@ function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[48.8566,2.3522],z=S.focus?16:S.loc?14:S.home?10:13;
 var m=S.map=L.map("map").setView(c,z);
-L.tileLayer("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",{maxZoom:20,attribution:"© OpenStreetMap France | © OpenStreetMap contributors"}).addTo(m);
-S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
+// FOND DE CARTE CARTODB DARK MATTER (Sombre et stylé)
+L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap, © CARTO"}).addTo(m);
+S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#E5B83F",fillColor:"#E5B83F",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
