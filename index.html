@@ -20,7 +20,7 @@ h2{font-size:16px;margin:14px 0 8px}
 
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .who{font-size:12px;color:var(--mut)}
-.resto{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px}
+.resto{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px}.dot-badge{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
 .stars{color:var(--ac);letter-spacing:1px;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{background:var(--ac2);border-radius:4px;padding:5px 10px;font-size:13px;border:1px solid transparent;color:var(--tx);font-family:inherit;cursor:pointer}
@@ -99,6 +99,7 @@ nav button.on{color:#E5B83F;font-weight:700}
 <div class="hd">
   <div style="display:flex;justify-content:space-between;align-items:center">
     <h1> Belly</h1>
+    <button class="chip" onclick="openLegend()" style="background:#192A3A;color:#E5B83F;font-weight:700;border:none">🏷️ Légende</button>
   </div>
   <div id="hsub">Découvre et note les restos</div>
 </div>
@@ -131,20 +132,23 @@ var CUISINE_CATS=[
   {label:"Mexicain", key:"mexican", q:"restaurant mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
 ];
 
-var CATS={
-  fast:{label:"Fast-food"},
-  trad_low:{label:"Traditionnel petit budget"},
-  trad_high:{label:"Traditionnel grand budget"},
-  bistro:{label:"Bistronomie"},
-  gastronomy:{label:"Haute gastronomie"},
-  french:{label:"Cuisine : Français"},
-  asian:{label:"Cuisine : Asiatique"},
-  italian:{label:"Cuisine : Italien"},
-  japanese:{label:"Cuisine : Japonais"},
-  oriental:{label:"Cuisine : Oriental"},
-  indian:{label:"Cuisine : Indien"},
-  veggie:{label:"Cuisine : Végétarien"},
-  mexican:{label:"Cuisine : Mexicain"}
+var STYLE_CAT_MAP={
+  fast:{label:"Fast-food",color:"#D97706"},
+  trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},
+  trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},
+  bistro:{label:"Bistronomie",color:"#7C3AED"},
+  gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}
+};
+
+var CUISINE_CAT_MAP={
+  french:{label:"Français"},
+  asian:{label:"Asiatique"},
+  italian:{label:"Italien"},
+  japanese:{label:"Japonais"},
+  oriental:{label:"Oriental"},
+  indian:{label:"Indien"},
+  veggie:{label:"Végétarien"},
+  mexican:{label:"Mexicain"}
 };
 
 function getRestoCat(name,type,priceLunch,cuisineTag){
@@ -168,7 +172,25 @@ function getRestoCat(name,type,priceLunch,cuisineTag){
   return "trad_low"
 }
 
-function getRestoCatName(p){var c=p.cat||getRestoCat(p.n||p.resto,p.type,p.priceLunch,p.cuisine);return (CATS[c]||CATS.trad_low).label}
+function getStyleKey(cat){
+  if(STYLE_CAT_MAP[cat]) return cat;
+  return "trad_low";
+}
+
+function getRestoColor(p){
+  var c=p.cat||getRestoCat(p.n||p.resto,p.type,p.priceLunch,p.cuisine);
+  var sk=getStyleKey(c);
+  return (STYLE_CAT_MAP[sk]||STYLE_CAT_MAP.trad_low).color;
+}
+
+function dot(p,st){return '<span class="dot-badge" style="background:'+getRestoColor(p)+(st?';'+st:'')+'"></span>'}
+function openLegend(){
+  var h='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🏷️ Légende des pastilles</div>';
+  h+=Object.keys(STYLE_CAT_MAP).map(function(k){return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+'"></span><span>'+STYLE_CAT_MAP[k].label+'</span></div>'}).join("");
+  h+='<button class="btn" style="margin-top:12px" onclick="closeSheet()">Fermer</button></div></div>';
+  document.getElementById("sheet").innerHTML=h;
+}
+
 var S={filt:{rad:500,cats:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>\"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -217,7 +239,7 @@ function status(){return S.state==="loading"?'<div class="sub">Connexion…</div
 
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
 var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+esc(x.uid)+'\',\''+esc(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
-return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
+return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
 
 function del(i){var x=S.rvl[i];if(!x||!x._id||!S.fdb)return;if(!confirm("Supprimer définitivement cet avis ?"))return;
 var col=x._p?S.fdb.collection("leagues/"+x._lg+"/reviews"):S.fdb.collection("reviews");
@@ -286,7 +308,7 @@ return nomRaw(q).then(function(raw){
   if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)
 })}
 
-function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){return !f.cats.length||f.cats.indexOf(p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine))>-1});sortP(a);
+function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);return !f.cats.length||f.cats.indexOf(c)>-1});sortP(a);
 a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
 var so=f.sort==="auto"?((m==="poi"&&S.loc)?"near":"best"):f.sort;
 function dd(p){return p.d!=null?p.d:(p.dc!=null?p.dc:1e9)}
@@ -310,20 +332,34 @@ function searchCat(catKey, queryText){
 
   S.tab = "map";
   render();
-  searchPlaces(queryText).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})
-}
+  searchPlaces(queryText).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
 function fmtR(m){return m>=1000?(m/1000).toFixed(1).replace(".",",")+" km":m+" m"}
 function filtOn(){return S.filt.cats.length>0||S.filt.sort!=="auto"||S.filt.rad!==500}
-function catChips(){return Object.keys(CATS).map(function(k){return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')">'+CATS[k].label+'</button>'}).join("")}
+
+function catChips(){
+  var h = '<div class="sub" style="font-weight:700;margin-top:4px">Catégorie :</div><div class="chips" style="margin:0 0 8px">';
+  h += Object.keys(STYLE_CAT_MAP).map(function(k){
+    return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')"><span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>'+STYLE_CAT_MAP[k].label+'</button>';
+  }).join("");
+  h += '</div>';
+
+  h += '<div class="sub" style="font-weight:700;margin-top:8px">Style :</div><div class="chips" style="margin:0 0 12px">';
+  h += Object.keys(CUISINE_CAT_MAP).map(function(k){
+    return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')">'+CUISINE_CAT_MAP[k].label+'</button>';
+  }).join("");
+  h += '</div>';
+  return h;
+}
+
 function sortChips(){return [["auto","Auto"],["best","Meilleures notes d’abord"],["worst","Moins bien notés d’abord"],["near","Plus proches d’abord"]].map(function(t){return '<button class="chip '+(S.filt.sort===t[0]?"on":"")+'" onclick="setSort(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")}
 function togFC(k){var a=S.filt.cats,i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.push(k);document.getElementById("fc").innerHTML=catChips()}
 function setSort(v){S.filt.sort=v;document.getElementById("fs").innerHTML=sortChips()}
 
-function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div class="sub">Catégories :</div><div class="chips" style="margin:0 0 12px" id="fc">'+catChips()+'</div><div class="sub">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
+function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Filtres de recherche</div><div class="sub">Rayon (adresse, rue) : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="100" max="5000" step="100" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div id="fc">'+catChips()+'</div><div class="sub" style="font-weight:700;margin-top:4px">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
 function applyFilters(){closeSheet();if(S.sq||S.filt.cats.length)doSearch();else render()}
 function resetFilters(){S.filt={rad:500,cats:[],sort:"auto"};openFilters()}
 
@@ -332,7 +368,7 @@ var h=S.err?'<div class="sub">⚠️ La recherche de lieux a échoué.</div>':""
 var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
 if(!S.sr.length)h+='<div class="empty">Aucun resto trouvé.</div>';
-h+=S.sr.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
+h+=S.sr.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tap('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 
 function tap(i){var p=S.sr[i];if(!p)return;if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);render()}else{S.sel=p;render()}}
@@ -345,14 +381,14 @@ function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
 G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
-return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card strict" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier ! 🍕</div>')}
+return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card strict" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier ! 🍕</div>')}
 
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>© OpenStreetMap</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
+return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · © OpenStreetMap</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
 
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
 
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
@@ -365,9 +401,9 @@ drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
-L.circleMarker([o.lat,o.lng],{radius:9,color:"#192A3A",fillColor:"#E5B83F",fillOpacity:.9,weight:2}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
+L.circleMarker([o.lat,o.lng],{radius:9,color:getRestoColor(o),fillColor:getRestoColor(o),fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
 (S.sr||[]).forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
-L.circleMarker([p.lat,p.lng],{radius:6,color:"#192A3A",fillColor:"#E5B83F",fillOpacity:.6,weight:1}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
+L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR('+i+');return false">Voir la fiche</a>')})}
 
 function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function openR(i){var p=S.sr&&S.sr[i];if(!p)return;S.sel=p;S.tab="map";render()}
@@ -377,7 +413,8 @@ var h='<h2>J’ai mangé où ?</h2>'+locCard();
 if(S.manual)return h+'<div class="card strict"><div class="sub">Ajoute ton resto toi-même :</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour</button></div>';
 return h+sbar()+"<div id='res'>"+resHTML()+"</div>"}
 var p=f.place;
-return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(CATS).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+CATS[k].label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis..." oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 Livraison</button></div><div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue.</div>'):'')+'<button class="btn" onclick="send()">Publier</button>'}
+var allCatMap=Object.assign({}, STYLE_CAT_MAP, CUISINE_CAT_MAP);
+return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(allCatMap).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>':'')+allCatMap[k].label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis..." oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 Livraison</button></div><div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue.</div>'):'')+'<button class="btn" onclick="send()">Publier</button>'}
 function tlsOf(){return S.form.tls&&S.form.tls.length?S.form.tls:(S.league?[S.league]:[])}
 function togLgForm(c){var t=tlsOf().slice(),i=t.indexOf(c);if(i>-1)t.splice(i,1);else t.push(c);S.form.tls=t;render()}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
@@ -398,7 +435,7 @@ var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===
 var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
 if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
 var med=["🥇","🥈","🥉"];
-return h+G.map(function(x,i){return '<div class="card strict rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
+return h+G.map(function(x,i){return '<div class="card strict rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+dot(x)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
 
 function league(){
 var join='<div class="card strict"><input id="lg" placeholder="Code d’une ligue" autocapitalize="characters"><button class="btn" onclick="join()">Créer / rejoindre</button></div>';
@@ -444,9 +481,9 @@ function delFriend(uid){S.friends=S.friends.filter(function(f){return f.uid!==ui
 function openUser(uid,pseudo){if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.tab="me";render();if(S.fdb)S.fdb.collection("users").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
 
 function hp(p){return S.hl.push(p)-1}
-function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'"><b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
+function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'">'+dot(p,'position:absolute;top:10px;right:10px')+'<b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
 function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<div class="sub">'+empty+'</div>'}
-function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'"><b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
+function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
 function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
@@ -483,7 +520,7 @@ function editBio(){var b=prompt("Ta bio (160 caractères max)",S.bio||"");if(b==
 
 function agenda(mine){if(!mine.length)return '<div class="empty">Ton agenda est vide.</div>';var h="",cur="";
 mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
-h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
+h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+dot(x)+'</div><div class="who">'+(x.mode==="deliv"?"🛵 ":"🍽️ ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
 
 function userView(u){var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
 var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts}),uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
@@ -505,7 +542,7 @@ if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien.</div>')}
 h+='<div class="card strict"><div class="av edit" onclick="newCol()" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">✏️ Modifier</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
-h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+'"><b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Aucun avis.</div>');
+h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+'">'+dot(x,'position:absolute;top:6px;right:6px')+'<b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Aucun avis.</div>');
 return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div><div class="lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+S.friends.length+' ›</b></div>'}
 
 function loadv(){return '<div class="empty">Chargement…</div>'}
@@ -539,7 +576,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
@@ -551,3 +588,4 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
+
