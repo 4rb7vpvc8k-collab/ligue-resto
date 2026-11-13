@@ -352,6 +352,8 @@ function searchCat(catKey){
   S.filt.cats = [catKey];
   S.filt.sort = "auto";
   S.smode = "poi";
+  S.busy = true; // On active le loader tout de suite
+  S.sr = null;   // On vide les anciens résultats pour éviter l'affichage fantôme
   S.tab = "map"; // Bascule instantanément sur l'onglet Carte/Recherche
   
   var loc = S.loc || S.home;
@@ -375,7 +377,9 @@ function searchCat(catKey){
 function executeCatSearch(loc) {
   S.sc = loc;
   S.mapC = loc;
-  render(); // Affiche la vue carte immédiatement avec le loader
+  S.busy = true;
+  render(); // Affiche la vue carte avec le loader de recherche en cours
+  
   areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
     S.sr = applyFilt(r);
     S.busy = false;
@@ -640,7 +644,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
@@ -652,4 +656,3 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
-
