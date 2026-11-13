@@ -152,9 +152,7 @@ var CUISINE_CAT_MAP={
   mexican:{label:"Mexicain"}
 };
 
-var FALLBACK_RESTOS=[];
-
-// AMÉLIORATION DE LA DÉTECTION (détecte pizza/trattoria/pasta comme italien automatiquement)
+// DÉTECTION ÉTENDUE : Reconnaît automatiquement pizzeria/pasta/pizza comme italien
 function getRestoCat(name,type,priceLunch,cuisineTag){
   var n=(name||"").toLowerCase();
   var c=(cuisineTag||"").toLowerCase();
@@ -271,7 +269,6 @@ function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
 function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch,x.cuisine),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
 
-// TRI AMÉLIORÉ : D'abord la note moyenne, puis la distance (du plus proche au plus loin) si pas de note ou égalité
 function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):(S.sc&&num(p.lat)&&num(p.lng)?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null)});
 return arr.sort(function(a,b){
   var so = S.filt.sort;
@@ -350,7 +347,6 @@ searchPlaces(q).then(function(r){
   S.busy=false;S.err=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}
 })}
 
-// CORRIGÉ : Lancement direct et automatique avec géolocalisation ou position enregistrée
 function searchCat(catKey){
   S.sq = "";
   S.filt.cats = [catKey];
@@ -358,7 +354,6 @@ function searchCat(catKey){
   S.smode = "poi";
   var loc = S.loc || S.home;
   if(!loc) {
-    // Si aucune position n'est activée, on demande la géolocalisation ou on prend Paris par défaut
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(p){
         S.loc = {lat:p.coords.latitude, lng:p.coords.longitude};
@@ -423,7 +418,7 @@ function applyFilters(){closeSheet();doSearch()}
 function resetFilters(){S.filt={rad:3000,cats:[],sort:"auto"};openFilters()}
 
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
-var h=S.err?'<div class="sub">⚠️ Mode secours désactivé.</div>':"";
+var h="";
 var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
 var displayList = S.sr;
@@ -601,7 +596,7 @@ return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restauran
 function me(){if(S.viewUser)return userView(S.viewUser);
 if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
+var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
@@ -649,11 +644,9 @@ render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
-if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()};return}
+if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
 S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
 if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";render()}});
 </script>
 </body>
 </html>
-
-
