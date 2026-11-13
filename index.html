@@ -461,10 +461,10 @@ function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("
 function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElementById("map"))return;
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[48.8566,2.3522],z=S.focus?16:S.loc?14:S.home?10:13;
 var m=S.map=L.map("map").setView(c,z);
-// FOND DE CARTE CARTODB DARK MATTER (Sombre et stylé)
-L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap, © CARTO"}).addTo(m);
+L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:"© Stadia Maps, © OpenStreetMap contributors"}).addTo(m);
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#E5B83F",fillColor:"#E5B83F",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
+
 
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
