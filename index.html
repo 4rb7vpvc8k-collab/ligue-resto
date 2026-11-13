@@ -113,7 +113,6 @@ var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastroph
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
 
-// Ligne 1 : Styles / Budgets (Fast-food renommé)
 var STYLE_CATS=[
   {label:"Fast-food", key:"fast", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"},
   {label:"Petit budget", key:"trad_low", img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80"},
@@ -122,7 +121,6 @@ var STYLE_CATS=[
   {label:"Haute gastronomie", key:"gastronomy", img:"https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=200&q=80"}
 ];
 
-// Ligne 2 : Cuisine du monde (Oriental mis à jour avec une vraie photo du Maghreb/couscous)
 var WORLD_CATS=[
   {label:"Français", q:"francais", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
   {label:"Asiatique", q:"asiatique", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
@@ -136,7 +134,7 @@ var WORLD_CATS=[
 
 var CATS={fast:{label:"Fast-food",color:"#D97706"},trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},bistro:{label:"Bistronomie",color:"#7C3AED"},gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}};
 
-// Règle de classification : Grand budget si menu midi > 25€ (ou mots-clés spécifiques)
+// Règle de classification : Grand budget (bleu foncé) si menu midi > 25€ ou mots-clés spécifiques
 function getRestoCat(name,type,priceLunch){
   var n=(name||"").toLowerCase();
   if(priceLunch && priceLunch > 25) return "trad_high";
@@ -253,7 +251,13 @@ groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pi
 var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
 var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;list.push(p)});return list})}
 
-function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";return nomRaw(q).then(function(raw){if(!raw||!raw.length)return[];var top=raw[0],kind=areaKind(top),poi=conv(raw);
+function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";
+// Si la recherche est vide (déclenchée par un clic sur une catégorie pure), on cherche les restaurants autour de la position actuelle/ville sans bloquer
+if(!q || q.length === 0){
+  var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
+  return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"});
+}
+return nomRaw(q).then(function(raw){if(!raw||!raw.length)return[];var top=raw[0],kind=areaKind(top),poi=conv(raw);
 if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)})}
 
 function applyFilt(arr){var f=S.filt,m=S.smode;var a=arr.filter(function(p){return !f.cats.length||f.cats.indexOf(p.cat||getRestoCat(p.n,p.type,p.priceLunch))>-1});sortP(a);
@@ -265,7 +269,9 @@ if(so==="near")return dd(x)-dd(y);
 if(so==="worst"){var ax=x.avg<0?99:x.avg,ay=y.avg<0?99:y.avg;return ax-ay||y.c-x.c||dd(x)-dd(y)}
 return y.avg-x.avg||y.c-x.c||dd(x)-dd(y)})}
 
-function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;if(q.length<2){alert("Écris au moins 2 lettres");return}
+function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
+// On autorise la recherche sans texte si un filtre de catégorie est actif (clic sur les bulles)
+if(!q && S.filt.cats.length === 0){if(i && q.length<2){alert("Écris au moins 2 lettres");return}}
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
 searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
@@ -530,7 +536,3 @@ if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.st
 </script>
 </body>
 </html>
-
-
-
-
