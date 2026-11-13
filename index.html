@@ -458,7 +458,11 @@ function initMap(){loadLeaflet(function(){if(S.tab!=="map"||!document.getElement
 var c=S.focus?[S.focus.lat,S.focus.lng]:S.loc?[S.loc.lat,S.loc.lng]:S.home?[S.home.lat,S.home.lng]:[48.8566,2.3522],z=S.focus?16:S.loc?14:S.home?10:13;
 var m=S.map=L.map("map").setView(c,z);
 // FOND DE CARTE CARTO-DB POSITRON (Clair et épuré)
-L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:19,attribution:"© OpenStreetMap, © CARTO"}).addTo(m);
+L.tileLayer("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png", {
+  maxZoom: 20,
+  attribution: "© OpenStreetMap France | © OpenStreetMap contributors"
+}).addTo(m);
+
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 
