@@ -23,14 +23,14 @@ h2{font-size:16px;margin:14px 0 8px}
 .resto{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px}.dot-badge{width:10px;height:10px;border-radius:2px;display:inline-block;flex-shrink:0}
 .stars{color:var(--ac);letter-spacing:1px;white-space:nowrap}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{background:var(--ac2);border-radius:4px;padding:5px 10px;font-size:13px;border:1px solid transparent;color:var(--tx);font-family:inherit}
+.chip{background:var(--ac2);border-radius:4px;padding:5px 10px;font-size:13px;border:1px solid transparent;color:var(--tx);font-family:inherit;cursor:pointer}
 button.chip.on{border-color:var(--ac);background:var(--ac);color:#192A3A}
 input,textarea{width:100%;padding:11px;border-radius:4px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:16px;margin-bottom:8px}
 textarea{min-height:70px;resize:vertical}
-.btn{width:100%;background:var(--ac);color:#192A3A;border:0;border-radius:4px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px}
+.btn{width:100%;background:var(--ac);color:#192A3A;border:0;border-radius:4px;padding:13px;font-size:16px;font-weight:700;font-family:inherit;margin-top:2px;cursor:pointer}
 .btn.alt{background:var(--ac2);color:var(--tx)}
 
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#192A3A;border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#192A3A;border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);max-width:520px;margin:0 auto;z-index:100}
 nav button{flex:1;border:0;background:none;padding:10px 0 8px;font-size:11px;color:rgba(244,241,233,.65);font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
 nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 nav button.on{color:#E5B83F;font-weight:700}
@@ -46,13 +46,13 @@ nav button.on{color:#E5B83F;font-weight:700}
 .seg{display:flex;gap:6px;margin:0 0 10px}.seg button{flex:1;border-radius:4px}
 .sr{position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}
 .back{background:none;border:0;color:var(--acd);font-size:15px;font-weight:700;padding:6px 0;font-family:inherit;cursor:pointer}
-#map{height:38vh;min-height:240px;border-radius:6px;border:1px solid var(--bd)}
+#map{height:38vh;min-height:240px;border-radius:6px;border:1px solid var(--bd);z-index:1}
 .dist{color:var(--acd);font-weight:700}
 .row2{display:flex;gap:8px;align-items:center}.row2 input{margin:0}.row2 .btn{width:auto;padding:11px 16px;margin:0}
 .st{display:inline-block;position:relative;margin-right:1px}.sb{color:var(--mut);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--ac)}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:var(--mut);font-size:12px;cursor:pointer}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end}
 .ovb{background:var(--card);width:100%;max-width:520px;margin:0 auto;border-radius:12px 12px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
 .av{width:64px;height:64px;border-radius:6px;background:var(--ac);color:#192A3A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;cursor:pointer;position:relative}
 .av.edit::after{content:'✎';position:absolute;bottom:-5px;right:-5px;background:#192A3A;color:#E5B83F;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
@@ -104,6 +104,17 @@ var STL=["🥶 Arrivé froid","🐢 Livreur escargot","📦 Emballage catastroph
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
 var CATS={fast:{label:"Restauration rapide",color:"#D97706"},trad_low:{label:"Traditionnel petit budget",color:"#93C5FD"},trad_high:{label:"Traditionnel grand budget",color:"#1E3A8A"},bistro:{label:"Bistronomie",color:"#7C3AED"},gastronomy:{label:"Haute gastronomie",color:"#CA8A04"}};
+
+// Liste des catégories rapides pour la page d'accueil
+var HOME_CATS=[
+  {label:"🍔 Fast-food", q:"restauration rapide"},
+  {label:"🍕 Italien", q:"italien"},
+  {label:"🌮 Mexicain", q:"mexicain"},
+  {label:"🥩 Bistrot", q:"bistrot"},
+  {label:"⭐ Gastronomie", q:"gastronomie"},
+  {label:"🍣 Asiatique", q:"asiatique"}
+];
+
 function getRestoCat(name,type){var n=(name||"").toLowerCase();
 if(type==="fast_food"||/tacos|kebab|burger|fast|pizza|sandwich/.test(n))return "fast";
 if(/gastrono|michelin|palace|etoile|étoile/.test(n))return "gastronomy";
@@ -232,6 +243,14 @@ function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
 searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
+// Fonction déclenchée lors du clic sur une catégorie depuis l'accueil
+function searchCat(q){
+  S.sq = q;
+  S.tab = "map";
+  render();
+  doSearch();
+}
+
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
@@ -260,7 +279,8 @@ navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitud
 function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée.</div>';
 return '<div class="card strict"><div class="sub">📍 Autorise ta position pour voir les restos proches.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
 
-function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()">⚙️'+(filtOn()?'•':'')+'</button></div>'}
+// Nouveau logo filtre (entonnoir/sliders) pour remplacer l'ancienne icône de paramètre
+function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()" title="Filtres"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>'+(filtOn()?'•':'')+'</button></div>'}
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
 G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
@@ -371,8 +391,16 @@ function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 fr.sort(function(a,b){return b.ts-a.ts});fr=fr.slice(0,12);
-var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c}).slice(0,12);
-return status()+'<div class="big">Resto du moment</div>'
+var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c})
+
+// Affichage des catégories de restaurants sur la page d'accueil
+var catChipsHTML = '<div class="sh">Explorer par catégorie</div><div class="chips" style="margin-bottom:14px">' +
+  HOME_CATS.map(function(c){
+    return '<button class="chip" onclick="searchCat(\''+c.q+'\')" style="font-weight:600;padding:8px 12px">'+c.label+'</button>';
+  }).join("") + '</div>';
+
+return status() + catChipsHTML 
++'<div class="big">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Aucun avis d'amis."):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
 +'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
