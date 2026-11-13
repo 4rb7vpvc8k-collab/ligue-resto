@@ -122,14 +122,14 @@ var STYLE_CATS=[
 ];
 
 var CUISINE_CATS=[
-  {label:"Français", key:"french", q:"restaurant français", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
-  {label:"Asiatique", key:"asian", q:"restaurant asiatique", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
-  {label:"Italien", key:"italian", q:"restaurant italien", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
-  {label:"Japonais", key:"japanese", q:"restaurant japonais", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
-  {label:"Oriental", key:"oriental", q:"restaurant oriental couscous tajine", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
-  {label:"Indien", key:"indian", q:"restaurant indien", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
-  {label:"Végétarien", key:"veggie", q:"restaurant végétarien", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
-  {label:"Mexicain", key:"mexican", q:"restaurant mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+  {label:"Français", key:"french", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Asiatique", key:"asian", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
+  {label:"Italien", key:"italian", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
+  {label:"Japonais", key:"japanese", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Oriental", key:"oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
+  {label:"Indien", key:"indian", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
+  {label:"Végétarien", key:"veggie", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
+  {label:"Mexicain", key:"mexican", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
 ];
 
 var STYLE_CAT_MAP={
@@ -322,7 +322,7 @@ if(!q && S.filt.cats.length === 0){if(i && q.length<2){alert("Écris au moins 2 
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
 searchPlaces(q).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
-function searchCat(catKey, queryText){
+function searchCat(catKey){
   S.sq = "";
   S.filt.cats = [catKey];
   S.filt.sort = "auto";
@@ -332,7 +332,8 @@ function searchCat(catKey, queryText){
 
   S.tab = "map";
   render();
-  searchPlaces(queryText).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
+  var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
+  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).then(function(r){S.sr=applyFilt(r);S.busy=false;upRes();if(S.tab==="map"){drawMarkers();fitResults()}}).catch(function(){S.busy=false;S.err=true;S.sr=[];upRes()})}
 
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],16);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:16,padding:[24,24]})}catch(e){}}
@@ -493,12 +494,12 @@ var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()=
 
 var stylesHtml = '<div class="sh">Styles & Budgets</div><div class="cat-scroll">' +
   STYLE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\', \''+c.label+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
   }).join("") + '</div>';
 
 var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div class="cat-scroll">' +
   CUISINE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\', \''+c.q+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
   }).join("") + '</div>';
 
 return status() + stylesHtml + cuisineHtml
@@ -576,7 +577,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 
 function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
