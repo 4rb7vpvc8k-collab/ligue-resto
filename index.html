@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!D<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -192,7 +192,7 @@ function openLegend(){
   document.getElementById("sheet").innerHTML=h;
 }
 
-var S={filt:{rad:3000,cats:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low"},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null};
+var S={filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>\"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -214,7 +214,7 @@ try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
 S.dept=ls("lr_dept")||"";try{S.blocked=JSON.parse(ls("lr_blocked")||"[]");S.likes=JSON.parse(ls("lr_likes")||"[]");S.wish=JSON.parse(ls("lr_wish")||"[]");S.friends=JSON.parse(ls("lr_friends")||"[]");S.top=JSON.parse(ls("lr_top")||"[null,null,null,null,null]")}catch(e){}S.bio=ls("lr_bio")||"";S.col=ls("lr_col")||"";if(!S.col){S.col=newColor();ls("lr_col",S.col)}try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
 function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
-if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("users").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("profiles").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
 
 function nav(){
 var T=[
@@ -236,11 +236,12 @@ document.getElementById("app").innerHTML=h;
 if(S.tab==="map")initMap()}
 function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
-function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Connexion impossible'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
+function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Erreur de connexion'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+esc(x.uid)+'\',\''+esc(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
-return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+ri(x)+')">🚩 Signaler</a><a onclick="blk('+(S.rvl.length-1)+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+ri(x)+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
+var idx=ri(x);
+var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
+return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+idx+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
 
 function del(i){var x=S.rvl[i];if(!x||!x._id||!S.fdb)return;if(!confirm("Supprimer définitivement cet avis ?"))return;
 var col=x._p?S.fdb.collection("leagues/"+x._lg+"/reviews"):S.fdb.collection("reviews");
@@ -258,14 +259,14 @@ function vis(x){return !isB(x.uid)&&(S.flags[ridOf(x)]||0)<3}
 function closeSheet(){document.getElementById("sheet").innerHTML=""}
 function rep(i){var x=S.rx=S.rvl[i];closeSheet();if(!x||!S.fdb)return;
 document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">🚩 Signaler l\'avis</div>'+REASONS.map(function(r,idx){return '<button class="btn alt" style="margin-bottom:8px" onclick="confirmRep('+idx+')">'+esc(r)+'</button>'}).join("")+'<button class="back" onclick="closeSheet()">Annuler</button></div></div>'}
-function confirmRep(k){var x=S.rx;closeSheet();if(!x||!S.fdb)return;var rid=ridOf(x),u=S.user.uid;
+function confirmRep(k){var x=S.rx;closeSheet();if(!x||!S.fdb||!S.user)return;var rid=ridOf(x),u=S.user.uid;
 S.fdb.collection("reports").doc(u+"__"+rid).set({rid:rid,path:x._p?"leagues/"+x._lg+"/reviews/"+x._id:"reviews/"+x._id,reporter:u,reviewUid:x.uid,reason:REASONS[k],resto:x.resto,avis:x.avis||"",ts:Date.now()})
 .then(function(){return S.fdb.collection("flags").doc(rid).set({by:firebase.firestore.FieldValue.arrayUnion(u)},{merge:true})})
 .then(function(){alert("Merci, l’avis a été signalé.")}).catch(function(){alert("Déjà signalé ou échec.")})}
 function blk(i){var x=S.rvl[i];if(!x)return;if(!confirm("Bloquer "+(x.pseudo||"cet utilisateur")+" ?"))return;S.blocked.push({u:x.uid,n:x.pseudo||"?"});save();render()}
 function unblk(k){S.blocked.splice(k,1);save();render()}
 function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
-function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch,x.cuisine),rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
+function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch,x.cuisine),cuisine:x.cuisine||"",rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
 
 function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):(S.sc&&num(p.lat)&&num(p.lng)?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null)});
@@ -285,7 +286,7 @@ return arr.sort(function(a,b){
 })}
 
 function addrOf(x){var a=x.address||{},l1=((a.house_number?a.house_number+" ":"")+(a.road||"")).trim(),l2=((a.postcode||"")+" "+(a.city||a.town||a.village||a.municipality||"")).trim();var r=[l1,l2].filter(Boolean).join(", ");return r||(x.display_name||"").split(",").slice(1,3).join(",").trim()}
-function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var tgs=x.tags||{};var n=x.name||(x.display_name||"").split(",")[0];return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,x.type,null,tgs.cuisine||tgs.diet)}})}
+function conv(list){return (list||[]).filter(function(x){return x.category==="amenity"&&FOOD.indexOf(x.type)>-1}).map(function(x){var tgs=x.tags||{},ext=x.extratags||{};var n=x.name||(x.display_name||"").split(",")[0];var cui=tgs.cuisine||tgs.diet||ext.cuisine||"";return{pid:"osm:"+(x.osm_type||"x").charAt(0)+x.osm_id,n:n,a:addrOf(x),lat:parseFloat(x.lat),lng:parseFloat(x.lon),type:x.type,cuisine:cui,cat:getRestoCat(n,x.type,null,cui)}})}
 
 function nomRaw(q){var u="https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&extratags=1&limit=40&accept-language=fr&q="+encodeURIComponent(q);
 var c=S.loc||S.home;if(c){var d=S.loc?1:2;u+="&viewbox="+[c.lng-d,c.lat+d,c.lng+d,c.lat-d].join(",")}
@@ -300,10 +301,10 @@ function ovAddr(t){var l1=((t["addr:housenumber"]?t["addr:housenumber"]+" ":"")+
 var OVS=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"];
 function ovFetch(q,i){i=i||0;var ctl=new AbortController(),t=setTimeout(function(){ctl.abort()},10000);return fetch(OVS[i],{method:"POST",body:"data="+encodeURIComponent(q),signal:ctl.signal}).then(function(r){clearTimeout(t);if(r.ok===false)throw 0;return r.json()}).catch(function(e){clearTimeout(t);if(i+1<OVS.length)return ovFetch(q,i+1);return {elements:[]}})}
 
-function ovPost(q){return ovFetch(q).then(function(j){var els=j.elements||[];if(!els.length)throw 0;return els.filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var tgs=e.tags||{};var n=tgs.name;return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(tgs),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:tgs.amenity,cuisine:tgs.cuisine||tgs.diet||"",cat:getRestoCat(n,tgs.amenity,null,tgs.cuisine||tgs.diet)}})})
+function ovPost(q){return ovFetch(q).then(function(j){var els=j.elements||[];if(!els.length)throw 0;return els.filter(function(e){return e.tags&&e.tags.name&&(e.lat!=null||e.center)}).map(function(e){var tgs=e.tags||{};var n=tgs.name;var cui=tgs.cuisine||tgs.diet||"";return{pid:"osm:"+e.type.charAt(0)+e.id,n:n,a:ovAddr(tgs),lat:e.lat!=null?e.lat:e.center.lat,lng:e.lon!=null?e.lon:e.center.lon,type:tgs.amenity,cuisine:cui,cat:getRestoCat(n,tgs.amenity,null,cui)}})})
 }
 
-function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=Math.max(S.filt.rad, 3000),c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.15):null;
+function areaSearch(kind,ar){var lat=parseFloat(ar.lat),lng=parseFloat(ar.lon),R=Math.max(S.filt.rad, 500),c={lat:lat,lng:lng},nm=(ar.name||(ar.display_name||"").split(",")[0]||"").replace(/"/g,""),b=(kind==="city"||kind==="postcode")?bboxOf(ar,.15):null;
 S.smode=kind;S.sc=c;S.mapC=c;S.slabel=(ar.display_name||"").split(",").slice(0,2).join(",").trim();var pr;
 if(b)pr=ovPost('[out:json][timeout:15];'+AM+'('+b.join(",")+');out center 300;');
 else if(kind==="street"){var pre='[out:json][timeout:15];way["highway"]["name"="'+nm+'"](around:2500,'+lat+','+lng+')->.s;';
@@ -314,14 +315,14 @@ return pr.catch(function(){return [];}).then(function(list){
   var seen={};(list||[]).forEach(function(p){seen[p.pid]=1});
   groups(allv()).forEach(function(o){if(!num(o.lat)||!num(o.lng))return;var k=o.pid||("n:"+o.n.toLowerCase().trim());if(seen[k])return;
   var ok=b?(o.lat>=b[0]&&o.lat<=b[2]&&o.lng>=b[1]&&o.lng<=b[3]):dist(lat,lng,o.lat,o.lng)*1000<=R;if(!ok)return;
-  var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;(list||(list=[])).push(p)});
+  var p={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat,cuisine:o.cuisine||""};if(kind==="street")p.on=strip(o.a).indexOf(strip(nm))>-1;(list||(list=[])).push(p)});
   return list||[];
 })}
 
 function searchPlaces(q){S.mapC=null;S.smode="poi";S.sc=null;S.slabel="";
 if(!q || q.length === 0){
   var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
-  return areaSearch("city", {lat:loc.lat, lon:loc.lon || loc.lng, display_name:"Zone actuelle"}).catch(function(){return [];});
+  return areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Zone actuelle"}).catch(function(){return [];});
 }
 return nomRaw(q).then(function(raw){
   if(!raw || !raw.length){
@@ -332,9 +333,20 @@ return nomRaw(q).then(function(raw){
   if(kind)return areaSearch(kind,top);if(poi.length)return poi;return areaSearch("address",top)
 }).catch(function(){return [];})}
 
-function applyFilt(arr){var f=S.filt,m=S.smode;var a=(arr||[]).filter(function(p){var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);return !f.cats.length||f.cats.indexOf(c)>-1});sortP(a);
-a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
-return a;}
+function applyFilt(arr){
+  var f=S.filt;
+  var a=(arr||[]).filter(function(p){
+    var c=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);
+    var cui=p.cuisine||"";
+    var matchCat = !f.cats.length || f.cats.indexOf(c)>-1;
+    var matchCui = !f.cuisine.length || f.cuisine.some(function(ck){ return cui.toLowerCase().indexOf(ck)>-1 || c===ck; });
+    if(f.cats.length && f.cuisine.length) return matchCat && matchCui;
+    return matchCat || matchCui;
+  });
+  sortP(a);
+  a.forEach(function(p){p.dc=(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
+  return a;
+}
 
 function doSearch(){var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
 S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;upRes();
@@ -348,28 +360,20 @@ searchPlaces(q).then(function(r){
 
 function searchCat(catKey){
   S.sq = "";
-  S.filt.cats = [catKey];
+  if(CUISINE_CAT_MAP[catKey]) {
+    S.filt.cuisine = [catKey];
+    S.filt.cats = [];
+  } else {
+    S.filt.cats = [catKey];
+    S.filt.cuisine = [];
+  }
   S.filt.sort = "auto";
   S.smode = "poi";
   S.busy = true;
   S.sr = null;
   S.tab = "map";
   
-  var loc = S.loc || S.home;
-  if(!loc) {
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(p){
-        S.loc = {lat:p.coords.latitude, lng:p.coords.longitude};
-        executeCatSearch(S.loc);
-      }, function(){
-        S.loc = {lat:48.8566, lng:2.3522};
-        executeCatSearch(S.loc);
-      });
-      return;
-    } else {
-      loc = {lat:48.8566, lng:2.3522};
-    }
-  }
+  var loc = S.loc || S.home || {lat:48.8566, lng:2.3522};
   executeCatSearch(loc);
 }
 
@@ -377,12 +381,9 @@ function executeCatSearch(loc) {
   S.sc = loc;
   S.mapC = loc;
   S.busy = true;
-  render(); // Affiche la vue carte avec le loader
+  render();
   
-  // On force une recherche large sur la zone ou par défaut sur Paris si besoin
-  var searchLoc = loc || {lat: 48.8566, lng: 2.3522};
-  
-  areaSearch("city", {lat: searchLoc.lat, lon: searchLoc.lng, display_name: "Autour de moi"}).then(function(r){
+  areaSearch("city", {lat:loc.lat, lon:loc.lng, display_name:"Autour de moi"}).then(function(r){
     S.sr = applyFilt(r);
     S.busy = false;
     upRes();
@@ -395,35 +396,38 @@ function executeCatSearch(loc) {
   });
 }
 
-
 function fitResults(){if(!S.map||S.tab!=="map")return;try{if(S.mapC){S.map.setView([S.mapC.lat,S.mapC.lng],15);return}
 var pts=(S.sr||[]).filter(function(p){return num(p.lat)&&num(p.lng)}).slice(0,10).map(function(p){return[p.lat,p.lng]});if(pts.length)S.map.fitBounds(pts,{maxZoom:15,padding:[24,24]})}catch(e){}}
 function upRes(){var e=document.getElementById("res");if(e)e.innerHTML=resHTML();var c=document.getElementById("cl");if(c)c.innerHTML=commList()}
 function fmtR(m){return m>=1000?(m/1000).toFixed(1).replace(".",",")+" km":m+" m"}
-function filtOn(){return S.filt.cats.length>0||S.filt.sort!=="auto"||S.filt.rad!==3000}
+function filtOn(){return S.filt.cats.length>0||S.filt.cuisine.length>0||S.filt.sort!=="auto"||S.filt.rad!==3000}
 
 function catChips(){
   var h = '<div class="sub" style="font-weight:700;margin-top:4px">Catégorie :</div><div class="chips" style="margin:0 0 8px">';
   h += Object.keys(STYLE_CAT_MAP).map(function(k){
-    return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')"><span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>'+STYLE_CAT_MAP[k].label+'</button>';
+    return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\'cat\',\''+k+'\')"><span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>'+STYLE_CAT_MAP[k].label+'</button>';
   }).join("");
   h += '</div>';
 
   h += '<div class="sub" style="font-weight:700;margin-top:8px">Style :</div><div class="chips" style="margin:0 0 12px">';
   h += Object.keys(CUISINE_CAT_MAP).map(function(k){
-    return '<button class="chip '+(S.filt.cats.indexOf(k)>-1?"on":"")+'" onclick="togFC(\''+k+'\')">'+CUISINE_CAT_MAP[k].label+'</button>';
+    return '<button class="chip '+(S.filt.cuisine.indexOf(k)>-1?"on":"")+'" onclick="togFC(\'cuisine\',\''+k+'\')">'+CUISINE_CAT_MAP[k].label+'</button>';
   }).join("");
   h += '</div>';
   return h;
 }
 
 function sortChips(){return [["auto","Auto"],["best","Meilleures notes d’abord"],["worst","Moins bien notés d’abord"],["near","Plus proches d’abord"]].map(function(t){return '<button class="chip '+(S.filt.sort===t[0]?"on":"")+'" onclick="setSort(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")}
-function togFC(k){var a=S.filt.cats,i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.push(k);document.getElementById("fc").innerHTML=catChips()}
+function togFC(type,k){
+  var a = type==='cat'?S.filt.cats:S.filt.cuisine;
+  var i=a.indexOf(k);if(i>-1)a.splice(i,1);else a.push(k);
+  document.getElementById("fc").innerHTML=catChips();
+}
 function setSort(v){S.filt.sort=v;document.getElementById("fs").innerHTML=sortChips()}
 
 function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:80vh;overflow:auto"><div class="resto" style="margin-bottom:10px">Filtres de recherche</div><div class="sub">Rayon de recherche : <b id="radv">'+fmtR(f.rad)+'</b></div><input type="range" min="500" max="10000" step="500" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)"><div id="fc">'+catChips()+'</div><div class="sub" style="font-weight:700;margin-top:4px">Classement :</div><div class="chips" style="margin:0 0 14px" id="fs">'+sortChips()+'</div><button class="btn" onclick="applyFilters()">Appliquer</button><button class="back" onclick="resetFilters()">Réinitialiser</button></div></div>'}
 function applyFilters(){closeSheet();doSearch()}
-function resetFilters(){S.filt={rad:3000,cats:[],sort:"auto"};openFilters()}
+function resetFilters(){S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};openFilters()}
 
 function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
 var h="";
@@ -431,12 +435,11 @@ var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
 var displayList = S.sr;
 if(!displayList.length)h+='<div class="empty">Aucun resto trouvé dans cette zone. Essaie d\'élargir le rayon ou active ta position.</div>';
-h+=displayList.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tapFallback(\''+p.pid+'\')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
+h+=displayList.map(function(p,i){var dd=p.d!=null?p.d:p.dc;return '<div class="card asym" onclick="tapIndex('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+(p.c?'<div class="stars">'+stars(p.avg)+'</div>':'<span class="who">Pas encore d’avis</span>')+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>'}).join("");
 if(S.tab==="add")h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 
-function tapFallback(pid){
-  var all = (S.sr||[]);
-  var p = all.find(function(x){return x.pid===pid});
+function tapIndex(i){
+  var p = (S.sr||[])[i];
   if(!p) return;
   if(S.tab==="add"){S.form.place=p;S.form.cat=p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);render()}else{S.sel=p;render()}
 }
@@ -454,7 +457,7 @@ return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i)
 
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
 function explore(){if(S.sel)return place(S.sel);
-return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · CartoDB Dark Matter</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
+return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · OpenStreetMap</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
 
 function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
 return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
@@ -469,16 +472,15 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,att
 S.mlayer=L.layerGroup().addTo(m);if(S.loc)L.circleMarker([S.loc.lat,S.loc.lng],{radius:8,color:"#192A3A",fillColor:"#192A3A",fillOpacity:.9}).addTo(m).bindTooltip("Toi");
 drawMarkers();setTimeout(function(){if(S.map)S.map.invalidateSize()},200)})}
 
-
 function drawMarkers(){if(!S.mlayer)return;S.mlayer.clearLayers();S.mk=[];var g=gmap(allv()),seen={};
 Object.keys(g).forEach(function(k){var o=g[k];if(!num(o.lat)||!num(o.lng))return;seen[k]=1;var i=S.mk.push(o)-1;
 L.circleMarker([o.lat,o.lng],{radius:9,color:getRestoColor(o),fillColor:getRestoColor(o),fillOpacity:.9}).addTo(S.mlayer).bindPopup('<b>'+esc(o.n)+'</b><br>'+stars(o.s/o.c)+' '+(o.s/o.c).toFixed(1)+' ('+o.c+')<br><a href="#" onclick="openK('+i+');return false">Voir les avis</a>')});
 var listToDraw = (S.sr||[]);
 listToDraw.forEach(function(p,i){if(seen[keyOf(p)]||!num(p.lat)||!num(p.lng))return;
-L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR(\''+p.pid+'\');return false">Voir la fiche</a>')})}
+L.circleMarker([p.lat,p.lng],{radius:6,color:getRestoColor(p),fillColor:getRestoColor(p),fillOpacity:.6}).addTo(S.mlayer).bindPopup('<b>'+esc(p.n)+'</b><br>'+esc(p.a||"")+'<br><a href="#" onclick="openR(\''+encodeURIComponent(p.pid)+'\');return false">Voir la fiche</a>')})}
 
 function openK(i){var o=S.mk[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
-function openR(pid){var all=(S.sr||[]);var p=all.find(function(x){return x.pid===pid});if(!p)return;S.sel=p;S.tab="map";render()}
+function openR(encPid){var pid=decodeURIComponent(encPid);var all=(S.sr||[]);var p=all.find(function(x){return x.pid===pid});if(!p)return;S.sel=p;S.tab="map";render()}
 
 function add(){var f=S.form;if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
@@ -497,10 +499,10 @@ function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion.");return}
 var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne une ligue.");return}
-var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
-Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low"};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible.")})}
+Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:""};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible.")})}
 
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
 var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
@@ -550,7 +552,9 @@ function hasFriend(uid){return S.friends.some(function(f){return f.uid===uid})}
 function addFriend(uid,pseudo){if(!hasFriend(uid)){S.friends.push({uid:uid,pseudo:pseudo});save();render()}}
 function delFriend(uid){S.friends=S.friends.filter(function(f){return f.uid!==uid});save();render()}
 
-function openUser(uid,pseudo){if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.tab="me";render();if(S.fdb)S.fdb.collection("users").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
+function openUser(encUid,encPseudo){var uid=decodeURIComponent(encUid),pseudo=decodeURIComponent(encPseudo);
+if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.tab="me";render();
+if(S.fdb)S.fdb.collection("profiles").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
 
 function hp(p){return S.hl.push(p)-1}
 function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'">'+dot(p,'position:absolute;top:10px;right:10px')+'<b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
@@ -558,19 +562,19 @@ function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<di
 function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
 function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
-var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,12);
+var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c});
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
-fr.sort(function(a,b){return b.ts-a.ts});fr=fr.slice(0,12);
+fr.sort(function(a,b){return b.ts-a.ts});
 var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 
 var stylesHtml = '<div class="sh">Styles & Budgets</div><div class="cat-scroll">' +
   STYLE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
   }).join("") + '</div>';
 
 var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div class="cat-scroll">' +
   CUISINE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
   }).join("") + '</div>';
 
 return status() + stylesHtml + cuisineHtml
@@ -610,7 +614,7 @@ var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
-if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">Amis ('+S.friends.length+')</div>'+(S.friends.length?S.friends.map(function(f){return '<div class="card strict row"><b style="cursor:pointer;text-decoration:underline" onclick="openUser(\''+esc(f.uid)+'\',\''+esc(f.pseudo)+'\')">'+esc(f.pseudo)+'</b><button class="chip" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>'}).join(""):'<div class="empty">Aucun ami.</div>');
+if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">Amis ('+S.friends.length+')</div>'+(S.friends.length?S.friends.map(function(f){return '<div class="card strict row"><b style="cursor:pointer;text-decoration:underline" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')">'+esc(f.pseudo)+'</b><button class="chip" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>'}).join(""):'<div class="empty">Aucun ami.</div>');
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien.</div>')}
 h+='<div class="card strict"><div class="av edit" onclick="newCol()" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">✏️ Modifier</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
@@ -633,7 +637,7 @@ function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
 function authErr(e){alert("Erreur d'authentification : "+(e.code||"inconnue"))}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️")}).catch(authErr)}
 function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
-function delAcc(){if(!confirm("Supprimer ton compte ?"))return;var u=firebase.auth().currentUser;S.fdb.collection("users").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){logout()}).catch(function(){alert("Suppression impossible.")})}
+function delAcc(){if(!confirm("Supprimer ton compte ?"))return;var u=firebase.auth().currentUser;S.fdb.collection("profiles").doc(u.uid).delete().catch(function(){}).then(function(){return u.delete()}).then(function(){logout()}).catch(function(){alert("Suppression impossible.")})}
 function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("Pseudo requis");return}S.pseudo=p;save();S.pt="prof";S.tab="home";render()}
 
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});var seen={};return a.filter(vis).filter(function(x){var k=x._id||(x.uid+'|'+x.ts+'|'+(x.pid||x.resto));if(seen[k])return false;seen[k]=1;return true})}
@@ -646,9 +650,9 @@ function startDB(){S.fdb=firebase.firestore();S.state="ready";
 S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){var x=d.data();x._id=d.id;return x});S.state="ready";refresh()},function(){S.state="error";render()});
 S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(function(d){S.flags[d.id]=(d.data().by||[]).length});refresh()},function(){});subL()}
 
-function loadProfile(u){S.fdb.collection("users").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
+function loadProfile(u){S.fdb.collection("profiles").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=S.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
