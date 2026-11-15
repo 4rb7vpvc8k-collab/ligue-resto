@@ -255,12 +255,31 @@ function rc(x,showR){
   var idx=ri(x);
   var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
   
-  // Gestion de la photo : soit celle de l'utilisateur, soit l'image de secours de la catégorie
-  var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
-  var photoUrl = x.photo || catInfo.img || '';
-  var photoHtml = photoUrl ? '<div style="margin-top:10px;border-radius:10px;overflow:hidden;border:1px solid var(--bd)"><img src="'+photoUrl+'" style="width:100%;height:200px;object-fit:cover;display:block"></div>' : '';
-  return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+photoHtml+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>':''))+'</div>';
+  var catInfo=(STYLE_CAT_MAP[x.cat]||CUISINE_CAT_MAP[x.cat]||{});
+  var photoUrl=x.photo||catInfo.img||'';
+  var photoHtml=photoUrl?'<img src="'+photoUrl+'" class="review-thumb" onclick="openLight(\''+photoUrl+'\')">':'';
+
+  var avisText=x.avis||"";
+  var isLong=avisText.length>120;
+  var shortAvis=isLong?avisText.substring(0,120)+'... <a onclick="this.parentElement.innerHTML=\''+esc(avisText).replace(/'/g,"\\'")+'\'" style="color:var(--pr);cursor:pointer;font-weight:bold">Voir plus</a>':avisText;
+
+  // Gestion des stickers
+  var stickersHtml=(x.st&&x.st.length)?'<div class="chips" style="margin-top:6px;margin-bottom:4px">'+x.st.map(function(t){return '<span class="chip" style="font-size:11px;padding:2px 8px">'+esc(t)+'</span>'}).join("")+'</div>':'';
+
+  return '<div class="card strict">'+
+    '<div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div>'+
+    '<div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+
+    '<div class="review-layout">'+
+      '<div class="review-text">'+
+        (avisText?esc(shortAvis):'<span style="color:#888;font-style:italic">Aucun commentaire</span>')+
+        stickersHtml+
+      '</div>'+
+      photoHtml+
+    '</div>'+
+    (x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>':''))+
+  '</div>';
 }
+
 
 function editReview(i){var x=S.rvl[i];if(!x||!x._id)return;
 S.form={
