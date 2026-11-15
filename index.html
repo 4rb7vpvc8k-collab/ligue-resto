@@ -241,8 +241,24 @@ function status(){return S.state==="loading"?'<div class="sub">Connexion…</div
 function rc(x,showR){var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
 var idx=ri(x);
 var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
-return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="del('+idx+')">🗑️ Supprimer mon avis</a></div>':''))+'</div>'}
+return '<div class="card strict"><div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div><div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+(x.avis?'<div style="margin-top:8px">'+esc(x.avis)+'</div>':'')+'<div class="chips">'+(x.st||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join("")+'</div>'+(x.uid&&x.uid!==S.uid?'<div class="act"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>':''))+'</div>'}
 
+function editReview(i){var x=S.rvl[i];if(!x||!x._id)return;
+S.form={
+  place:{pid:x.pid,n:x.resto,a:x.addr||"",lat:x.lat||null,lng:x.lng||null,cat:x.cat||"trad_low",cuisine:x.cuisine||""},
+  note:x.note,
+  st:x.st?x.st.slice():[],
+  vis:x._p?"lg":"pub",
+  tls:x._p?[x._lg]:[],
+  cat:x.cat||"trad_low",
+  mode:x.mode||"place",
+  avis:x.avis||"",
+  editId:x._id,
+  editLg:x._p?x._lg:null
+};
+S.tab="add";render()}
+
+  
 function del(i){var x=S.rvl[i];if(!x||!x._id||!S.fdb)return;if(!confirm("Supprimer définitivement cet avis ?"))return;
 var col=x._p?S.fdb.collection("leagues/"+x._lg+"/reviews"):S.fdb.collection("reviews");
 col.doc(x._id).delete().then(function(){
@@ -501,8 +517,24 @@ if(!S.fdb){alert("Pas de connexion.");return}
 var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne une ligue.");return}
 var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
-var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
-Promise.all(ps).then(function(){S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:""};S.sr=null;S.sq="";if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}render()}).catch(function(){alert("Envoi impossible.")})}
+
+var promise;
+if(f.editId) {
+  // Modification d'un avis existant
+  var col = f.editLg ? S.fdb.collection("leagues/"+f.editLg+"/reviews") : S.fdb.collection("reviews");
+  promise = col.doc(f.editId).update(r);
+} else {
+  // Création d'un nouvel avis
+  var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
+  promise = Promise.all(ps);
+}
+
+promise.then(function(){
+  S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:"",editId:null,editLg:null};
+  S.sr=null;S.sq="";
+  if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}
+  render()
+}).catch(function(){alert("Enregistrement impossible.")})}
 
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
 var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
