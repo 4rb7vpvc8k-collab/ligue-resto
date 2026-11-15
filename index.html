@@ -520,11 +520,9 @@ if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 
 var promise;
 if(f.editId) {
-  // Modification d'un avis existant
   var col = f.editLg ? S.fdb.collection("leagues/"+f.editLg+"/reviews") : S.fdb.collection("reviews");
-  promise = col.doc(f.editId).update(r);
+  promise = col.doc(f.editId).set(r, {merge: true});
 } else {
-  // Création d'un nouvel avis
   var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
   promise = Promise.all(ps);
 }
@@ -534,7 +532,7 @@ promise.then(function(){
   S.sr=null;S.sq="";
   if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}
   render()
-}).catch(function(){alert("Enregistrement impossible.")})}
+}).catch(function(err){alert("Enregistrement impossible: "+(err.message||""))})}
 
 function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
 var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
