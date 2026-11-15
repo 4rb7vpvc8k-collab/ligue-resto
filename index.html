@@ -273,9 +273,11 @@ function expandText(el){
   var short = container.getAttribute('data-short');
 
   if(isExpanded){
+    // On repasse en mode réduit
     container.setAttribute('data-expanded', 'false');
     container.innerHTML = short + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>';
   } else {
+    // On passe en mode grand (avec "Voir moins" à la fin)
     container.setAttribute('data-expanded', 'true');
     container.innerHTML = full + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir moins</span>';
   }
