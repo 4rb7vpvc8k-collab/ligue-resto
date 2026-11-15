@@ -520,8 +520,13 @@ if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 
 var promise;
 if(f.editId) {
-  var col = f.editLg ? S.fdb.collection("leagues/"+f.editLg+"/reviews") : S.fdb.collection("reviews");
-  promise = col.doc(f.editId).set(r, {merge: true});
+  // En mode édition : on supprime l'ancien et on recrée le nouveau
+  var oldCol = f.editLg ? S.fdb.collection("leagues/"+f.editLg+"/reviews") : S.fdb.collection("reviews");
+  var newCol = priv ? S.fdb.collection("leagues/"+tls[0]+"/reviews") : S.fdb.collection("reviews");
+  
+  promise = oldCol.doc(f.editId).delete().then(function(){
+    return newCol.add(r);
+  });
 } else {
   var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
   promise = Promise.all(ps);
