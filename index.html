@@ -257,11 +257,6 @@ function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.ta
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Erreur de connexion'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 
-function expandText(el){
-  var container = el.parentNode;
-  var full = container.getAttribute('data-full');
-  if(full){ container.innerHTML = full; }
-}
 
 function openLight(url){
   var div = document.createElement('div');
@@ -269,6 +264,21 @@ function openLight(url){
   div.onclick = function(){ document.body.removeChild(div); };
   div.innerHTML = '<img src="'+url+'">';
   document.body.appendChild(div);
+}
+
+function expandText(el){
+  var container = el.parentNode;
+  var isExpanded = container.getAttribute('data-expanded') === 'true';
+  var full = container.getAttribute('data-full');
+  var short = container.getAttribute('data-short');
+
+  if(isExpanded){
+    container.setAttribute('data-expanded', 'false');
+    container.innerHTML = short + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>';
+  } else {
+    container.setAttribute('data-expanded', 'true');
+    container.innerHTML = full + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir moins</span>';
+  }
 }
 
 function rc(x, showR){
@@ -285,7 +295,7 @@ function rc(x, showR){
   var safeFull = esc(avisText);
   var safeShort = isLong ? esc(avisText.substring(0, 80)) + '...' : safeFull;
   
-  var avisHtml = avisText ? '<div class="review-text" data-full="'+safeFull.replace(/"/g, '&quot;')+'">'+safeShort+(isLong ? ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>' : '')+'</div>' : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
+  var avisHtml = avisText ? '<div class="review-text" data-expanded="false" data-full="'+safeFull.replace(/"/g, '&quot;')+'" data-short="'+safeShort.replace(/"/g, '&quot;')+'">'+safeShort+(isLong ? ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>' : '')+'</div>' : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
 
   var stickersHtml = (x.st && x.st.length) ? '<div class="chips" style="margin-top:2px;margin-bottom:0px">'+x.st.map(function(t){ return '<span class="chip" style="font-size:10px;padding:1px 5px">'+esc(t)+'</span>'; }).join("")+'</div>' : '';
 
@@ -302,6 +312,7 @@ function rc(x, showR){
     (x.uid && x.uid !== S.uid ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>' : (x.uid === S.uid && x._id ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>' : ''))+
   '</div>';
 }
+
 
 function editReview(i){var x=S.rvl[i];if(!x||!x._id)return;
 S.form={
