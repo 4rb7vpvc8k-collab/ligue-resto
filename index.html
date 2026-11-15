@@ -267,17 +267,17 @@ function openLight(url){
 }
 
 function expandText(btn){
-  var wrapper = btn.parentNode;
-  var isExpanded = wrapper.getAttribute('data-expanded') === 'true';
-  var shortText = wrapper.getAttribute('data-short');
-  var fullText = wrapper.getAttribute('data-full');
+  var parent = btn.parentNode;
+  var isExp = parent.getAttribute('data-exp') === 'true';
+  var full = parent.getAttribute('data-full');
+  var short = parent.getAttribute('data-short');
 
-  if(isExpanded){
-    wrapper.setAttribute('data-expanded', 'false');
-    wrapper.innerHTML = esc(shortText) + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>';
+  if(isExp){
+    parent.setAttribute('data-exp', 'false');
+    parent.innerHTML = short + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>';
   } else {
-    wrapper.setAttribute('data-expanded', 'true');
-    wrapper.innerHTML = esc(fullText) + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir moins</span>';
+    parent.setAttribute('data-exp', 'true');
+    parent.innerHTML = full + ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir moins</span>';
   }
 }
 
@@ -292,9 +292,10 @@ function rc(x, showR){
 
   var avisText = x.avis || "";
   var isLong = avisText.length > 80;
-  var shortText = isLong ? avisText.substring(0, 80) + '...' : avisText;
+  var safeFull = esc(avisText);
+  var safeShort = isLong ? esc(avisText.substring(0, 80)) + '...' : safeFull;
   
-  var avisHtml = avisText ? '<div class="review-text"><span data-expanded="false" data-full="'+avisText.replace(/"/g, '&quot;').replace(./g, c=>c)+'" data-short="'+shortText.replace(/"/g, '&quot;')+'">'+esc(shortText)+(isLong ? ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>' : '')+'</span></div>' : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
+  var avisHtml = avisText ? '<div class="review-text"><span data-exp="false" data-full="'+safeFull.replace(/"/g, '&quot;')+'" data-short="'+safeShort.replace(/"/g, '&quot;')+'">'+safeShort+(isLong ? ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>' : '')+'</span></div>' : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
 
   var stickersHtml = (x.st && x.st.length) ? '<div class="chips" style="margin-top:2px;margin-bottom:0px">'+x.st.map(function(t){ return '<span class="chip" style="font-size:10px;padding:1px 5px">'+esc(t)+'</span>'; }).join("")+'</div>' : '';
 
