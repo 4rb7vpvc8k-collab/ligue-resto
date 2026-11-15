@@ -257,35 +257,40 @@ function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.ta
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Erreur de connexion'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
 
-function rc(x,showR){
-  var d=new Date(x.ts),mine=S.leagues.some(function(l){return lg(x).indexOf(l)>-1})&&x.uid!==S.uid;
-  var idx=ri(x);
-  var ulink=x.uid&&x.uid!==S.uid?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"':'';
-  
-  var catInfo=(STYLE_CAT_MAP[x.cat]||CUISINE_CAT_MAP[x.cat]||{});
-  var photoUrl=x.photo||catInfo.img||'';
-  var photoHtml=photoUrl?'<img src="'+photoUrl+'" class="review-thumb" onclick="openLight(\''+photoUrl+'\')">':'';
+function expandText(el){
+  var container = el.parentNode;
+  var full = container.getAttribute('data-full');
+  if(full){ container.innerHTML = full; }
+}
 
-  var avisText=x.avis||"";
-  var isLong=avisText.length>90;
-  var safeFull=esc(avisText);
-  var safeShort=isLong?esc(avisText.substring(0,90))+'...':safeFull;
+function rc(x, showR){
+  var d = new Date(x.ts), mine = S.leagues.some(function(l){ return lg(x).indexOf(l) > -1; }) && x.uid !== S.uid;
+  var idx = ri(x);
+  var ulink = x.uid && x.uid !== S.uid ? ' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"' : '';
   
-  var avisHtml=avisText?'<div class="review-text" data-full="'+safeFull.replace(/"/g,'&quot;')+'">'+safeShort+(isLong?' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>':''):'</div>':'<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
+  var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
+  var photoUrl = x.photo || catInfo.img || '';
+  var photoHtml = photoUrl ? '<img src="'+photoUrl+'" class="review-thumb" onclick="openLight(\''+photoUrl+'\')">' : '';
 
-  var stickersHtml=(x.st&&x.st.length)?'<div class="chips" style="margin-top:4px;margin-bottom:0px">'+x.st.map(function(t){return '<span class="chip" style="font-size:11px;padding:2px 6px">'+esc(t)+'</span>'}).join("")+'</div>':'';
+  var avisText = x.avis || "";
+  var isLong = avisText.length > 90;
+  var safeFull = esc(avisText);
+  var safeShort = isLong ? esc(avisText.substring(0, 90)) + '...' : safeFull;
+  
+  var avisHtml = avisText ? '<div class="review-text" data-full="'+safeFull.replace(/"/g, '&quot;')+'">'+safeShort+(isLong ? ' <span style="color:var(--pr);cursor:pointer;font-weight:bold" onclick="expandText(this)">Voir plus</span>' : '')+'</div>' : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
+
+  var stickersHtml = (x.st && x.st.length) ? '<div class="chips" style="margin-top:4px;margin-bottom:0px">'+x.st.map(function(t){ return '<span class="chip" style="font-size:11px;padding:2px 6px">'+esc(t)+'</span>'; }).join("")+'</div>' : '';
 
   return '<div class="card strict">'+
-    '<div class="row"><div class="resto">'+(showR?esc(x.resto)+dot(x):'<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div>'+
-    '<div class="who">'+(showR?'<span'+ulink+'>'+esc(x.pseudo)+'</span> · ':'')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+
+    '<div class="row"><div class="resto">'+(showR ? esc(x.resto)+dot(x) : '<span'+ulink+'>'+esc(x.pseudo)+'</span>')+'</div><div class="stars">'+stars(x.note)+'</div></div>'+
+    '<div class="who">'+(showR ? '<span'+ulink+'>'+esc(x.pseudo)+'</span> · ' : '')+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · 🛵 livraison':x.mode==="place"?' · 🍽️ sur place':'')+(x._p?' · <span class="tag">🔒 ligue seulement</span>':mine?' · <span class="tag">👥 ligue</span>':'')+'</div>'+
     '<div class="review-layout">'+
       '<div style="flex:1">'+avisHtml+stickersHtml+'</div>'+
       photoHtml+
     '</div>'+
-    (x.uid&&x.uid!==S.uid?'<div class="act" style="margin-top:4px"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>':(x.uid===S.uid&&x._id?'<div class="act" style="margin-top:4px"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>':''))+
+    (x.uid && x.uid !== S.uid ? '<div class="act" style="margin-top:4px"><a onclick="rep('+idx+')">🚩 Signaler</a><a onclick="blk('+idx+')">🚫 Bloquer</a></div>' : (x.uid === S.uid && x._id ? '<div class="act" style="margin-top:4px"><a onclick="editReview('+idx+')">✏️ Modifier</a><a onclick="del('+idx+')">🗑️ Supprimer</a></div>' : ''))+
   '</div>';
 }
-
 function editReview(i){var x=S.rvl[i];if(!x||!x._id)return;
 S.form={
   place:{pid:x.pid,n:x.resto,a:x.addr||"",lat:x.lat||null,lng:x.lng||null,cat:x.cat||"trad_low",cuisine:x.cuisine||""},
