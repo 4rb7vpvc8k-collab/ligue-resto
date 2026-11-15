@@ -102,6 +102,7 @@ nav button.on{color:#E5B83F;font-weight:700}
 .home-review-resto { font-weight: 800; font-size: 17px; color: var(--tx); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
 .home-review-comment { font-size: 14px; color: var(--mut); line-height: 1.4; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .home-review-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--bd); font-size: 12px; color: var(--mut); }
+.photo-preview{width:100%;height:120px;border-radius:6px;object-fit:cover;margin-top:8px;border:1px solid var(--bd);display:none}
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -514,18 +515,30 @@ if(S.manual)return h+'<div class="card strict"><div class="sub">Ajoute ton resto
 return h+sbar()+"<div id='res'>"+resHTML()+"</div>"}
 var p=f.place;
 var allCatMap=Object.assign({}, STYLE_CAT_MAP, CUISINE_CAT_MAP);
-return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div><div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(allCatMap).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>':'')+allCatMap[k].label+'</button>'}).join("")+'</div><div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div><textarea placeholder="Ton avis..." oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea><div class="sub">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 Livraison</button></div><div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div><div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue.</div>'):'')+'<button class="btn" onclick="send()">Publier</button>'}
+return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div>'+
+'<div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(allCatMap).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>':'')+allCatMap[k].label+'</button>'}).join("")+'</div>'+
+'<div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div>'+
+'<textarea placeholder="Ton avis..." oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea>'+
+'<div class="sub">📸 Photo (optionnelle) :</div>'+
+'<input type="file" accept="image/*" onchange="handlePhoto(event)" style="margin-bottom:6px">'+
+'<img id="pview" class="photo-preview"'+(f.photo?' src="'+f.photo+'" style="display:block"':'')+'>'+
+'<div class="sub" style="margin-top:8px">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 Livraison</button></div>'+
+'<div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
+'<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+
+(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue.</div>'):'')+
+'<button class="btn" onclick="send()">Publier</button>'}
 function tlsOf(){return S.form.tls&&S.form.tls.length?S.form.tls:(S.league?[S.league]:[])}
 function togLgForm(c){var t=tlsOf().slice(),i=t.indexOf(c);if(i>-1)t.splice(i,1);else t.push(c);S.form.tls=t;render()}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
 var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug,n:n,a:a,lat:S.loc?S.loc.lat:48.8566,lng:S.loc?S.loc.lng:2.3522,cat:S.form.cat||"trad_low"};S.manual=false;render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
 function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
+function handlePhoto(e){var file=e.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(evt){S.form.photo=evt.target.result;var pv=document.getElementById("pview");if(pv){pv.src=S.form.photo;pv.style.display="block"}};reader.readAsDataURL(file)}
 
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion.");return}
 var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne une ligue.");return}
-var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),photo:f.photo||"",st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 
 var promise;
@@ -543,7 +556,7 @@ if(f.editId) {
 }
 
 promise.then(function(){
-  S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:"",editId:null,editLg:null};
+  S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:"",photo:"",editId:null,editLg:null};
   S.sr=null;S.sq="";
   if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}
   render()
