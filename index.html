@@ -93,6 +93,14 @@ nav button.on{color:#E5B83F;font-weight:700}
 .dt{width:46px;height:62px;border-radius:4px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}
 .di{flex:1;min-width:0}
 .tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
+/* Nouveaux styles pour les avis sur l'accueil */
+.home-review-card { background: var(--card); border: 1px solid var(--bd); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s ease; }
+.home-review-card:active { transform: scale(0.98); }
+.home-review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.home-review-resto { font-weight: 800; font-size: 16px; color: var(--tx); display: flex; align-items: center; gap: 6px; }
+.home-review-meta { font-size: 13px; color: var(--mut); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.home-review-comment { font-size: 14px; color: var(--tx); line-height: 1.4; background: var(--ac2); padding: 8px 10px; border-radius: 8px; margin-top: 6px; font-style: italic; }
+
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
@@ -592,7 +600,16 @@ if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewP
 if(S.fdb)S.fdb.collection("profiles").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
 
 function hp(p){return S.hl.push(p)-1}
-function pc(p,meta,bg,big){return '<div class="pc" onclick="openO('+hp(p)+')"><div class="pt" style="'+(bg?'background:'+bg:tl(p.n))+'">'+dot(p,'position:absolute;top:10px;right:10px')+'<b>'+(big||ini(p.n))+'</b><small>'+esc(p.n)+'</small></div><div class="pm">'+meta+'</div></div>'}
+function pc(p,meta,bg,big){
+  // Si c'est un avis d'ami (qui contient un commentaire ou un format enrichi), on affiche une jolie carte
+  return '<div class="home-review-card" onclick="openO('+hp(p)+')">' +
+    '<div class="home-review-header">' +
+      '<div class="home-review-resto">' + dot(p) + esc(p.n) + '</div>' +
+    '</div>' +
+    '<div class="home-review-meta">' + meta + '</div>' +
+  '</div>';
+}
+
 function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<div class="sub">'+empty+'</div>'}
 function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
