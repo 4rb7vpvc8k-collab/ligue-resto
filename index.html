@@ -93,13 +93,15 @@ nav button.on{color:#E5B83F;font-weight:700}
 .dt{width:46px;height:62px;border-radius:4px;color:#F4F1E9;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 46px}
 .di{flex:1;min-width:0}
 .tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
-/* Nouveaux styles pour les avis sur l'accueil */
-.home-review-card { background: var(--card); border: 1px solid var(--bd); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.2s ease; }
+/* Nouveaux styles ultra-stylés pour les avis sur l'accueil */
+.home-review-card { background: var(--card); border: 1px solid var(--bd); border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .home-review-card:active { transform: scale(0.98); }
-.home-review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.home-review-resto { font-weight: 800; font-size: 16px; color: var(--tx); display: flex; align-items: center; gap: 6px; }
-.home-review-meta { font-size: 13px; color: var(--mut); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.home-review-comment { font-size: 14px; color: var(--tx); line-height: 1.4; background: var(--ac2); padding: 8px 10px; border-radius: 8px; margin-top: 6px; font-style: italic; }
+.home-review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.home-review-user { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--tx); }
+.home-review-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #F4F1E9; flex-shrink: 0; }
+.home-review-resto { font-weight: 800; font-size: 17px; color: var(--tx); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.home-review-comment { font-size: 14px; color: var(--mut); line-height: 1.4; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.home-review-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--bd); font-size: 12px; color: var(--mut); }
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -600,13 +602,19 @@ if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewP
 if(S.fdb)S.fdb.collection("profiles").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
 
 function hp(p){return S.hl.push(p)-1}
-function pc(p,meta,bg,big){
-  // Si c'est un avis d'ami (qui contient un commentaire ou un format enrichi), on affiche une jolie carte
+function pc(p, meta, bg, big) {
+  var userHtml = '';
+  if (meta && meta.indexOf('<b>') > -1) {
+    // Si on a le nom d'un ami et une note
+    userHtml = '<div class="home-review-user"><div class="home-review-avatar" style="background:'+(bg||'var(--ac)')+'">'+(big||'👤')+'</div><span>'+meta+'</span></div>';
+  } else {
+    // Sinon affichage classique avec les étoiles
+    userHtml = '<div class="home-review-user"><div class="home-review-avatar" style="background:var(--ac)">🍽️</div><span>'+meta+'</span></div>';
+  }
+
   return '<div class="home-review-card" onclick="openO('+hp(p)+')">' +
-    '<div class="home-review-header">' +
-      '<div class="home-review-resto">' + dot(p) + esc(p.n) + '</div>' +
-    '</div>' +
-    '<div class="home-review-meta">' + meta + '</div>' +
+    '<div class="home-review-resto">' + dot(p) + esc(p.n) + '</div>' +
+    '<div class="home-review-footer">' + userHtml + '</div>' +
   '</div>';
 }
 
