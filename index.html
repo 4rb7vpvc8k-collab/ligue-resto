@@ -533,7 +533,6 @@ return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><d
 '<div class="sub">📸 Photo (optionnelle) :</div>'+
 '<input type="file" accept="image/*" onchange="handlePhoto(event)" style="margin-bottom:6px">'+
 (f.photo?'<div class="photo-container"><img src="'+f.photo+'" class="photo-preview"><button type="button" class="photo-del" onclick="removePhoto()">✕</button></div>':'')+
-'<img id="pview" class="photo-preview"'+(f.photo?' src="'+f.photo+'" style="display:block"':'')+'>'+
 '<div class="sub" style="margin-top:8px">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">🍽️ Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">🛵 Livraison</button></div>'+
 '<div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
 '<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+
