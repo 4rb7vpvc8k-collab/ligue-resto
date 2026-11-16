@@ -759,12 +759,19 @@ return status() + stylesHtml + cuisineHtml
 +'<div class="big" style="margin-top:20px">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
 +'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
-+'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
-
-function openReviewDetail(idx){
++'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}function openReviewDetail(idx){
   var x = S.rvl[idx];
   if(!x) return;
-  S.sel = {pid: x.pid, n: x.resto, a: x.addr||"", lat: x.lat||null, lng: x.lng||null, cat: x.cat||"trad_low"};
+  // On sélectionne le restaurant associé à cet avis
+  S.sel = {
+    pid: x.pid, 
+    n: x.resto, 
+    a: x.addr || "", 
+    lat: x.lat || null, 
+    lng: x.lng || null, 
+    cat: x.cat || "trad_low"
+  };
+  S.tab = "map"; // On bascule sur l'onglet carte/fiche resto
   render();
 }
 
@@ -853,7 +860,6 @@ function renderLetterboxdFeed(reviews){
   html += '</div>';
   return html;
 }
-
 
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
