@@ -851,7 +851,7 @@ function renderLetterboxdFeed(reviews){
     html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
       '<img src="'+photoUrl+'" class="lb-poster">'+
       '<div class="lb-info">'+
-        '<div class="lb-resto">'+esc(x.resto)+dot(x)+'</div>'+
+        '<div class="lb-resto">'+dot(x)+' '+esc(x.resto)+'</div>'+
         '<div class="lb-meta">'+
           '<span>'+esc(x.pseudo)+'</span>'+
           '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
@@ -862,8 +862,6 @@ function renderLetterboxdFeed(reviews){
   html += '</div>';
   return html;
 }
-
-
 
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
