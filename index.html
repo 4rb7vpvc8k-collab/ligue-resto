@@ -841,9 +841,15 @@ function renderLetterboxdFeed(reviews){
 
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
-    var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
-    // Si l'ami a mis une photo, on la prend. Sinon, on prend l'image par défaut de la catégorie du resto.
-    var photoUrl = x.photo || catInfo.img || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80';
+    // On récupère la catégorie (ex: "fast", "trad_low", etc.)
+    var catKey = x.cat || "trad_low";
+    
+    // On cherche l'image associée dans STYLE_CATS ou une image par défaut de secours
+    var catObj = STYLE_CATS.find(function(c){ return c.key === catKey; });
+    var defaultCatImg = catObj ? catObj.img : "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80";
+
+    // Si l'ami a mis une photo on la prend, sinon on prend la photo affiliée à sa catégorie !
+    var photoUrl = x.photo || defaultCatImg;
 
     var idx = ri(x);
     html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
