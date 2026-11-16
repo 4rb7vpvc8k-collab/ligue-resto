@@ -821,14 +821,13 @@ function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
 function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=true;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}
 function renderLetterboxdFeed(reviews){
-  if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent dans la ligue</div>';
+  if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent</div>';
 
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
     var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
     var photoUrl = x.photo || catInfo.img || '';
-    // Si vraiment aucune photo n'existe, on met une image par défaut ou une pastille, mais l'idéal est d'avoir la photo de l'avis
-    if(!photoUrl) return; // On n'affiche que les avis avec photo pour un vrai rendu Letterboxd propre, ou tu peux laisser une image de secours
+    if(!photoUrl) return;
 
     var idx = ri(x);
     html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
