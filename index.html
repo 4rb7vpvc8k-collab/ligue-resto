@@ -118,8 +118,8 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-card:active { transform: scale(0.98); }
 .lb-poster { width: 100%; height: 160px; object-fit: cover; display: block; }
 .lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-.lb-resto { font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: .lb-card.polaroid { background: #FAF8F5; border: 1px solid var(--bd); padding: 8px 8px 12px 8px; text-align: center; }
-.lb-polaroid-inner { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 6px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 6px; }
+.lb-card.text-only { background: var(--card); border: 2px dashed var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
+.lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
           
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -835,14 +835,14 @@ function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("P
 
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});var seen={};return a.filter(vis).filter(function(x){var k=x._id||(x.uid+'|'+x.ts+'|'+(x.pid||x.resto));if(seen[k])return false;seen[k]=1;return true})}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
-function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=true;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}
-function renderLetterboxdFeed(reviews){
+function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=true;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}function renderLetterboxdFeed(reviews){
   if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent</div>';
 
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
     var idx = ri(x);
     if(x.photo) {
+      // Cas 1 : Il y a une vraie photo postée par l'ami
       html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
         '<img src="'+x.photo+'" class="lb-poster">'+
         '<div class="lb-info">'+
@@ -851,14 +851,13 @@ function renderLetterboxdFeed(reviews){
         '</div>'+
       '</div>';
     } else {
-      html += '<div class="lb-card polaroid" onclick="openReviewDetail('+idx+')">'+
-        '<div class="lb-polaroid-inner">'+
-          '<span>📝</span>'+
-        '</div>'+
-        '<div class="lb-resto" style="font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+dot(x)+' '+esc(x.resto)+'</div>'+
-        '<div class="lb-meta" style="margin-top:2px;">'+
-          '<span style="font-size:10px;">'+esc(x.pseudo)+'</span>'+
-          '<div class="stars" style="font-size:9px;">'+stars(x.note)+'</div>'+
+      // Cas 2 : Pas de photo -> Carte minimaliste élégante
+      html += '<div class="lb-card text-only" onclick="openReviewDetail('+idx+')">'+
+        '<div style="font-size: 28px; margin-bottom: 6px;">🍽️</div>'+
+        '<div class="lb-resto">'+dot(x)+' '+esc(x.resto)+'</div>'+
+        '<div class="lb-meta" style="width:100%; justify-content:center; gap:8px; margin-top:4px;">'+
+          '<span>'+esc(x.pseudo)+'</span>'+
+          '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
         '</div>'+
       '</div>';
     }
