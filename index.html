@@ -841,21 +841,17 @@ function renderLetterboxdFeed(reviews){
 
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
-    // On récupère la catégorie (ex: "fast", "trad_low", etc.)
     var catKey = x.cat || "trad_low";
-    
-    // On cherche l'image associée dans STYLE_CATS ou une image par défaut de secours
     var catObj = STYLE_CATS.find(function(c){ return c.key === catKey; });
     var defaultCatImg = catObj ? catObj.img : "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80";
 
-    // Si l'ami a mis une photo on la prend, sinon on prend la photo affiliée à sa catégorie !
     var photoUrl = x.photo || defaultCatImg;
-
     var idx = ri(x);
+
     html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
       '<img src="'+photoUrl+'" class="lb-poster">'+
       '<div class="lb-info">'+
-        '<div class="lb-resto">'+esc(x.resto)+'</div>'+
+        '<div class="lb-resto">'+esc(x.resto)+dot(x)+'</div>'+
         '<div class="lb-meta">'+
           '<span>'+esc(x.pseudo)+'</span>'+
           '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
@@ -866,6 +862,7 @@ function renderLetterboxdFeed(reviews){
   html += '</div>';
   return html;
 }
+
 
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
