@@ -842,10 +842,10 @@ function renderLetterboxdFeed(reviews){
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
     var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
-    var photoUrl = x.photo || catInfo.img || '';
-    if(!photoUrl) return;
+    // Si l'ami a mis une photo, on la prend. Sinon, on prend l'image par défaut de la catégorie du resto.
+    var photoUrl = x.photo || catInfo.img || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80';
 
-    var idx = ri(x); // Enregistre l'index de l'avis dans S.rvl
+    var idx = ri(x);
     html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
       '<img src="'+photoUrl+'" class="lb-poster">'+
       '<div class="lb-info">'+
