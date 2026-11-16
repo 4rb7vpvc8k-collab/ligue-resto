@@ -120,6 +120,8 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
 .lb-resto { font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lb-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #666; }
+.lb-card.text-only { background: var(--card); border: 2px dashed var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
+.lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -841,23 +843,27 @@ function renderLetterboxdFeed(reviews){
 
   var html = '<div class="letterboxd-grid">';
   reviews.forEach(function(x){
-    var catKey = x.cat || "trad_low";
-    var catObj = STYLE_CATS.find(function(c){ return c.key === catKey; });
-    var defaultCatImg = catObj ? catObj.img : "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80";
-
-    var photoUrl = x.photo || defaultCatImg;
     var idx = ri(x);
-
-    html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
-      '<img src="'+photoUrl+'" class="lb-poster">'+
-      '<div class="lb-info">'+
-        '<div class="lb-resto">'+dot(x)+' '+esc(x.resto)+'</div>'+
-        '<div class="lb-meta">'+
-          '<span>'+esc(x.pseudo)+'</span>'+
-          '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
+    if(x.photo) {
+      html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
+        '<img src="'+x.photo+'" class="lb-poster">'+
+        '<div class="lb-info">'+
+          '<div class="lb-resto">'+dot(x)+' '+esc(x.resto)+'</div>'+
+          '<div class="lb-meta"><span>'+esc(x.pseudo)+'</span><div class="stars" style="font-size:10px;">'+stars(x.note)+'</div></div>'+
         '</div>'+
-      '</div>'+
-    '</div>';
+      '</div>';
+    } else {
+      html += '<div class="lb-card polaroid" onclick="openReviewDetail('+idx+')">'+
+        '<div class="lb-polaroid-inner">'+
+          '<span>📝</span>'+
+        '</div>'+
+        '<div class="lb-resto" style="font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+dot(x)+' '+esc(x.resto)+'</div>'+
+        '<div class="lb-meta" style="margin-top:2px;">'+
+          '<span style="font-size:10px;">'+esc(x.pseudo)+'</span>'+
+          '<div class="stars" style="font-size:9px;">'+stars(x.note)+'</div>'+
+        '</div>'+
+      '</div>';
+    }
   });
   html += '</div>';
   return html;
