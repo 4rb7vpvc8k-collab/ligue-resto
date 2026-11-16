@@ -738,7 +738,8 @@ function pc(p, meta, bg, big) {
 function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<div class="sub">'+empty+'</div>'}
 function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
-function home(){var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
+function home(){
+var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c});
 var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 fr.sort(function(a,b){return b.ts-a.ts});
@@ -757,8 +758,16 @@ var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div cla
 return status() + stylesHtml + cuisineHtml
 +'<div class="big" style="margin-top:20px">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
-+'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?hs(fr.map(function(x){return pc(pl(x),'<b>'+esc(x.pseudo)+'</b><span class="stars">'+stars(x.note)+'</span>',colOf(x),esc((x.pseudo||"?").charAt(0).toUpperCase()))}),"Aucun avis d'amis."):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
++'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
 +'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
+
+function openReviewDetail(idx){
+  var x = S.rvl[idx];
+  if(!x) return;
+  S.sel = {pid: x.pid, n: x.resto, a: x.addr||"", lat: x.lat||null, lng: x.lng||null, cat: x.cat||"trad_low"};
+  render();
+}
+
 
 var PC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PH=[130,100,80];
 function slot(i){var p=S.top[i];if(i<3)return '<div class="pod" style="background:'+PC[i]+';height:'+PH[i]+'px" onclick="pickTop('+i+')"><div class="pn">'+(i+1)+'</div><div class="pl">'+(p?esc(p.n):'＋')+'</div></div>';
