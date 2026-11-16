@@ -113,6 +113,13 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lightbox img{max-width:90%;max-height:90%;border-radius:8px;object-fit:contain}
 .review-text-content { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 .card.strict .review-text.expanded .review-text-content { display: block; overflow: visible; }
+.letterboxd-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px 0; }
+.lb-card { background: var(--card-bg, #fff); border: 1px solid var(--bd); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; }
+.lb-card:active { transform: scale(0.98); }
+.lb-poster { width: 100%; height: 160px; object-fit: cover; display: block; }
+.lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.lb-resto { font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lb-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #666; }
 
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -813,6 +820,31 @@ function setP(){var p=document.getElementById("ps").value.trim();if(!p){alert("P
 function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});var seen={};return a.filter(vis).filter(function(x){var k=x._id||(x.uid+'|'+x.ts+'|'+(x.pid||x.resto));if(seen[k])return false;seen[k]=1;return true})}
 function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
 function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){if(S.unsubs[c])return;S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){S.priv[c]=q.docs.map(function(d){var x=d.data();x._p=true;x._lg=c;x._id=d.id;return x});refresh()},function(){})})}
+function renderLetterboxdFeed(reviews){
+  if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent dans la ligue</div>';
+
+  var html = '<div class="letterboxd-grid">';
+  reviews.forEach(function(x){
+    var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
+    var photoUrl = x.photo || catInfo.img || '';
+    // Si vraiment aucune photo n'existe, on met une image par défaut ou une pastille, mais l'idéal est d'avoir la photo de l'avis
+    if(!photoUrl) return; // On n'affiche que les avis avec photo pour un vrai rendu Letterboxd propre, ou tu peux laisser une image de secours
+
+    var idx = ri(x);
+    html += '<div class="lb-card" onclick="openReviewDetail('+idx+')">'+
+      '<img src="'+photoUrl+'" class="lb-poster">'+
+      '<div class="lb-info">'+
+        '<div class="lb-resto">'+esc(x.resto)+'</div>'+
+        '<div class="lb-meta">'+
+          '<span>'+esc(x.pseudo)+'</span>'+
+          '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+  html += '</div>';
+  return html;
+}
 
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
