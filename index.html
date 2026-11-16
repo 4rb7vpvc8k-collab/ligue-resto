@@ -119,10 +119,9 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-poster { width: 100%; height: 160px; object-fit: cover; display: block; }
 .lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
 .lb-resto { font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lb-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #666; }
-.lb-card.text-only { background: var(--card); border: 2px dashed var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
-.lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
-
+.lb-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: #.lb-card.avatar-card { justify-content: center; align-items: center; background: #fff; min-height: 160px; text-align: center; }
+.lb-big-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #F4F1E9; margin-bottom: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+          
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
@@ -853,13 +852,13 @@ function renderLetterboxdFeed(reviews){
         '</div>'+
       '</div>';
     } else {
-      html += '<div class="lb-card polaroid" onclick="openReviewDetail('+idx+')">'+
-        '<div class="lb-polaroid-inner">'+
-          '<span>📝</span>'+
-        '</div>'+
-        '<div class="lb-resto" style="font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+dot(x)+' '+esc(x.resto)+'</div>'+
-        '<div class="lb-meta" style="margin-top:2px;">'+
-          '<span style="font-size:10px;">'+esc(x.pseudo)+'</span>'+
+      var userInitial = (x.pseudo || "?").charAt(0).toUpperCase();
+      var userBgColor = colOf(x); // Utilise la couleur de l'ami
+      html += '<div class="lb-card avatar-card" onclick="openReviewDetail('+idx+')">'+
+        '<div class="lb-big-avatar" style="background:'+userBgColor+'">'+userInitial+'</div>'+
+        '<div class="lb-resto" style="font-size:12px; padding:0 8px;">'+dot(x)+' '+esc(x.resto)+'</div>'+
+        '<div class="lb-meta" style="width:100%; padding:0 10px 8px; justify-content:center; gap:6px; margin-top:2px;">'+
+          '<span style="font-size:11px;">'+esc(x.pseudo)+'</span>'+
           '<div class="stars" style="font-size:9px;">'+stars(x.note)+'</div>'+
         '</div>'+
       '</div>';
