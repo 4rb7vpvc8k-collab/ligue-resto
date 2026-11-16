@@ -864,6 +864,7 @@ function renderLetterboxdFeed(reviews){
 }
 
 
+
 function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
 function startDB(){S.fdb=firebase.firestore();S.state="ready";
