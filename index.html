@@ -13,10 +13,6 @@ body{max-width:520px;margin:0 auto;padding:0 14px 90px}
 .hd h1{font-size:24px;margin:0}.hd div{opacity:.9;font-size:13px;margin-top:2px}
 h2{font-size:16px;margin:14px 0 8px}
 .sub{color:var(--mut);font-size:13px;margin-bottom:8px}
-// Tout en haut de ton script :
-var ICONS = {
-  settings: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>'
-};
 
 .card{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .card.asym{border-radius:12px 4px 12px 4px}
@@ -160,15 +156,6 @@ nav button.on{color:#E5B83F;font-weight:700}
 <nav id="nav"></nav>
 <div id="sheet"></div>
 <script>
-  // === 1. METS TON OBJET D'ICÔNES ICI, TOUT EN HAUT ===
-  var ICONS = {
-    settings: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>'
-  };
-
-  // Tes autres variables globales (comme S) et tes fonctions arrivent après...
-  var S = { ... };
-
-  function render() { ... }
 
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
 var STP=["💩 Intoxication","🐌 Service escargot","🧊 Plat tiède","🤌 Chef’s kiss","🐜 Invités surprise","🤏 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🏃 Je reviens demain","🍷 Vin de camping","🔥 Ça pique !"];
