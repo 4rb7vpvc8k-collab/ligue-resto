@@ -708,13 +708,36 @@ var med=["🥇","🥈","🥉"];
 return h+G.map(function(x,i){return '<div class="card strict rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+dot(x)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
 
 function league(){
-var join='<div class="card strict" style="margin-top:14px;"><input id="lg" placeholder="Code d’une ligue" autocapitalize="characters"><button class="btn" onclick="join()">Créer / rejoindre</button></div>';
-if(!S.leagues.length)return '<h2>Ma ligue</h2><div class="sub">Crée une ligue avec tes amis.</div>'+join;
-var L=lrev(S.league).sort(function(a,b){return b.ts-a.ts});
-var h='<div class="chips" style="margin:0 0 8px">'+S.leagues.map(function(c){return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>';
-h+='<div class="seg" style="margin-bottom:12px;"><button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button><button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button><button class="chip" onclick="share(\''+esc(S.league)+'\')">Inviter</button><button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button></div>';
-if(S.lv==="rank")return h+rank(L);
-return h+(L.length?L.map(function(x){return rc(x,true)}).join(""):'<div class="empty">Aucun avis dans cette ligue.</div>')+'<h2 style="margin-top:20px;">Rejoindre une autre ligue</h2>'+join}
+  var join = '<div class="card strict" style="margin-top:14px;"><input id="lg" placeholder="Code d’une ligue" autocapitalize="characters"><button class="btn" onclick="join()">Créer / rejoindre</button></div>';
+  
+  if(!S.leagues.length) return '<h2>Ma ligue</h2><div class="sub">Crée une ligue avec tes amis.</div>' + join;
+  
+  var L = lrev(S.league).sort(function(a,b){ return b.ts - a.ts; });
+  
+  // 1. Le sélecteur de ligues (le bouton "TEST")
+  var h = '<div class="chips" style="margin:0 0 8px">' + S.leagues.map(function(c){ return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'; }).join("") + '</div>';
+  
+  // 2. Les boutons de la ligue (Fil, Classement, Inviter, Quitter) 
+  // DOIVENT être impérativement ici, juste sous le bouton TEST !
+  h += '<div class="seg" style="margin-bottom:12px;">' +
+       '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
+       '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
+       '<button class="chip" onclick="share(\''+esc(S.league)+'\')">Inviter</button>' +
+       '<button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button>' +
+       '</div>';
+
+  // 3. Ensuite seulement, on affiche le contenu des avis ou du classement dessous
+  if(S.lv === "rank") {
+    h += rank(L);
+  } else {
+    h += (L.length ? L.map(function(x){ return rc(x, true); }).join("") : '<div class="empty">Aucun avis dans cette ligue.</div>');
+  }
+
+  // 4. Et enfin le bloc pour rejoindre une autre ligue en bas de page
+  h += '<h2 style="margin-top:20px;">Rejoindre une autre ligue</h2>' + join;
+  
+  return h;
+}
 
 
 function leaveLeague(c){if(!confirm("Quitter la ligue « "+c+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";save();render()}
