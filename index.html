@@ -714,10 +714,10 @@ function league(){
   
   var L = lrev(S.league).sort(function(a,b){ return b.ts - a.ts; });
   
-  // 1. Les puces pour basculer entre les différentes ligues (ex: "TEST")
+  // 1. On commence par afficher le sélecteur de ligues
   var h = '<div class="chips" style="margin:0 0 8px">' + S.leagues.map(function(c){ return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'; }).join("") + '</div>';
   
-  // 2. Les boutons d'action (Fil, Classement, Inviter, Quitter) placés immédiatement sous les ligues, tout en haut !
+  // 2. On met DIRECTEMENT les boutons d'action en haut (Fil, Classement, Inviter, Quitter)
   h += '<div class="seg" style="margin-bottom:12px;">' +
        '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
        '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
@@ -725,14 +725,14 @@ function league(){
        '<button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button>' +
        '</div>';
 
-  // 3. Contenu de la ligue (Classement ou Fil d'actualité)
+  // 3. Ensuite seulement, on affiche le contenu (le classement ou la liste des avis)
   if(S.lv === "rank") {
     h += rank(L);
   } else {
     h += (L.length ? L.map(function(x){ return rc(x, true); }).join("") : '<div class="empty">Aucun avis dans cette ligue.</div>');
   }
 
-  // 4. Section pour rejoindre une autre ligue en bas
+  // 4. Et enfin la section pour rejoindre une autre ligue en bas
   h += '<h2 style="margin-top:20px;">Rejoindre une autre ligue</h2>' + join;
   
   return h;
