@@ -121,14 +121,15 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-card.text-only { background: var(--card); border: 2px dashed var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
 .lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
 /* Style mis en valeur pour la grande carte du restaurant en haut */
-.card:not(.strict):not(.card.asym) {
-  background: #ffffff !important; /* Un fond blanc pur pour contraster avec le fond beige de l'app */
-  border: 1px solid rgba(25, 42, 58, 0.12) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important; /* Une ombre portée plus marquée pour l'effet relief */
-  border-radius: 12px !important;
+.resto-main-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(25, 42, 58, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 14px !important;
   padding: 16px !important;
-  margin-bottom: 16px !important;
+  margin-bottom: 14px !important;
 }
+
           
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -568,8 +569,22 @@ function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.
 function explore(){if(S.sel)return place(S.sel);
 return status()+sbar()+"<div id='map'></div><div class='sub' style='margin:4px 0 8px'>Pastilles = catégorie · OpenStreetMap</div>"+locCard()+"<div id='res'>"+resHTML()+"</div><div id='cl'>"+commList()+"</div>"}
 
-function place(p){var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
-return '<button class="back" onclick="S.sel=null;render()">← Retour</button><div class="card strict"><div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+(g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+'<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div><div class="row2 tri" style="margin-top:10px"><button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button><button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button><button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button></div>'+(num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+'</div>'+(g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>'+g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}).map(function(x){return rc(x,false)}).join(""):'')}
+function place(p){
+  var g=gmap(allv())[keyOf(p)],d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):null;
+  return '<button class="back" onclick="S.sel=null;render()">← Retour</button>' +
+         '<div class="resto-main-card">' + // <-- C'est ici qu'on change la classe
+           '<div class="resto" style="font-size:20px">'+esc(p.n)+dot(p)+'</div>'+
+           (g?mrow('🍽️','Sur place',g.sp,g.cp)+mrow('🛵','Livraison',g.sd,g.cd):'<div class="who">Pas encore d’avis</div>')+
+           '<div class="who" style="margin-top:8px">📍 '+esc(p.a||"Adresse non renseignée")+(d!=null?' · <span class="dist">'+fmtD(d)+'</span>':'')+'</div>'+
+           '<div class="row2 tri" style="margin-top:10px">'+
+             '<button class="btn" onclick="S.form.place=S.sel;S.tab=\'add\';S.sel=null;render()">⭐ Noter</button>'+
+             '<button class="btn alt" onclick="togL()">'+(has(S.likes,p)?'❤️ Liké':'🤍 Liker')+'</button>'+
+             '<button class="btn alt" onclick="togW()">'+(has(S.wish,p)?'🔖 Dans ma liste':'🔖 À tester')+'</button>'+
+           '</div>'+
+           (num(p.lat)&&num(p.lng)?'<button class="btn alt" style="margin-top:8px" onclick="S.focus={lat:S.sel.lat,lng:S.sel.lng};S.tab=\'map\';S.sel=null;render()">🗺️ Voir sur la carte</button>':'')+
+         '</div>' +
+         (g?'<div class="seg">'+[["all","Tous"],["place","🍽️ Sur place"],["deliv","🛵 Livraison"]].map(function(t){return '<button class="chip '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0];
+// ... le reste de la fonction ne change pas
 
 function mrow(ic,lb,s,c){return '<div class="row" style="margin-top:6px"><div>'+ic+' '+lb+'</div>'+(c?'<div><span class="stars">'+stars(s/c)+'</span> <span class="who">'+(s/c).toFixed(1)+'/5 · '+c+' avis</span></div>':'<span class="who">Pas encore d’avis</span>')+'</div>'}
 function loadLeaflet(cb){if(window.L){cb();return}var s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";s.onload=cb;document.head.appendChild(s)}
