@@ -714,10 +714,10 @@ function league(){
   
   var L = lrev(S.league).sort(function(a,b){ return b.ts - a.ts; });
   
-  // 1. Les onglets de sélection des ligues en haut
-  var h = '<div class="chips" style="margin:0 0 10px">' + S.leagues.map(function(c){ return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'; }).join("") + '</div>';
+  // 1. Les puces pour basculer entre les différentes ligues (ex: "TEST")
+  var h = '<div class="chips" style="margin:0 0 8px">' + S.leagues.map(function(c){ return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'; }).join("") + '</div>';
   
-  // 2. Les boutons d'action de la ligue (Fil, Classement, Inviter, Quitter) bien rangés en haut
+  // 2. Les boutons d'action (Fil, Classement, Inviter, Quitter) placés immédiatement sous les ligues, tout en haut !
   h += '<div class="seg" style="margin-bottom:12px;">' +
        '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
        '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
@@ -725,7 +725,7 @@ function league(){
        '<button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button>' +
        '</div>';
 
-  // 3. Affichage du contenu (Classement ou Fil d'actualité)
+  // 3. Contenu de la ligue (Classement ou Fil d'actualité)
   if(S.lv === "rank") {
     h += rank(L);
   } else {
