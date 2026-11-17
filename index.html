@@ -714,10 +714,8 @@ function league(){
   
   var L = lrev(S.league).sort(function(a,b){ return b.ts - a.ts; });
   
-  // 1. On commence par afficher le sélecteur de ligues
   var h = '<div class="chips" style="margin:0 0 8px">' + S.leagues.map(function(c){ return '<button class="chip '+(c===S.league?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(c)+'</button>'; }).join("") + '</div>';
   
-  // 2. On met DIRECTEMENT les boutons d'action en haut (Fil, Classement, Inviter, Quitter)
   h += '<div class="seg" style="margin-bottom:12px;">' +
        '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
        '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
@@ -725,18 +723,17 @@ function league(){
        '<button class="chip" onclick="leaveLeague(\''+esc(S.league)+'\')">Quitter</button>' +
        '</div>';
 
-  // 3. Ensuite seulement, on affiche le contenu (le classement ou la liste des avis)
   if(S.lv === "rank") {
     h += rank(L);
   } else {
     h += (L.length ? L.map(function(x){ return rc(x, true); }).join("") : '<div class="empty">Aucun avis dans cette ligue.</div>');
   }
 
-  // 4. Et enfin la section pour rejoindre une autre ligue en bas
   h += '<h2 style="margin-top:20px;">Rejoindre une autre ligue</h2>' + join;
   
   return h;
 }
+
 
 function leaveLeague(c){if(!confirm("Quitter la ligue « "+c+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";save();render()}
 function join(){var l=document.getElementById("lg").value.trim().toUpperCase().replace(/\s+/g,"-").replace(/[\/.]/g,"");if(!l){alert("Entre un code");return}pick(l)}
