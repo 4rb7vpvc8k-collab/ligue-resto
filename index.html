@@ -120,6 +120,15 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
 .lb-card.text-only { background: var(--card); border: 2px dashed var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
 .lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
+/* Style mis en valeur pour la grande carte du restaurant en haut */
+.card:not(.strict):not(.card.asym) {
+  background: #ffffff !important; /* Un fond blanc pur pour contraster avec le fond beige de l'app */
+  border: 1px solid rgba(25, 42, 58, 0.12) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important; /* Une ombre portée plus marquée pour l'effet relief */
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
           
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
