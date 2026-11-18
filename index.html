@@ -123,12 +123,17 @@ nav button.on{color:#E5B83F;font-weight:700}
 /* Style mis en valeur pour la grande carte du restaurant en haut */
 .resto-main-card {
   position: sticky;
-  top: 6px; /* Ajuste selon la distance par rapport au haut de l'écran */
+  top: 6px;
   z-index: 10;
-  background: #ffffff !important;
+  background: var(--bg) !important; /* Utilise la couleur de fond générale */
   border: 1px solid rgba(25, 42, 58, 0.15) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03) !important;
   border-radius: 14px !important;
+  padding: 16px !important;
+  margin-bottom: 14px !important;
+}
+
+ !important;
   padding: 16px !important;
   margin-bottom: 14px !important;
 }
