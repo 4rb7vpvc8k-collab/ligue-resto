@@ -163,6 +163,19 @@ body.dark-mode .btn.alt { background: #1C232D; color: #F4F1E9; border: 1px solid
 body.dark-mode nav { background: #161B22; border-top: 1px solid rgba(255,255,255,.1); }
 body.dark-mode nav button { color: rgba(244,241,233,.5); }
 body.dark-mode nav button.on { color: #E5B83F; }
+/* --- Correction des icônes de couverts dans les pastilles jaunes en mode sombre --- */
+body.dark-mode .card .stars ~ div, 
+body.dark-mode .home-review-resto .svg-icon,
+body.dark-mode .card .svg-icon {
+  stroke: #12161C;
+}
+
+/* Si ce sont des pastilles spécifiques pour les avis populaires */
+body.dark-mode .card .dot-badge + * svg,
+body.dark-mode .card svg {
+  color: #12161C;
+}
+
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
