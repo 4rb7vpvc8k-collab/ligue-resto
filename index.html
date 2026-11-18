@@ -184,6 +184,29 @@ body.dark-mode .btn.alt { background: #1C232D; color: #F4F1E9; border: 1px solid
 body.dark-mode nav { background: #161B22; border-top: 1px solid rgba(255,255,255,.1); }
 body.dark-mode nav button { color: rgba(244,241,233,.5); }
 body.dark-mode nav button.on { color: #E5B83F; }
+/* --- Correctif ciblé pour les boutons Modifier, Supprimer et actions dans le mode sombre --- */
+body.dark-mode .card .act a,
+body.dark-mode .card [onclick*="openEdit"],
+body.dark-mode .card [onclick*="delete"],
+body.dark-mode .card button,
+body.dark-mode .card span[style*="cursor:pointer"],
+body.dark-mode .card div[style*="cursor:pointer"],
+body.dark-mode .card a {
+  color: #F4F1E9 !important;
+}
+
+/* Pour les liens de signalement, blocage, modifier et supprimer dans les cartes d'avis */
+body.dark-mode .card svg,
+body.dark-mode .card svg path {
+  stroke: #F4F1E9 !important;
+}
+
+/* Si ce sont des textes secondaires dans les cartes d'avis (comme "Aucun commentaire" ou les dates) */
+body.dark-mode .card .who, 
+body.dark-mode .card .sub {
+  color: rgba(244,241,233,0.7) !important;
+}
+
 </style> 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
