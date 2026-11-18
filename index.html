@@ -151,7 +151,18 @@ body.dark-mode .lb-card,
 body.dark-mode .lb-card.text-only, 
 body.dark-mode input, 
 body.dark-mode textarea { background: #1C232D; color: #F4F1E9; border-color: rgba(255,255,255,.1); }
-body.dark-mode .sub, body.dark-mode .who, body.dark-mode .lr b, body.dark-mode .pm { color: rgba(244,241,233,.65); }
+
+/* Force TOUS les textes, noms de restos et labels de catégories en blanc ou clair en mode sombre */
+body.dark-mode .sub, 
+body.dark-mode .who, 
+body.dark-mode .lr b, 
+body.dark-mode .pm,
+body.dark-mode .cat-name,
+body.dark-mode .resto,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode div { color: #F4F1E9; }
+
 body.dark-mode .sr { background: #12161C; }
 body.dark-mode .back { color: #E5B83F; }
 body.dark-mode .dist { color: #E5B83F; }
@@ -163,7 +174,7 @@ body.dark-mode .btn.alt { background: #1C232D; color: #F4F1E9; border: 1px solid
 body.dark-mode nav { background: #161B22; border-top: 1px solid rgba(255,255,255,.1); }
 body.dark-mode nav button { color: rgba(244,241,233,.5); }
 body.dark-mode nav button.on { color: #E5B83F; }
-</style>
+</style> 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
