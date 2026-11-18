@@ -119,17 +119,23 @@ nav button.on{color:#E5B83F;font-weight:700}
 .lb-poster { width: 100%; height: 160px; object-fit: cover; display: block; }
 .lb-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
 .lb-card.text-only { background: var(--card); border: 1px solid var(--bd); justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 14px; }
-.lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: 6px; }
-.resto-main-card {
+.lb-card.text-only .lb-resto { font-size: 15px; margin-bottom: .resto-main-card {
   position: sticky;
   top: 6px;
   z-index: 10;
-  background: #EAE6DD !important;
-  border: 1px solid rgba(25, 42, 58, 0.2) !important;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06) !important;
+  background: #192A3A !important; /* Couleur sombre */
+  color: #F4F1E9 !important;
+  border: 1px solid var(--bd) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
   border-radius: 14px !important;
   padding: 16px !important;
   margin-bottom: 14px !important;
+}
+/* Pour que les textes à l'intérieur s'adaptent si tu choisis le mode sombre */
+.resto-main-card .resto, 
+.resto-main-card .who, 
+.resto-main-card div {
+  color: #F4F1E9 !important;
 }
 
 .seg {
