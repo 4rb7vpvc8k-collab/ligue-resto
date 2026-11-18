@@ -790,32 +790,10 @@ function settings(){
   
   h += '<h2>Ma zone</h2><div class="card strict"><input id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="btn alt" onclick="setHome()">Enregistrer</button>'+(S.loc?'<div class="sub" style="margin-top:8px">✅ Position activée</div>':'<button class="btn alt" style="margin-top:8px" onclick="getLoc()">📍 Activer</button>')+'</div>';
   
-  if(S.blocked.length) h += '<h2>Bloqués</h2>' + S.blocked.map(function(b,k){return '<div class="card strict row"><b>'+esc(b.n)+'</b><button class="chip" onclick="unblk('+k+')">Débloquer</button></div>'}).join("");
+  if(S.blocked.length) h += '<h2>Bloqués</h2>' + S.blocked.map(function(b,k){return '<div class="card strict row"><b>'+esc(b.n)+'</b><button class="chip" onclick="unblk('+k+' )">Débloquer</button></div>'}).join("");
   
   return h;
 }
-function applyThemeStyles(){
-  var theme = ls("lr_theme") || "light";
-  var root = document.documentElement;
-  if(theme === "dark"){
-    root.style.setProperty('color-scheme', 'dark');
-    root.style.setProperty('--bg', '#12161C');
-    root.style.setProperty('--card', '#1C232D');
-    root.style.setProperty('--tx', '#F4F1E9');
-    root.style.setProperty('--mut', 'rgba(244,241,233,.65)');
-    root.style.setProperty('--bd', 'rgba(255,255,255,.1)');
-  } else {
-    root.style.setProperty('color-scheme', 'light');
-    root.style.setProperty('--bg', '#F4F1E9');
-    root.style.setProperty('--card', '#F4F1E9');
-    root.style.setProperty('--tx', '#192A3A');
-    root.style.setProperty('--mut', 'rgba(25,42,58,.62)');
-    root.style.setProperty('--bd', 'rgba(25,42,58,.2)');
-  }
-}
-
-// Applique le thème dès le chargement de la page
-applyThemeStyles();
 
 function toggleTheme(){
   var current = ls("lr_theme") || "light";
@@ -824,6 +802,19 @@ function toggleTheme(){
   applyThemeStyles();
   render();
 }
+
+function applyThemeStyles(){
+  var theme = ls("lr_theme") || "light"; // Par défaut, light
+  if(theme === "dark"){
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
+}
+
+// Applique le thème dès que le script se charge au démarrage
+applyThemeStyles();
+
 
 function hex(r,g,b){return "#"+[r,g,b].map(function(v){return ("0"+v.toString(16)).slice(-2)}).join("")}
 function newColor(){function c(){return 50+Math.floor(Math.random()*151)}return hex(c(),c(),c())}
