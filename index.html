@@ -206,6 +206,39 @@ body.dark-mode .card .who,
 body.dark-mode .card .sub {
   color: rgba(244,241,233,0.7) !important;
 }
+/* --- Correctif global pour tous les textes secondaires, onglets et boutons invisibles en mode sombre --- */
+body.dark-mode .card,
+body.dark-mode .ovb,
+body.dark-mode .tabs {
+  color: #F4F1E9 !important;
+}
+
+/* Rend tous les onglets inactifs, textes de profil et boutons secondaires parfaitement visibles */
+body.dark-mode .tabs button,
+body.dark-mode .sub,
+body.dark-mode .who,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: rgba(244, 241, 233, 0.75) !important;
+}
+
+/* Onglets inactifs (comme Agenda, À tester dans le profil ou les ligues) */
+body.dark-mode .tabs button:not(.on) {
+  color: rgba(244, 241, 233, 0.6) !important;
+  background: transparent !important;
+}
+
+/* Boutons secondaires et d'action (Modifier, Supprimer, etc.) */
+body.dark-mode button,
+body.dark-mode .btn.alt,
+body.dark-mode a {
+  color: #F4F1E9;
+}
+
+/* Harmonisation des icônes et bordures de texte */
+body.dark-mode svg {
+  stroke: currentColor;
+}
 
 </style> 
 
