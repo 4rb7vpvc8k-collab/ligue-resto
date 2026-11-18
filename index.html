@@ -124,20 +124,29 @@ nav button.on{color:#E5B83F;font-weight:700}
   position: sticky;
   top: 6px;
   z-index: 10;
-  background: #192A3A !important; /* Couleur sombre */
-  color: #F4F1E9 !important;
-  border: 1px solid var(--bd) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+  background: #192A3A !important; /* Le bleu de l'app */
+  color: #F4F1E9 !important; /* Texte clair pour bien contraster */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
   border-radius: 14px !important;
   padding: 16px !important;
   margin-bottom: 14px !important;
 }
-/* Pour que les textes à l'intérieur s'adaptent si tu choisis le mode sombre */
+
+/* Pour que tous les textes à l'intérieur s'adaptent en blanc/clair */
 .resto-main-card .resto, 
 .resto-main-card .who, 
 .resto-main-card div {
   color: #F4F1E9 !important;
 }
+
+/* Pour que les liens ou boutons secondaires gardent un style propre sur fond sombre */
+.resto-main-card .btn.alt {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #F4F1E9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
 
 .seg {
   display: flex;
