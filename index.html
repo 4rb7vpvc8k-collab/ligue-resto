@@ -141,6 +141,7 @@ nav button.on{color:#E5B83F;font-weight:700}
 /* --- MODE SOMBRE (Activé via la classe .dark-mode sur body) --- */
 body.dark-mode { background: #12161C; color: #F4F1E9; color-scheme: dark; }
 body.dark-mode .hd { background: #1C232D; color: #F4F1E9; border-bottom: 1px solid rgba(255,255,255,.1); }
+
 body.dark-mode .card, 
 body.dark-mode .ovb, 
 body.dark-mode .tabs, 
@@ -152,7 +153,7 @@ body.dark-mode .lb-card.text-only,
 body.dark-mode input, 
 body.dark-mode textarea { background: #1C232D; color: #F4F1E9; border-color: rgba(255,255,255,.1); }
 
-/* Force TOUS les textes, noms de restos et labels de catégories en blanc ou clair en mode sombre */
+/* Textes clairs ciblés proprement pour ne pas casser les pastilles */
 body.dark-mode .sub, 
 body.dark-mode .who, 
 body.dark-mode .lr b, 
@@ -160,8 +161,14 @@ body.dark-mode .pm,
 body.dark-mode .cat-name,
 body.dark-mode .resto,
 body.dark-mode h1,
-body.dark-mode h2,
-body.dark-mode div { color: #F4F1E9; }
+body.dark-mode h2 { color: #F4F1E9; }
+
+/* Resto populaires : force le texte et l'icône de la pastille jaune en mode sombre */
+body.dark-mode .card .resto { color: #F4F1E9 !important; }
+body.dark-mode .card .dot-badge ~ * { color: #F4F1E9; }
+
+/* Correction de la pastille jaune avec l'icône de couverts dedans */
+body.dark-mode .card .stars { color: #E5B83F; }
 
 body.dark-mode .sr { background: #12161C; }
 body.dark-mode .back { color: #E5B83F; }
