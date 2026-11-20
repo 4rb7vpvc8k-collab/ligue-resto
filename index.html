@@ -228,6 +228,12 @@ body.dark-mode .resto-main-card .btn.alt {
   color: #F4F1E9 !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
+/* Mode clair */
+.empty{text-align:center;color:rgba(25,42,58,.62);padding:30px 10px;font-size:14px}
+
+/* Mode sombre */
+body.dark-mode .empty{color:rgba(244,241,233,.72) !important}
+
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -374,13 +380,26 @@ var T=[
 document.getElementById("nav").innerHTML=T.map(function(t){return '<button class="'+(S.tab===t[0]?"on":"")+'" onclick="go(\''+t[0]+'\')">'+t[1]+'<span>'+t[2]+'</span></button>'}).join("")}
 
 function route(){var u=S.user;if(!S.authReady)return "load";if(u&&!u.isAnonymous){if(!S.profLoaded)return "load";return ls("lr_onb_"+u.uid)?"app":"onb"}return S.guest?"app":"welcome"}
+function applyEmptyText(){
+  var appEl = document.getElementById("app") || document.body;
+  var empties = appEl.querySelectorAll(".empty");
+  empties.forEach(function(el){
+    var txt = (el.textContent || "").trim().toLowerCase();
+    if(txt === "liste vide." || txt === "liste vide" || txt === "aucun résultat" || txt === "aucun avis"){
+      el.textContent = "C’est désert ici !";
+    }
+  });
+}
+
 function render(){S.rvl=[];S.hl=[];if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
-var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();return}
+var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();applyEmptyText();return}
 nav();if(!S.pseudo){S.tab="me";S.pt="set"}
 document.getElementById("hsub").textContent=S.tab==="league"&&S.league?("Ligue "+S.league):"Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
-if(S.tab==="map")initMap()}
+if(S.tab==="map")initMap();
+applyEmptyText()}
+
 function refresh(){var a=document.activeElement;if(a&&/INPUT|TEXTAREA/.test(a.tagName))return;
 if(S.tab==="home"||S.tab==="league"||S.tab==="me"||(S.tab==="map"&&S.sel))render();else if(S.tab==="map"&&S.mlayer){drawMarkers();upRes()}}
 function status(){return S.state==="loading"?'<div class="sub">Connexion…</div>':S.state==="error"?'<div class="sub">⚠️ Erreur de connexion'+(S.errMsg?' ('+esc(S.errMsg)+')':'')+'. Recharge la page.</div>':""}
