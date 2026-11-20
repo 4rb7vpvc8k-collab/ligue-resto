@@ -390,6 +390,9 @@ var ICONS = {
 };
 
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
+var ADMIN_UID = "pWBLuPwaqvR6wBCAaRgMKNYRJxG2";
+function isAdmin(){ return S.uid === ADMIN_UID; }
+
 var STP=["🤢 Intoxication","🐌 Service escargot","🌡️ Plat tiède","👌 Chef’s kiss","👀 Invités surprise","🐜 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🔁 Je reviens demain","🍷 Vin de camping","🌶️ Ça pique !"];
 var STL=["🥶 Arrivé froid","🐌 Livreur escargot","💥 Emballage catastrophe","🫗 Sauce partout","🚪 Livré chez le voisin","🐜 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","📦 Commande incomplète","👌 Chef’s kiss","👍 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
@@ -590,7 +593,8 @@ function rc(x, showR){
       '<div style="flex:1">'+avisHtml+stickersHtml+'</div>'+
       photoHtml+
     '</div>'+
-    (x.uid && x.uid !== S.uid ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="rep('+idx+')">'+ICONS.flag+' Signaler</a><a onclick="blk('+idx+')">'+ICONS.block+' Bloquer</a></div>' : (x.uid === S.uid && x._id ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="editReview('+idx+')">'+ICONS.edit+' Modifier</a><a onclick="del('+idx+')">'+ICONS.trash+' Supprimer</a></div>' : ''))+
+    (x.uid && x.uid !== S.uid ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="rep('+idx+')">'+ICONS.flag+' Signaler</a><a onclick="blk('+idx+')">'+ICONS.block+' Bloquer</a>'+(S.uid==="pWBLuPwaqvR6wBCAaRgMKNYRJxG2"&&x._id?'<a style="color:#d9534f;font-weight:700" onclick="del('+idx+')">'+ICONS.trash+' Supprimer (Admin)</a>':'')+'</div>' : (x.uid === S.uid && x._id ? '<div class="act" style="margin-top:2px;font-size:11px;"><a onclick="editReview('+idx+')">'+ICONS.edit+' Modifier</a><a onclick="del('+idx+')">'+ICONS.trash+' Supprimer</a></div>' : ''))+
+
   '</div>';
 }
 
