@@ -204,7 +204,30 @@ body.dark-mode .photo-container{background:#1a212c;border:1px solid var(--bd)}
 body.dark-mode .review-thumb{border:1px solid var(--bd)}
 body.dark-mode .lb-card{background:var(--card);border:1px solid var(--bd)}
 body.dark-mode .lb-card.text-only{background:var(--card);border:1px solid var(--bd)}
-body.dark-mode .resto-main-card{background:var(--card) !important;border:1px solid var(--bd) !important;box-shadow:0 8px 24px rgba(0,0,0,0.3) !important}
+body.dark-mode .resto-main-card {
+  position: static !important;
+  top: auto !important;
+  z-index: auto !important;
+  background: #1C232D !important;
+  color: #F4F1E9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  margin-bottom: 14px !important;
+}
+
+body.dark-mode .resto-main-card .resto,
+body.dark-mode .resto-main-card .who,
+body.dark-mode .resto-main-card div {
+  color: #F4F1E9 !important;
+}
+
+body.dark-mode .resto-main-card .btn.alt {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #F4F1E9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
