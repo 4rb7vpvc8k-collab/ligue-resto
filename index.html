@@ -239,25 +239,18 @@ body.dark-mode a {
 body.dark-mode svg {
   stroke: currentColor;
 }
-/* --- Correctif précis pour les cartes d'avis et le flux en mode sombre --- */
-body.dark-mode .lb-card {
+/* --- Contours discrets des cartes d'avis (.lb-card) en mode sombre --- */
+body.dark-mode .lb-card,
+body.dark-mode .lb-card.text-only {
   background: #1C232D !important;
   color: #F4F1E9 !important;
-  border: 1px solid rgba(255,255,255,.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
 }
 
 body.dark-mode .lb-card .lb-resto,
 body.dark-mode .lb-card .lb-meta,
-body.dark-mode .lb-card span {
-  color: #F4F1E9 !important;
-}
-
-body.dark-mode .lb-card.text-only {
-  background: #1C232D !important;
-  color: #F4F1E9 !important;
-}
-
-/* S'assure que l'emoji ou l'icône de l'assiette ressort bien */
+body.dark-mode .lb-card span,
 body.dark-mode .lb-card.text-only div {
   color: #F4F1E9 !important;
 }
