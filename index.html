@@ -289,12 +289,12 @@ body.dark-mode section {
 body.dark-mode {
   box-shadow: inset 0 0 0 100vmax #12161C !important;
 }
-/* --- Modale "Noter" style Letterboxd --- */
+/* --- Modale "Noter" style Letterboxd (propre et nette) --- */
 .lb-modal {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.72);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -338,7 +338,7 @@ body.dark-mode {
 }
 .lb-sheet-search input {
   background: rgba(25, 42, 58, 0.08);
-  border: 0;
+  border: 1px solid rgba(25, 42, 58, 0.15);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: 16px;
@@ -348,6 +348,12 @@ body.dark-mode {
   flex: 1;
   overflow-y: auto;
   padding: 8px 16px 40px;
+}
+/* Suppression de l'ombre qui bave entre les cartes dans la modale */
+.lb-sheet-body .card {
+  box-shadow: none !important;
+  margin-bottom: 10px !important;
+  border-radius: 10px !important;
 }
 .lb-recent-title {
   font-size: 11px;
@@ -369,18 +375,25 @@ body.dark-mode {
 
 /* Version Mode Sombre */
 body.dark-mode .lb-sheet {
-  background: #1C232D;
-  color: #F4F1E9;
+  background: #12161C !important;
+  color: #F4F1E9 !important;
 }
 body.dark-mode .lb-sheet-hd {
+  background: #1C232D;
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 body.dark-mode .lb-sheet-hd .cancel-btn {
   color: rgba(244, 241, 233, 0.65);
 }
 body.dark-mode .lb-sheet-search input {
-  background: #28313E;
-  color: #F4F1E9;
+  background: #1C232D !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F4F1E9 !important;
+}
+body.dark-mode .lb-sheet-body .card {
+  background: #1C232D !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
 }
 body.dark-mode .lb-recent-title {
   color: rgba(244, 241, 233, 0.5);
@@ -398,7 +411,6 @@ body.dark-mode .lb-recent-row {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -1269,8 +1281,7 @@ loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
 if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
 S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
-if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";render()}});
-// Gestion des recherches récentes pour la modale "Noter"
+if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";// Gestion propre des recherches récentes (uniquement sur validation ou clic resto)
 function getRecentSearches(){
   try { return JSON.parse(localStorage.getItem("lr_recent_searches") || "[]"); }
   catch(e){ return []; }
@@ -1283,9 +1294,9 @@ function saveRecentSearch(term){
   localStorage.setItem("lr_recent_searches", JSON.stringify(list.slice(0, 8)));
 }
 
-// Ouverture / Fermeture de la feuille "Noter" style Letterboxd
 function openNoteSheet(){
   S.noteOpen = true;
+  S.prevTab = S.tab; // Mémorise l'onglet actif avant ouverture
   S.form = S.form || {note:0, avis:"", mode:"place", st:[], vis:"pub"};
   S.form.place = null;
   S.sq = "";
@@ -1298,15 +1309,31 @@ function openNoteSheet(){
 
 function closeNoteSheet(){
   S.noteOpen = false;
+  if(S.tab === "add" && S.prevTab && S.prevTab !== "add"){
+    S.tab = S.prevTab;
+  }
   var el = document.getElementById("lb-note-modal");
   if(el) el.remove();
   render();
 }
 
+// Recherche en direct SANS polluer l'historique lettre par lettre
 function onNoteSearchInput(val){
   S.sq = val;
   if(typeof doSearch === "function") doSearch(val);
   updateNoteSheetBody();
+}
+
+// Enregistre dans l'historique uniquement quand on appuie sur Entrée / Valider
+function onNoteSearchKeydown(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    if(S.sq && S.sq.trim()){
+      saveRecentSearch(S.sq);
+    }
+    var inp = document.getElementById("lb-note-inp");
+    if(inp) inp.blur();
+  }
 }
 
 function pickRecentSearch(term){
@@ -1319,15 +1346,19 @@ function pickRecentSearch(term){
 
 function updateNoteSheetBody(){
   var body = document.getElementById("lb-sheet-body");
+  var searchBox = document.querySelector(".lb-sheet-search");
   if(!body) return;
   var f = S.form;
 
-  // Si un restaurant est sélectionné, on affiche ton formulaire complet de notation
+  // Si un restaurant est sélectionné, on affiche le formulaire de notation et on masque la barre de recherche
   if(f && f.place){
+    if(searchBox) searchBox.style.display = "none";
     var h = add();
     body.innerHTML = h.replace('<h2>J’ai mangé où ?</h2>', '');
     return;
   }
+
+  if(searchBox) searchBox.style.display = "block";
 
   // Si recherche vide : affiche "RECHERCHES RÉCENTES" + position
   if(!S.sq || !S.sq.trim()){
@@ -1342,9 +1373,28 @@ function updateNoteSheetBody(){
     return;
   }
 
-  // Si recherche en cours : affiche les résultats
-  saveRecentSearch(S.sq);
-  body.innerHTML = "<div id='res'>" + (typeof resHTML === "function" ? resHTML() : "") + "</div>";
+  // Affiche les résultats et sauvegarde le nom du resto cliqué dans l'historique
+  body.innerHTML = "<div id='res' onclick='onNoteResultClick(event)'>" + (typeof resHTML === "function" ? resHTML() : "") + "</div>";
+}
+
+// Sauvegarde le nom du resto quand on clique dessus et force l'ouverture du formulaire
+function onNoteResultClick(e){
+  var card = e.target.closest(".card");
+  if(card){
+    var restoEl = card.querySelector(".resto");
+    if(restoEl){
+      var name = restoEl.textContent.trim();
+      if(name) saveRecentSearch(name);
+    }
+  }
+  setTimeout(function(){
+    if(S.noteOpen){
+      if(S.tab === "add" && S.prevTab && S.prevTab !== "add"){
+        S.tab = S.prevTab;
+      }
+      updateNoteSheetBody();
+    }
+  }, 30);
 }
 
 function renderNoteSheet(){
@@ -1363,7 +1413,7 @@ function renderNoteSheet(){
         '<div style="width:55px"></div>' +
       '</div>' +
       '<div class="lb-sheet-search">' +
-        '<input id="lb-note-inp" type="search" placeholder="Nom du restaurant, adresse..." value="'+esc(S.sq||"")+'" oninput="onNoteSearchInput(this.value)">' +
+        '<input id="lb-note-inp" type="search" placeholder="Nom du restaurant, adresse..." value="'+esc(S.sq||"")+'" oninput="onNoteSearchInput(this.value)" onkeydown="onNoteSearchKeydown(event)">' +
       '</div>' +
       '<div id="lb-sheet-body" class="lb-sheet-body"></div>' +
     '</div>';
