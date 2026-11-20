@@ -254,6 +254,34 @@ body.dark-mode .lb-card span,
 body.dark-mode .lb-card.text-only div {
   color: #F4F1E9 !important;
 }
+/* --- Reproduction exacte de la carte resto populaire (ex: Kydam) en mode sombre --- */
+body.dark-mode .card .resto {
+  color: #F4F1E9 !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 10px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Chiffre "3", mot "avis" et textes secondaires dans les cartes de restos */
+body.dark-mode .card span,
+body.dark-mode .card small,
+body.dark-mode .card b,
+body.dark-mode .card .who,
+body.dark-mode .card .sub {
+  color: rgba(244, 241, 233, 0.85) !important;
+}
+
+/* Pastille ronde jaune autour de l'icône de couverts */
+body.dark-mode .card svg.svg-icon {
+  background: #E5B83F !important;
+  color: #12161C !important;
+  stroke: #12161C !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 7px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
 
 
 </style> 
