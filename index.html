@@ -233,6 +233,27 @@ body.dark-mode .resto-main-card .btn.alt {
 
 /* Mode sombre */
 body.dark-mode .empty{color:rgba(244,241,233,.72) !important}
+/* --- Uniformisation du fond et des zones (dont la carte) en mode sombre --- */
+body.dark-mode,
+body.dark-mode #app,
+body.dark-mode #map,
+body.dark-mode .leaflet-container {
+  background: #12161C !important;
+  background-color: #12161C !important;
+  color: #F4F1E9 !important;
+}
+
+/* Évite les fonds blancs ou beiges sur les conteneurs en mode sombre */
+body.dark-mode [style*="background:#f4f1e9"],
+body.dark-mode [style*="background: #f4f1e9"],
+body.dark-mode [style*="background:#F4F1E9"],
+body.dark-mode [style*="background: #F4F1E9"],
+body.dark-mode [style*="background:#fff"],
+body.dark-mode [style*="background: #fff"],
+body.dark-mode [style*="background:#ffffff"],
+body.dark-mode [style*="background: #ffffff"] {
+  background-color: #1C232D !important;
+}
 
 </style>
 
