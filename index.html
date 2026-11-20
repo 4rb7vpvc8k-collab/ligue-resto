@@ -390,8 +390,8 @@ var ICONS = {
 };
 
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
-var STP=["Intoxication","Service escargot","Plat tiède","Chef’s kiss","Invités surprise","Portions de fourmi","Addition salée","J’ai pleuré de joie","Clim polaire","Je reviens demain","Vin de camping","Ça pique !"];
-var STL=["Arrivé froid","Livreur escargot","Emballage catastrophe","Sauce partout","Livré chez le voisin","Portions de fourmi","Frais de livraison salés","Encore chaud !","Livré en éclair","Commande incomplète","Chef’s kiss","Je recommande"];
+var STP=["🤢 Intoxication","🐌 Service escargot","🌡️ Plat tiède","👌 Chef’s kiss","👀 Invités surprise","🐜 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🔁 Je reviens demain","🍷 Vin de camping","🌶️ Ça pique !"];
+var STL=["🥶 Arrivé froid","🐌 Livreur escargot","💥 Emballage catastrophe","🫗 Sauce partout","🚪 Livré chez le voisin","🐜 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","📦 Commande incomplète","👌 Chef’s kiss","👍 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
 var FOOD=["restaurant","cafe","fast_food","bar","pub","food_court","ice_cream","biergarten"];
 
@@ -442,7 +442,7 @@ function getRestoCat(name,type,priceLunch,cuisineTag){
   if(c.includes("jap") || n.includes("sushi") || n.includes("ramen")) return "japanese";
   if(c.includes("asiat") || c.includes("chinois") || c.includes("thaï") || n.includes("wok")) return "asian";
   if(c.includes("orient") || c.includes("couscous") || c.includes("tajine")) return "oriental";
-  if(c.includes("indi") || c.includes("curry")) return "indian";
+  if(c.includes("indi") || n.includes("curry")) return "indian";
   if(c.includes("veg") || n.includes("veggie") || n.includes("vegan") || n.includes("végétarien")) return "veggie";
   if(c.includes("mexic") || n.includes("tacos") || n.includes("burrito")) return "mexican";
 
@@ -636,7 +636,7 @@ function keyOf(p){return p.pid||("n:"+p.n.toLowerCase().trim())}
 function gmap(list){var g={};list.forEach(function(x){var k=x.pid||("n:"+x.resto.toLowerCase().trim());var o=g[k]=g[k]||{k:k,pid:x.pid,n:x.resto,a:"",s:0,c:0,sp:0,cp:0,sd:0,cd:0,t:0,cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch,x.cuisine),cuisine:x.cuisine||"",rv:[]};o.s+=x.note;o.c++;if(x.mode==="deliv"){o.sd+=x.note;o.cd++}else{o.sp+=x.note;o.cp++}o.rv.push(x);if(x.addr)o.a=x.addr;if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}if(x.ts>o.t)o.t=x.ts});return g}
 function groups(list){var g=gmap(list);return Object.keys(g).map(function(k){return g[k]}).sort(function(a,b){return b.t-a.t})}
 
-function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):(S.sc&&num(p.lat)&&num(p.lng)?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null)});
+function sortP(arr){var g=gmap(allv());arr.forEach(function(p){var o=g[keyOf(p)];p.c=o?o.c:0;p.avg=o?o.s/o.c:-1;if(o&&o.cat)p.cat=o.cat;else if(!p.cat)p.cat=getRestoCat(p.n,p.type,p.priceLunch,p.cuisine);p.d=(S.loc&&num(p.lat)&&num(p.lng))?dist(S.loc.lat,S.loc.lng,p.lat,p.lng):(S.sc&&num(p.lat)&&num(p.lng))?dist(S.sc.lat,S.sc.lng,p.lat,p.lng):null});
 return arr.sort(function(a,b){
   var so = S.filt.sort;
   if(so === "near") {
