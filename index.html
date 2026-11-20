@@ -137,154 +137,75 @@ nav button.on{color:#E5B83F;font-weight:700}
 .seg { display: flex; gap: 6px; margin: 10px 0 14px 0 !important; position: static !important; transform: none !important; }
 .svg-icon { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; display: inline-block; }
 
-
-/* --- MODE SOMBRE (Activé via la classe .dark-mode sur body) --- */
-body.dark-mode { background: #12161C; color: #F4F1E9; color-scheme: dark; }
-body.dark-mode .hd { background: #1C232D; color: #F4F1E9; border-bottom: 1px solid rgba(255,255,255,.1); }
-
-/* Fond des cartes et des blocs en mode sombre */
-body.dark-mode .card, 
-body.dark-mode .ovb, 
-body.dark-mode .tabs, 
-body.dark-mode .mh, 
-body.dark-mode .dd, 
-body.dark-mode .home-review-card, 
-body.dark-mode .lb-card, 
-body.dark-mode .lb-card.text-only, 
-body.dark-mode input, 
-body.dark-mode textarea { background: #1C232D !important; color: #F4F1E9 !important; border-color: rgba(255,255,255,.1) !important; }
-
-/* Tous les textes et titres en blanc éclatant ou gris clair lisible */
-body.dark-mode .sub, 
-body.dark-mode .who, 
-body.dark-mode .lr b, 
-body.dark-mode .pm,
-body.dark-mode .cat-name,
-body.dark-mode .resto,
-body.dark-mode h1,
-body.dark-mode h2 { color: #F4F1E9 !important; }
-
-/* Restos populaires : force le nom du resto et les infos en blanc/clair */
-body.dark-mode .card .resto,
-body.dark-mode .home-review-resto { color: #F4F1E9 !important; }
-body.dark-mode .card .who,
-body.dark-mode .home-review-footer { color: rgba(244,241,233,0.7) !important; }
-
-/* Garde les étoiles bien dorées */
-body.dark-mode .stars { color: #E5B83F !important; }
-
-body.dark-mode .sr { background: #12161C; }
-body.dark-mode .back { color: #E5B83F; }
-body.dark-mode .dist { color: #E5B83F; }
-body.dark-mode .gear { color: #F4F1E9; }
-body.dark-mode .chip { background: #1C232D; border-color: rgba(255,255,255,.1); color: #F4F1E9; }
-body.dark-mode button.chip.on { background: #E5B83F; border-color: #E5B83F; color: #12161C; }
-body.dark-mode .btn { background: #E5B83F; color: #12161C; }
-body.dark-mode .btn.alt { background: #1C232D; color: #F4F1E9; border: 1px solid rgba(255,255,255,.1); }
-body.dark-mode nav { background: #161B22; border-top: 1px solid rgba(255,255,255,.1); }
-body.dark-mode nav button { color: rgba(244,241,233,.5); }
-body.dark-mode nav button.on { color: #E5B83F; }
-/* --- Correctif ciblé pour les boutons Modifier, Supprimer et actions dans le mode sombre --- */
-body.dark-mode .card .act a,
-body.dark-mode .card [onclick*="openEdit"],
-body.dark-mode .card [onclick*="delete"],
-body.dark-mode .card button,
-body.dark-mode .card span[style*="cursor:pointer"],
-body.dark-mode .card div[style*="cursor:pointer"],
-body.dark-mode .card a {
-  color: #F4F1E9 !important;
+/* --- MODE SOMBRE (Activé via body.dark-mode) --- */
+body.dark-mode {
+  color-scheme: dark;
+  --bg: #12161C;
+  --card: #1C232D;
+  --tx: #F4F1E9;
+  --mut: rgba(244,241,233,.65);
+  --ac: #E5B83F;
+  --ac2: rgba(229,184,63,.15);
+  --bd: rgba(255,255,255,.1);
+  --acd: #E5B83F;
+  background: var(--bg);
+  color: var(--tx);
 }
-
-/* Pour les liens de signalement, blocage, modifier et supprimer dans les cartes d'avis */
-body.dark-mode .card svg,
-body.dark-mode .card svg path {
-  stroke: #F4F1E9 !important;
-}
-
-/* Si ce sont des textes secondaires dans les cartes d'avis (comme "Aucun commentaire" ou les dates) */
-body.dark-mode .card .who, 
-body.dark-mode .card .sub {
-  color: rgba(244,241,233,0.7) !important;
-}
-/* --- Correctif global pour tous les textes secondaires, onglets et boutons invisibles en mode sombre --- */
-body.dark-mode .card,
-body.dark-mode .ovb,
-body.dark-mode .tabs {
-  color: #F4F1E9 !important;
-}
-
-/* Rend tous les onglets inactifs, textes de profil et boutons secondaires parfaitement visibles */
-body.dark-mode .tabs button,
-body.dark-mode .sub,
-body.dark-mode .who,
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: rgba(244, 241, 233, 0.75) !important;
-}
-
-/* Onglets inactifs (comme Agenda, À tester dans le profil ou les ligues) */
-body.dark-mode .tabs button:not(.on) {
-  color: rgba(244, 241, 233, 0.6) !important;
-  background: transparent !important;
-}
-
-/* Boutons secondaires et d'action (Modifier, Supprimer, etc.) */
-body.dark-mode button,
-body.dark-mode .btn.alt,
-body.dark-mode a {
-  color: #F4F1E9;
-}
-
-/* Harmonisation des icônes et bordures de texte */
-body.dark-mode svg {
-  stroke: currentColor;
-}
-/* --- Contours discrets des cartes d'avis (.lb-card) en mode sombre --- */
-body.dark-mode .lb-card,
-body.dark-mode .lb-card.text-only {
-  background: #1C232D !important;
-  color: #F4F1E9 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
-}
-
-body.dark-mode .lb-card .lb-resto,
-body.dark-mode .lb-card .lb-meta,
-body.dark-mode .lb-card span,
-body.dark-mode .lb-card.text-only div {
-  color: #F4F1E9 !important;
-}
-/* --- Reproduction exacte de la carte resto populaire (ex: Kydam) en mode sombre --- */
-body.dark-mode .card .resto {
-  color: #F4F1E9 !important;
-  padding-bottom: 10px !important;
-  margin-bottom: 10px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
-}
-
-/* Chiffre "3", mot "avis" et textes secondaires dans les cartes de restos */
-body.dark-mode .card span,
-body.dark-mode .card small,
-body.dark-mode .card b,
-body.dark-mode .card .who,
-body.dark-mode .card .sub {
-  color: rgba(244, 241, 233, 0.85) !important;
-}
-
-/* Pastille ronde jaune autour de l'icône de couverts */
-body.dark-mode .card svg.svg-icon {
-  background: #E5B83F !important;
-  color: #12161C !important;
-  stroke: #12161C !important;
-  width: 34px !important;
-  height: 34px !important;
-  padding: 7px !important;
-  border-radius: 50% !important;
-  flex-shrink: 0 !important;
-}
-
-
-</style> 
+body.dark-mode .hd{background:#1C232D;color:var(--tx);border-bottom:1px solid var(--bd)}
+body.dark-mode .sub{color:var(--mut)}
+body.dark-mode .card{background:var(--card);border:1px solid var(--bd);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+body.dark-mode .who{color:var(--mut)}
+body.dark-mode .stars{color:var(--ac)}
+body.dark-mode .chip{background:var(--card);border:1px solid var(--bd);color:var(--tx)}
+body.dark-mode button.chip.on{border-color:var(--ac);background:var(--ac);color:#12161C}
+body.dark-mode input,body.dark-mode textarea{border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+body.dark-mode .btn{background:var(--ac);color:#12161C}
+body.dark-mode .btn.alt{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+body.dark-mode nav{background:#161B22;border-top:1px solid var(--bd)}
+body.dark-mode nav button{color:rgba(244,241,233,.5)}
+body.dark-mode nav button.on{color:#E5B83F}
+body.dark-mode .empty{color:var(--mut)}
+body.dark-mode .code{color:var(--ac)}
+body.dark-mode .tag{background:var(--ac2)}
+body.dark-mode .sr{background:var(--bg)}
+body.dark-mode .back{color:var(--ac)}
+body.dark-mode #map{border:1px solid var(--bd)}
+body.dark-mode .dist{color:var(--ac)}
+body.dark-mode .sb{color:var(--mut)}
+body.dark-mode .sf{color:var(--ac)}
+body.dark-mode .act a{color:var(--mut)}
+body.dark-mode .ov{background:rgba(0,0,0,.7)}
+body.dark-mode .ovb{background:var(--card);border-top:1px solid var(--bd)}
+body.dark-mode .av{background:var(--ac);color:#12161C}
+body.dark-mode .av.edit::after{background:#12161C;color:#E5B83F;border:2px solid var(--bg)}
+body.dark-mode .pt{color:#F4F1E9;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+body.dark-mode .pm{color:var(--mut)}
+body.dark-mode .cat-circle{border:2px solid var(--bd);box-shadow:0 2px 6px rgba(0,0,0,0.2);background:#222}
+body.dark-mode .cat-name{color:var(--tx)}
+body.dark-mode .tabs{background:var(--card);border:1px solid var(--bd)}
+body.dark-mode .tabs button{color:var(--mut)}
+body.dark-mode .tabs button.on{background:var(--ac);color:#12161C}
+body.dark-mode .gear{color:var(--tx)}
+body.dark-mode .pod{color:#12161C}
+body.dark-mode .pr{color:#12161C}
+body.dark-mode .lr{border-top:1px solid var(--bd)}
+body.dark-mode .lr b{color:var(--mut)}
+body.dark-mode .mh{background:var(--card);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+body.dark-mode .dr{border-bottom:1px solid var(--bd)}
+body.dark-mode .dd{border:1px solid var(--bd);color:var(--mut);background:var(--card)}
+body.dark-mode .dt{color:#F4F1E9}
+body.dark-mode .home-review-card{background:var(--card);border:1px solid var(--bd);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+body.dark-mode .home-review-user{color:var(--tx)}
+body.dark-mode .home-review-avatar{color:#12161C}
+body.dark-mode .home-review-resto{color:var(--tx)}
+body.dark-mode .home-review-comment{color:var(--mut)}
+body.dark-mode .home-review-footer{border-top:1px solid var(--bd);color:var(--mut)}
+body.dark-mode .photo-container{background:#1a212c;border:1px solid var(--bd)}
+body.dark-mode .review-thumb{border:1px solid var(--bd)}
+body.dark-mode .lb-card{background:var(--card);border:1px solid var(--bd)}
+body.dark-mode .lb-card.text-only{background:var(--card);border:1px solid var(--bd)}
+body.dark-mode .resto-main-card{background:var(--card) !important;border:1px solid var(--bd) !important;box-shadow:0 8px 24px rgba(0,0,0,0.3) !important}
+</style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 </head>
