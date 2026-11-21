@@ -450,7 +450,7 @@ function getRestoCat(name,type,priceLunch,cuisineTag){
   if(c.includes("ital") || n.includes("pizza") || n.includes("trattoria") || n.includes("pizzeria") || n.includes("pasta") || n.includes("osteria")) return "italian";
   if(c.includes("fran") || n.includes("bistrot français") || n.includes("brasserie")) return "french";
   if(c.includes("jap") || n.includes("sushi") || n.includes("ramen")) return "japanese";
-  if(c.includes("asiat") || n.includes("chinois") || n.includes("thaï") || n.includes("wok")) return "asian";
+  if(c.includes("asiat") || c.includes("chinois") || c.includes("thaï") || n.includes("wok")) return "asian";
   if(c.includes("orient") || n.includes("couscous") || n.includes("tajine")) return "oriental";
   if(c.includes("indi") || n.includes("curry")) return "indian";
   if(c.includes("veg") || n.includes("veggie") || n.includes("vegan") || n.includes("végétarien")) return "veggie";
@@ -912,12 +912,22 @@ return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><d
 (f.photo?'<div class="photo-container"><img src="'+f.photo+'" class="photo-preview"><button type="button" class="photo-del" onclick="removePhoto()">✕</button></div>':'')+
 '<div class="sub" style="margin-top:8px">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">'+ICONS.dine+' Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">'+ICONS.delivery+' Livraison</button></div>'+
 '<div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
-'<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Mes ligues</button></div>'+
-(f.vis==="lg"?(S.leagues.length?'<div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue.</div>'):'')+
+'<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Uniquement mes ligues</button></div>'+
+(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Choisis une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+(tlsOf().indexOf(c)>-1?'✓ ':'')+esc(c)+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue rejointe.</div>'):'<div class="sub" style="margin-bottom:10px">Visible par tous les utilisateurs et dans toutes tes ligues.</div>')+
 '<button class="btn" onclick="send()">Publier</button>'}
 
-function tlsOf(){return S.form.tls&&S.form.tls.length?S.form.tls:(S.league?[S.league]:[])}
-function togLgForm(c){var t=tlsOf().slice(),i=t.indexOf(c);if(i>-1)t.splice(i,1);else t.push(c);S.form.tls=t;render()}
+function tlsOf(){
+  if(S.form.tls !== undefined) return S.form.tls;
+  return S.league ? [S.league] : [];
+}
+function togLgForm(c){
+  var t = tlsOf().slice();
+  var i = t.indexOf(c);
+  if(i > -1) t.splice(i, 1);
+  else t.push(c);
+  S.form.tls = t;
+  render();
+}
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
 var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug,n:n,a:a,lat:S.loc?S.loc.lat:48.8566,lng:S.loc?S.loc.lng:2.3522,cat:S.form.cat||"trad_low"};S.manual=false;saveRecentSearch(n);render()}
 function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
@@ -951,16 +961,16 @@ function removePhoto(){
 
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion.");return}
-var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne une ligue.");return}
+var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne au moins une ligue.");return}
 var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),photo:f.photo||"",st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 
 var promise;
 if(f.editId) {
   var oldCol = f.editLg ? S.fdb.collection("leagues/"+f.editLg+"/reviews") : S.fdb.collection("reviews");
-  var newCol = priv ? S.fdb.collection("leagues/"+tls[0]+"/reviews") : S.fdb.collection("reviews");
   promise = oldCol.doc(f.editId).delete().then(function(){
-    return newCol.add(r);
+    var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
+    return Promise.all(ps);
   });
 } else {
   var ps=priv?tls.map(function(c){return S.fdb.collection("leagues/"+c+"/reviews").add(Object.assign({},r))}):[S.fdb.collection("reviews").add(r)];
@@ -1148,7 +1158,7 @@ return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restauran
 function me(){if(S.viewUser)return userView(S.viewUser);
 if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
+var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
@@ -1262,7 +1272,7 @@ function saveRecentSearch(term){
 function openNoteSheet(){
   S.noteOpen = true;
   S.prevTab = S.tab;
-  if(!S.form) S.form = {note:0, avis:"", mode:"place", st:[], vis:"pub", tls:[], cat:"trad_low", cuisine:""};
+  if(!S.form) S.form = {note:0, avis:"", mode:"place", st:[], vis:"pub", tls:S.league?[S.league]:[], cat:"trad_low", cuisine:""};
   S.form.place = null;
   S.manual = false;
   S.sq = "";
