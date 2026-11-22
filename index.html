@@ -414,6 +414,7 @@ var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-rest
 var ADMIN_UID = "I6sDn9XQoFdyj0hldc6wknOyZX62";
 function isAdmin(){ return S.uid === ADMIN_UID || (S.user && S.user.uid === ADMIN_UID); }
 
+var MAX_STICKERS = 4;
 var STP=["🤢 Intoxication","🐌 Service escargot","🌡️ Plat tiède","👌 Chef’s kiss","👀 Invités surprise","🐜 Portions de fourmi","💸 Addition salée","😭 J’ai pleuré de joie","🥶 Clim polaire","🔁 Je reviens demain","🍷 Vin de camping","🌶️ Ça pique !"];
 var STL=["🥶 Arrivé froid","🐌 Livreur escargot","💥 Emballage catastrophe","🫗 Sauce partout","🚪 Livré chez le voisin","🐜 Portions de fourmi","💸 Frais de livraison salés","🔥 Encore chaud !","⚡ Livré en éclair","📦 Commande incomplète","👌 Chef’s kiss","👍 Je recommande"];
 function stk(){return S.form.mode==="deliv"?STL:STP}
@@ -424,18 +425,18 @@ var STYLE_CATS=[
   {label:"Petit budget", key:"trad_low", img:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80"},
   {label:"Grand budget", key:"trad_high", img:"https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=200&q=80"},
   {label:"Bistronomie", key:"bistro", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
-  {label:"Haute gastronomie", key:"gastronomy", img:"https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=200&q=80"}
+  {label:"Haute gastronomie", key:"gastronomy", img:"https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=200&q=80"}
 ];
 
 var CUISINE_CATS=[
-  {label:"Français", key:"french", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=200&q=80"},
+  {label:"Français", key:"french", img:"https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=200&q=80"},
   {label:"Asiatique", key:"asian", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
   {label:"Italien", key:"italian", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
   {label:"Japonais", key:"japanese", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
   {label:"Oriental", key:"oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
   {label:"Indien", key:"indian", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
-  {label:"Végétarien", key:"veggie", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
-  {label:"Mexicain", key:"mexican", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+  {label:"Végétarien", key:"veggie", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80"},
+  {label:"Mexicain", key:"mexican", img:"https://images.unsplash.com/photo-1551504734-5eee2401ba50?auto=format&fit=crop&w=200&q=80"}
 ];
 
 var STYLE_CAT_MAP={
@@ -447,14 +448,14 @@ var STYLE_CAT_MAP={
 };
 
 var CUISINE_CAT_MAP={
-  french:{label:"Français", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=200&q=80"},
+  french:{label:"Français", img:"https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=200&q=80"},
   asian:{label:"Asiatique", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
   italian:{label:"Italien", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
   japanese:{label:"Japonais", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
   oriental:{label:"Oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
   indian:{label:"Indien", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
-  veggie:{label:"Végétarien", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
-  mexican:{label:"Mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+  veggie:{label:"Végétarien", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80"},
+  mexican:{label:"Mexicain", img:"https://images.unsplash.com/photo-1551504734-5eee2401ba50?auto=format&fit=crop&w=200&q=80"}
 };
 
 function getRestoCat(name,type,priceLunch,cuisineTag){
@@ -713,7 +714,7 @@ function rc(x, showR){
     '</div>' 
     : '<div class="review-text" style="color:#888;font-style:italic">Aucun commentaire</div>';
 
-  var stickersHtml = (x.st && x.st.length) ? '<div class="chips" style="margin-top:2px;margin-bottom:0px">'+x.st.map(function(t){ return '<span class="chip" style="font-size:10px;padding:1px 5px">'+esc(t)+'</span>'; }).join("")+'</div>' : '';
+  var stickersHtml = (x.st && x.st.length) ? '<div class="chips" style="margin-top:2px;margin-bottom:0px">'+x.st.slice(0, MAX_STICKERS).map(function(t){ return '<span class="chip" style="font-size:10px;padding:1px 5px">'+esc(t)+'</span>'; }).join("")+'</div>' : '';
 
   return '<div class="card strict">'+
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">'+
@@ -735,7 +736,7 @@ function editReview(i){var x=S.rvl[i];if(!x||!x._id)return;
 S.form={
   place:{pid:x.pid,n:x.resto,a:x.addr||"",lat:x.lat||null,lng:x.lng||null,cat:x.cat||"trad_low",cuisine:x.cuisine||""},
   note:x.note,
-  st:x.st?x.st.slice():[],
+  st:x.st?x.st.slice(0, MAX_STICKERS):[],
   vis:x._p?"lg":"pub",
   tls:x._p?[x._lg]:[],
   cat:x.cat||"trad_low",
@@ -963,7 +964,7 @@ return '<div class="card strict"><div class="sub">📍 Autorise ta position pour
 function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()" title="Filtres"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>'+(filtOn()?'•':'')+'</button></div>'}
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
-G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
+G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/b.c||b.c-a.c});S.gl=G;
 return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card strict" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier ! 🍕</div>')}
 
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
@@ -1027,6 +1028,7 @@ var h='<h2>J’ai mangé où ?</h2>'+locCard();
 if(S.manual)return h+'<div class="card strict"><div class="sub">Ajoute ton resto toi-même :</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour</button></div>';
 return h+sbar()+"<div id='res'>"+resHTML()+"</div>"}
 var p=f.place;
+f.st = (f.st || []).slice(0, MAX_STICKERS);
 var allCatMap=Object.assign({}, STYLE_CAT_MAP, CUISINE_CAT_MAP);
 return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div>'+
 '<div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(allCatMap).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>':'')+allCatMap[k].label+'</button>'}).join("")+'</div>'+
@@ -1036,7 +1038,7 @@ return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><d
 '<input type="file" accept="image/*" onchange="handlePhoto(event)" style="margin-bottom:6px">'+
 (f.photo?'<div class="photo-container"><img src="'+f.photo+'" class="photo-preview"><button type="button" class="photo-del" onclick="removePhoto()">✕</button></div>':'')+
 '<div class="sub" style="margin-top:8px">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">'+ICONS.dine+' Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">'+ICONS.delivery+' Livraison</button></div>'+
-'<div class="sub">Stickers :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
+'<div class="sub">Stickers ('+f.st.length+'/'+MAX_STICKERS+' max) :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
 '<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Uniquement mes ligues</button></div>'+
 (f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Choisis une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+(tlsOf().indexOf(c)>-1?'✓ ':'')+esc(leagueLabel(c))+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue rejointe.</div>'):'<div class="sub" style="margin-bottom:10px">Visible par tous les utilisateurs et dans toutes tes ligues.</div>')+
 '<button class="btn" onclick="send()">Publier</button>'}
@@ -1055,8 +1057,20 @@ function togLgForm(c){
 }
 function manualOk(){var n=document.getElementById("mn").value.trim(),a=document.getElementById("ma").value.trim();if(!n||!a){alert("Nom et adresse requis");return}
 var slug=n.toLowerCase().replace(/[^a-z0-9]+/g,"-");S.form.place={pid:"man:"+slug,n:n,a:a,lat:S.loc?S.loc.lat:48.8566,lng:S.loc?S.loc.lng:2.3522,cat:S.form.cat||"trad_low"};S.manual=false;saveRecentSearch(n);render()}
-function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1});render()}
-function tog(i){var s=stk()[i],a=S.form.st,k=a.indexOf(s);if(k>-1)a.splice(k,1);else a.push(s);render()}
+function setMode(m){S.form.mode=m;var L=m==='deliv'?STL:STP;S.form.st=S.form.st.filter(function(x){return L.indexOf(x)>-1}).slice(0, MAX_STICKERS);render()}
+function tog(i){
+  var s=stk()[i],a=S.form.st,k=a.indexOf(s);
+  if(k>-1){
+    a.splice(k,1);
+  } else {
+    if(a.length>=MAX_STICKERS){
+      alert("Tu peux choisir "+MAX_STICKERS+" stickers maximum.");
+      return;
+    }
+    a.push(s);
+  }
+  render();
+}
 function handlePhoto(e){
   var file=e.target.files[0];if(!file)return;
   var reader=new FileReader();
@@ -1087,7 +1101,8 @@ function removePhoto(){
 function send(){var f=S.form,p=f.place;if(!p||!f.note){alert("Choisis un resto et une note !");return}
 if(!S.fdb){alert("Pas de connexion.");return}
 var priv=f.vis==="lg",tls=tlsOf();if(priv&&!tls.length){alert("Sélectionne au moins une ligue.");return}
-var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),photo:f.photo||"",st:f.st.slice(),leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
+var cleanSt=(f.st||[]).slice(0, MAX_STICKERS);
+var r={uid:S.uid,pseudo:S.pseudo,col:S.col||"",pid:p.pid,resto:p.n,addr:p.a||"",note:f.note,cat:f.cat||p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine),cuisine:p.cuisine||"",avis:(f.avis||"").trim(),photo:f.photo||"",st:cleanSt,leagues:priv?tls.slice():S.leagues.slice(),mode:f.mode==="deliv"?"deliv":"place",ts:Date.now()};
 if(num(p.lat)&&num(p.lng)){r.lat=p.lat;r.lng=p.lng}if(priv)r.pub=false;
 
 var promise;
