@@ -483,7 +483,19 @@ function openLegend(){
   document.getElementById("sheet").innerHTML=h;
 }
 
-var S={filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null,noteOpen:false,prevTab:"home"};
+var S={filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},pendingJoin:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null,noteOpen:false,prevTab:"home"};
+
+// Détection d'un lien d'invitation (?join=CODE)
+(function(){
+  try {
+    var params = new URLSearchParams(window.location.search || "");
+    var j = params.get("join");
+    if(j){
+      S.pendingJoin = j.trim().toUpperCase().replace(/\s+/g,"-").replace(/[\/.]/g,"");
+    }
+  } catch(e){}
+})();
+
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function esc(s){return String(s==null?"":s).replace(/[&<>\"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function starCell(f){return '<span class="st"><span class="sb">★</span><span class="sf" style="width:'+(f*100)+'%">★</span></span>'}
@@ -547,7 +559,7 @@ function claimPseudo(newPseudo, callback){
   });
 }
 
-// --- Unicité des codes de ligue ---
+// --- Unicité des codes de ligue & liens d'invitation ---
 function genUniqueLeagueCode(){
   var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   var part1 = "", part2 = "";
@@ -558,7 +570,50 @@ function genUniqueLeagueCode(){
 
 function leagueLabel(code){
   var nm = S.leagueNames && S.leagueNames[code];
-  return nm ? (nm + " (" + code + ")") : code;
+  return nm ? nm : code;
+}
+
+function leagueInviteUrl(code){
+  var base = window.location.origin + window.location.pathname;
+  return base + "?join=" + encodeURIComponent(code);
+}
+
+function clearJoinParam(){
+  try {
+    var cleanUrl = window.location.origin + window.location.pathname + (window.location.hash || "");
+    window.history.replaceState({}, document.title, cleanUrl);
+  } catch(e){}
+}
+
+function processPendingJoin(){
+  var code = S.pendingJoin;
+  if(!code || !S.fdb) return;
+  if(route() !== "app") return;
+  S.pendingJoin = "";
+  clearJoinParam();
+
+  if(S.leagues.indexOf(code) > -1){
+    pick(code);
+    return;
+  }
+
+  S.fdb.collection("leagues").doc(code).get().then(function(doc){
+    if(doc.exists){
+      var d = doc.data() || {};
+      if(d.name) S.leagueNames[code] = d.name;
+      pick(code);
+      alert("Tu as rejoint la ligue « " + leagueLabel(code) + " » !");
+      return;
+    }
+    return S.fdb.collection("leagues/"+code+"/reviews").limit(1).get().then(function(q){
+      if(!q.empty){
+        pick(code);
+        alert("Tu as rejoint la ligue « " + leagueLabel(code) + " » !");
+      } else {
+        alert("Ce lien d'invitation est invalide ou la ligue n'existe plus.");
+      }
+    });
+  }).catch(function(){});
 }
 
 function nav(){
@@ -589,8 +644,10 @@ function applyEmptyText(){
 
 function render(){S.rvl=[];S.hl=[];if(S.map){try{S.map.remove()}catch(e){}S.map=null;S.mlayer=null}
 var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();applyEmptyText();if(S.noteOpen){updateNoteSheetBody()}return}
+if(S.pendingJoin && S.fdb){ processPendingJoin(); return; }
 nav();if(!S.pseudo){S.tab="me";S.pt="set"}
-document.getElementById("hsub").textContent=S.tab==="league"&&S.league?("Ligue "+leagueLabel(S.league)):"Découvre et note les restos";
+var subLabel = S.league ? leagueLabel(S.league) : "";
+document.getElementById("hsub").textContent = (S.tab==="league" && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
 if(S.tab==="map")initMap();
@@ -1049,19 +1106,19 @@ return h+G.map(function(x,i){return '<div class="card strict rank"><div class="p
 function league(){
   var createCard = '<div class="card strict" style="margin-top:14px;">'+
     '<div class="resto" style="margin-bottom:6px">Créer une nouvelle ligue</div>'+
-    '<div class="sub">Un code unique de plusieurs caractères sera généré pour inviter tes amis.</div>'+
+    '<div class="sub">Un code unique et un lien d’invitation seront générés pour inviter tes amis.</div>'+
     '<input id="lgn" placeholder="Nom de la ligue (optionnel, ex. Team Burger)">'+
-    '<button class="btn" onclick="createLeague()">+ Générer un code de ligue</button>'+
+    '<button class="btn" onclick="createLeague()">+ Créer la ligue</button>'+
   '</div>';
 
   var joinCard = '<div class="card strict" style="margin-top:10px;">'+
     '<div class="resto" style="margin-bottom:6px">Rejoindre avec un code</div>'+
-    '<div class="sub">Entre le code unique partagé par le créateur de la ligue.</div>'+
+    '<div class="sub">Entre le code unique ou ouvre directement un lien d’invitation.</div>'+
     '<input id="lg" placeholder="Ex. LG-A7K9-M2P4" autocapitalize="characters">'+
     '<button class="btn alt" onclick="join()">Rejoindre cette ligue</button>'+
   '</div>';
 
-  if(!S.leagues.length) return '<h2>Mes ligues</h2><div class="sub">Crée une ligue pour obtenir un code unique ou rejoins celle de tes amis avec son code.</div>' + createCard + joinCard;
+  if(!S.leagues.length) return '<h2>Mes ligues</h2><div class="sub">Crée une ligue pour obtenir un lien d’invitation ou rejoins celle de tes amis avec son code.</div>' + createCard + joinCard;
 
   var curCode = S.league || S.leagues[0];
   var L = lrev(curCode).sort(function(a,b){ return b.ts - a.ts; });
@@ -1072,8 +1129,8 @@ function league(){
   }).join("") + '</div>';
 
   h += '<div class="card strict" style="margin-bottom:10px">' +
-    '<div class="row"><div><div class="resto">'+(curName ? esc(curName) : 'Ligue active')+'</div><div class="who">Code unique : <b>'+esc(curCode)+'</b></div></div>'+
-    '<button class="chip" onclick="share(\''+esc(curCode)+'\')">Copier / Inviter</button></div>'+
+    '<div class="row"><div><div class="resto">'+(curName ? esc(curName) : 'Ligue active')+'</div><div class="who">Code : <b>'+esc(curCode)+'</b></div></div>'+
+    '<button class="chip" onclick="share(\''+esc(curCode)+'\')">Inviter</button></div>'+
   '</div>';
 
   h += '<div class="seg" style="margin-bottom:12px;">' +
@@ -1098,7 +1155,7 @@ function createLeague(){
     var fallbackCode = genUniqueLeagueCode();
     if(customName) S.leagueNames[fallbackCode] = customName;
     pick(fallbackCode);
-    alert("Nouvelle ligue créée ! Code unique : " + fallbackCode);
+    alert("Nouvelle ligue créée ! Code : " + fallbackCode);
     return;
   }
   function tryGenerate(attempts){
@@ -1119,7 +1176,7 @@ function createLeague(){
       ref.set(payload).then(function(){
         if(customName) S.leagueNames[code] = customName;
         pick(code);
-        alert("Ligue créée ! Code unique à partager : " + code);
+        alert("Ligue créée ! Clique sur « Inviter » pour partager le lien.");
       }).catch(function(){
         alert("Création impossible pour le moment.");
       });
@@ -1134,7 +1191,13 @@ function leaveLeague(c){if(!confirm("Quitter la ligue « "+leagueLabel(c)+" » ?
 
 function join(){
   var inp = document.getElementById("lg");
-  var l = inp ? inp.value.trim().toUpperCase().replace(/\s+/g,"-").replace(/[\/.]/g,"") : "";
+  var raw = inp ? inp.value.trim() : "";
+  var l = raw;
+  var m = raw.match(/[?&]join=([^&]+)/i);
+  if(m && m[1]){
+    try { l = decodeURIComponent(m[1]); } catch(e){ l = m[1]; }
+  }
+  l = l.trim().toUpperCase().replace(/\s+/g,"-").replace(/[\/.]/g,"");
   if(!l){alert("Entre un code de ligue");return}
   if(S.leagues.indexOf(l) > -1){
     pick(l);
@@ -1155,7 +1218,7 @@ function join(){
       if(!q.empty){
         pick(l);
       } else {
-        alert("Aucune ligue trouvée avec le code « " + l + " ». Vérifie le code exact ou crée une nouvelle ligue pour obtenir un code unique.");
+        alert("Aucune ligue trouvée avec le code « " + l + " ». Vérifie le code exact ou crée une nouvelle ligue.");
       }
     });
   }).catch(function(){
@@ -1164,7 +1227,26 @@ function join(){
 }
 
 function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);save();subL();S.tab="league";render()}
-function share(c){var nm = S.leagueNames && S.leagueNames[c];var t="Rejoins ma ligue"+(nm?" « "+nm+" »":"")+" sur Belly ! Code : "+c;try{if(navigator.share){navigator.share({text:t});return}}catch(e){}try{navigator.clipboard.writeText(t);alert("Copié : "+t)}catch(e){prompt("Copie :",t)}}
+
+function share(c){
+  var url = leagueInviteUrl(c);
+  var nm = S.leagueNames && S.leagueNames[c];
+  try {
+    if(navigator.share){
+      navigator.share({
+        title: nm ? ("Rejoins " + nm + " sur Belly") : "Invitation Belly",
+        url: url
+      });
+      return;
+    }
+  } catch(e){}
+  try {
+    navigator.clipboard.writeText(url);
+    alert("Lien d'invitation copié :\n" + url);
+  } catch(e){
+    prompt("Copie ce lien d'invitation :", url);
+  }
+}
 
 function openO(i){var o=S.hl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function settings(){
@@ -1378,6 +1460,15 @@ function subL(){
   if(!S.fdb) return;
   S.leagues.forEach(function(c){
     if(S.unsubs[c]) return;
+    if(!S.leagueNames[c]){
+      S.fdb.collection("leagues").doc(c).get().then(function(doc){
+        if(doc.exists && doc.data() && doc.data().name){
+          S.leagueNames[c] = doc.data().name;
+          save();
+          refresh();
+        }
+      }).catch(function(){});
+    }
     S.unsubs[c] = S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){
       S.priv[c] = q.docs.map(function(d){
         var x = d.data();
