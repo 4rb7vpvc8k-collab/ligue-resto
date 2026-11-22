@@ -1687,8 +1687,10 @@ function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<di
 function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
 function home(){
-var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
-var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c});
+var all=allv(),now=Date.now(),mo=new Date();
+var startOfWeek=new Date(mo.getFullYear(),mo.getMonth(),mo.getDate()-((mo.getDay()+6)%7)).getTime();
+var weekReviews=all.filter(function(x){return x.ts>=startOfWeek});
+var pop=groups(weekReviews).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c});
 var fr=[],seen={};
 S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 var followedUids = (S.friends || []).map(function(f){ return f.uid; });
@@ -1701,7 +1703,7 @@ if(followedUids.length){
   });
 }
 fr.sort(function(a,b){return b.ts-a.ts});
-var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
+var best=groups(weekReviews).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 
 var stylesHtml = '<div class="sh">Styles & Budgets</div><div class="cat-scroll">' +
   STYLE_CATS.map(function(c){
@@ -1715,9 +1717,9 @@ var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div cla
 
 return status() + stylesHtml + cuisineHtml
 +'<div class="big" style="margin-top:20px">Resto du moment</div>'
-+'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
++'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Aucun avis cette semaine.")
 +'<div class="sh">Derniers avis de mes amis</div>'+((S.leagues.length || followedUids.length)?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue ou suis tes amis pour voir leurs avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue / des amis</button></div>')
-+'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
++'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco cette semaine.")}
 
 function openReviewDetail(idx){
   var x = S.rvl[idx];
