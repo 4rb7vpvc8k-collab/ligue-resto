@@ -103,6 +103,16 @@ nav button.on{color:#E5B83F;font-weight:700}
 .di{flex:1;min-width:0}
 .tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
 
+.prof-review-list{display:flex;flex-direction:column;gap:8px}
+.prof-review-item{background:#F4F1E9;border:1px solid rgba(25,42,58,.2);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.03)}
+.prof-review-main{flex:1;min-width:0}
+.prof-review-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.prof-review-title{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-review-date{font-size:11px;color:rgba(25,42,58,.62);flex-shrink:0}
+.prof-review-stars{font-size:12px;margin:2px 0}
+.prof-review-excerpt{font-size:12px;color:rgba(25,42,58,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-review-thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(25,42,58,.2)}
+
 .home-review-card { background: #F4F1E9; border: 1px solid rgba(25,42,58,.2); border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .home-review-card:active { transform: scale(0.98); }
 .home-review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -216,6 +226,10 @@ body.dark-mode .mh{background:var(--card);border-top:1px solid var(--bd);border-
 body.dark-mode .dr{border-bottom:1px solid var(--bd)}
 body.dark-mode .dd{border:1px solid var(--bd);color:var(--mut);background:var(--card)}
 body.dark-mode .dt{color:#F4F1E9}
+body.dark-mode .prof-review-item{background:var(--card);border:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+body.dark-mode .prof-review-date{color:var(--mut)}
+body.dark-mode .prof-review-excerpt{color:var(--mut)}
+body.dark-mode .prof-review-thumb{border:1px solid var(--bd)}
 body.dark-mode .home-review-card{background:var(--card);border:1px solid var(--bd);box-shadow:0 4px 16px rgba(0,0,0,0.2)}
 body.dark-mode .home-review-user{color:var(--tx)}
 body.dark-mode .home-review-avatar{color:#12161C}
@@ -414,7 +428,7 @@ var STYLE_CATS=[
 ];
 
 var CUISINE_CATS=[
-  {label:"Français", key:"french", img:"https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=200&q=80"},
+  {label:"Français", key:"french", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=200&q=80"},
   {label:"Asiatique", key:"asian", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
   {label:"Italien", key:"italian", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
   {label:"Japonais", key:"japanese", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
@@ -433,14 +447,14 @@ var STYLE_CAT_MAP={
 };
 
 var CUISINE_CAT_MAP={
-  french:{label:"Français"},
-  asian:{label:"Asiatique"},
-  italian:{label:"Italien"},
-  japanese:{label:"Japonais"},
-  oriental:{label:"Oriental"},
-  indian:{label:"Indien"},
-  veggie:{label:"Végétarien"},
-  mexican:{label:"Mexicain"}
+  french:{label:"Français", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=200&q=80"},
+  asian:{label:"Asiatique", img:"https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=200&q=80"},
+  italian:{label:"Italien", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80"},
+  japanese:{label:"Japonais", img:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=200&q=80"},
+  oriental:{label:"Oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
+  indian:{label:"Indien", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
+  veggie:{label:"Végétarien", img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=200&q=80"},
+  mexican:{label:"Mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
 };
 
 function getRestoCat(name,type,priceLunch,cuisineTag){
@@ -1377,6 +1391,27 @@ function agenda(mine){if(!mine.length)return '<div class="empty">Ton agenda est 
 mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
 h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+dot(x)+'</div><div class="who">'+(x.mode==="deliv"?ICONS.delivery+" ":ICONS.dine+" ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
 
+function profileReviewsList(mine){
+  if(!mine || !mine.length) return '<div class="sub">Aucun avis.</div>';
+  return '<div class="prof-review-list">' + mine.slice(0, 4).map(function(x){
+    var d = new Date(x.ts);
+    var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
+    var thumb = x.photo || catInfo.img || "";
+    var excerpt = x.avis ? esc(x.avis) : '<span style="font-style:italic">Aucun commentaire</span>';
+    return '<div class="prof-review-item" onclick="openO('+hp(pl(x))+')">' +
+      '<div class="prof-review-main">' +
+        '<div class="prof-review-top">' +
+          '<div class="prof-review-title">' + dot(x) + '<span>' + esc(x.resto) + '</span></div>' +
+          '<div class="prof-review-date">' + d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"}) + '</div>' +
+        '</div>' +
+        '<div class="prof-review-stars"><span class="stars">' + stars(x.note) + '</span></div>' +
+        '<div class="prof-review-excerpt">' + excerpt + '</div>' +
+      '</div>' +
+      (thumb ? '<img src="'+thumb+'" class="prof-review-thumb" alt="">' : '') +
+    '</div>';
+  }).join("") + '</div>';
+}
+
 function userView(u){var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
 var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts}),uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
 var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name)),uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null],isF=hasFriend(u.uid);
@@ -1397,7 +1432,7 @@ if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien.</div>')}
 h+='<div class="card strict"><div class="av edit" onclick="newCol()" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">'+ICONS.edit+' Modifier</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
-h+='<div class="sh">Derniers avis</div>'+(mine.length?'<div class="gr">'+mine.slice(0,4).map(function(x){return '<div onclick="openO('+hp(pl(x))+')"><div class="pt" style="'+tl(x.resto)+'">'+dot(x,'position:absolute;top:6px;right:6px')+'<b>'+ini(x.resto)+'</b><small>'+esc(x.resto)+'</small></div><div class="pm"><span class="stars">'+stars(x.note)+'</span></div></div>'}).join("")+'</div>':'<div class="sub">Aucun avis.</div>');
+h+='<div class="sh">Derniers avis</div>'+profileReviewsList(mine);
 return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div><div class="lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+S.friends.length+' ›</b></div>'}
 
 function loadv(){return '<div class="empty">Chargement…</div>'}
