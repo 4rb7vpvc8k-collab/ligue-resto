@@ -103,6 +103,28 @@ nav button.on{color:#E5B83F;font-weight:700}
 .di{flex:1;min-width:0}
 .tri .btn{flex:1;padding:11px 4px;font-size:14px;white-space:nowrap}
 
+/* --- GRANDES CARTES LIGUE & ONGLET AMIS --- */
+.lg-big-card{background:#192A3A;color:#F4F1E9;border:1px solid rgba(25,42,58,.25);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.1);cursor:pointer;transition:transform .15s ease}
+.lg-big-card:active{transform:scale(.98)}
+.lg-big-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lg-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(229,184,63,.18);color:#E5B83F;font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.03em}
+.lg-big-mid{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.lg-emblem{width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#F4F1E9;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.lg-title{font-size:19px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;color:#F4F1E9;line-height:1.2;word-break:break-word}
+.lg-sub-code{font-size:12px;color:rgba(244,241,233,.68);margin-top:3px}
+.lg-big-foot{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(244,241,233,.12);font-size:13px;font-weight:700;color:#E5B83F}
+
+.bell-btn{position:relative;background:rgba(25,42,58,.08);border:1px solid rgba(25,42,58,.15);border-radius:10px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:#192A3A;flex-shrink:0}
+.bell-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bell-dot{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#DC2626;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #F4F1E9}
+
+.friend-row-card{background:#F4F1E9;border:1px solid rgba(25,42,58,.2);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.friend-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#F4F1E9;flex-shrink:0}
+.friend-meta{flex:1;min-width:0;cursor:pointer}
+.friend-name{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.friend-sub{font-size:12px;color:rgba(25,42,58,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(229,184,63,.22);color:#192A3A;margin-left:6px}
+
 .prof-review-list{display:flex;flex-direction:column;gap:8px}
 .prof-review-item{background:#F4F1E9;border:1px solid rgba(25,42,58,.2);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.03)}
 .prof-review-main{flex:1;min-width:0}
@@ -226,6 +248,12 @@ body.dark-mode .mh{background:var(--card);border-top:1px solid var(--bd);border-
 body.dark-mode .dr{border-bottom:1px solid var(--bd)}
 body.dark-mode .dd{border:1px solid var(--bd);color:var(--mut);background:var(--card)}
 body.dark-mode .dt{color:#F4F1E9}
+body.dark-mode .lg-big-card{background:#1C232D;border-color:rgba(255,255,255,.12);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+body.dark-mode .bell-btn{background:var(--card);border-color:var(--bd);color:var(--tx)}
+body.dark-mode .bell-dot{border-color:#12161C}
+body.dark-mode .friend-row-card{background:var(--card);border-color:var(--bd)}
+body.dark-mode .friend-sub{color:var(--mut)}
+body.dark-mode .status-badge{background:rgba(229,184,63,.2);color:#E5B83F}
 body.dark-mode .prof-review-item{background:var(--card);border:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.25)}
 body.dark-mode .prof-review-date{color:var(--mut)}
 body.dark-mode .prof-review-excerpt{color:var(--mut)}
@@ -407,7 +435,8 @@ var ICONS = {
   flag: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>',
   block: '<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>',
   edit: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>',
-  trash: '<svg class="svg-icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>'
+  trash: '<svg class="svg-icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>',
+  bell: '<svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>'
 };
 
 var CFG={apiKey:"AIzaSyBmMv9s1yxXhJTWVp5j2ows7QKEId4Z6sE",authDomain:"ligue-resto.firebaseapp.com",projectId:"ligue-resto",storageBucket:"ligue-resto.firebasestorage.app",messagingSenderId:"775462808060",appId:"1:775462808060:web:26b79836070b52cb56ea79"};
@@ -498,7 +527,18 @@ function openLegend(){
   document.getElementById("sheet").innerHTML=h;
 }
 
-var S={filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",likes:[],wish:[],friends:[],top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},pendingJoin:"",all:[],priv:{},unsubs:{},lv:"feed",form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],viewUser:null,viewProf:null,noteOpen:false,prevTab:"home"};
+var S={
+  filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",
+  likes:[],wish:[],friends:[],followers:[],ignoredFollows:[],userSearchQ:"",userSearchRes:null,userSearchBusy:false,
+  top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,
+  pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},leagueOpen:false,lgTab:"leagues",pendingJoin:"",
+  all:[],priv:{},unsubs:{},unsubFollows:null,lv:"feed",
+  form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},
+  pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
+  dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,
+  sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],
+  viewUser:null,viewProf:null,noteOpen:false,prevTab:"home"
+};
 
 // Détection d'un lien d'invitation (?join=CODE)
 (function(){
@@ -525,15 +565,15 @@ function lg(x){return x.leagues||(x.league?[x.league]:[])}
 function num(v){return typeof v==="number"&&isFinite(v)}
 function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
 function fmtD(k){return k<1?Math.round(k*1000)+" m":k.toFixed(1)+" km"}
-function go(t){S.tab=t;S.sel=null;S.focus=null;S.sub=null;S.viewUser=null;S.viewProf=null;render()}
+function go(t){S.tab=t;S.sel=null;S.focus=null;S.sub=null;S.viewUser=null;S.viewProf=null;if(t==="league"){S.leagueOpen=false}render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
 try{S.leagueNames=JSON.parse(ls("lr_league_names")||"{}")}catch(e){}
-S.dept=ls("lr_dept")||"";try{S.blocked=JSON.parse(ls("lr_blocked")||"[]");S.likes=JSON.parse(ls("lr_likes")||"[]");S.wish=JSON.parse(ls("lr_wish")||"[]");S.friends=JSON.parse(ls("lr_friends")||"[]");S.top=JSON.parse(ls("lr_top")||"[null,null,null,null,null]")}catch(e){}S.bio=ls("lr_bio")||"";S.col=ls("lr_col")||"";if(!S.col){S.col=newColor();ls("lr_col",S.col)}try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
+S.dept=ls("lr_dept")||"";try{S.blocked=JSON.parse(ls("lr_blocked")||"[]");S.likes=JSON.parse(ls("lr_likes")||"[]");S.wish=JSON.parse(ls("lr_wish")||"[]");S.friends=JSON.parse(ls("lr_friends")||"[]");S.ignoredFollows=JSON.parse(ls("lr_ignored_follows")||"[]");S.top=JSON.parse(ls("lr_top")||"[null,null,null,null,null]")}catch(e){}S.bio=ls("lr_bio")||"";S.col=ls("lr_col")||"";if(!S.col){S.col=newColor();ls("lr_col",S.col)}try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
-function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_league_names",JSON.stringify(S.leagueNames||{}));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
-if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("profiles").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,leagueNames:S.leagueNames||{},dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
+function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_league_names",JSON.stringify(S.leagueNames||{}));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_ignored_follows",JSON.stringify(S.ignoredFollows||[]));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("profiles").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,leagueNames:S.leagueNames||{},dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,ignoredFollows:S.ignoredFollows||[],top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
 
 // --- Unicité des pseudos ---
 function normalizePseudoKey(p){
@@ -661,8 +701,8 @@ function render(){S.rvl=[];S.hl=[];if(S.map){try{S.map.remove()}catch(e){}S.map=
 var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();applyEmptyText();if(S.noteOpen){updateNoteSheetBody()}return}
 if(S.pendingJoin && S.fdb){ processPendingJoin(); return; }
 nav();if(!S.pseudo){S.tab="me";S.pt="set"}
-var subLabel = S.league ? leagueLabel(S.league) : "";
-document.getElementById("hsub").textContent = (S.tab==="league" && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
+var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
+document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
 if(S.tab==="map")initMap();
@@ -696,7 +736,7 @@ function toggleReviewText(btn){
 }
 
 function rc(x, showR){
-  var d = new Date(x.ts), mine = S.leagues.some(function(l){ return lg(x).indexOf(l) > -1; }) && x.uid !== S.uid;
+  var d = new Date(x.ts);
   var idx = ri(x);
   var ulink = x.uid && x.uid !== S.uid ? ' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer;text-decoration:underline"' : '';
   
@@ -964,7 +1004,7 @@ return '<div class="card strict"><div class="sub">📍 Autorise ta position pour
 function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()" title="Filtres"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>'+(filtOn()?'•':'')+'</button></div>'}
 
 function commList(){if(S.sr!==null||S.busy)return "";var G=groups(allv());G.forEach(function(o){o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
-G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/b.c||b.c-a.c});S.gl=G;
+G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=G;
 return '<h2>Restos notés par la communauté</h2>'+(G.length?G.map(function(o,i){return '<div class="card strict" onclick="openG('+i+')"><div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><div class="stars">'+stars(o.s/o.c)+'</div></div><div class="who">'+(o.a?'📍 '+esc(o.a)+' · ':'')+o.c+' avis · '+(o.s/o.c).toFixed(1)+'/5</div></div>'}).join(""):'<div class="empty">Aucun avis pour l’instant.<br>Cherche un resto et sois le premier ! 🍕</div>')}
 
 function openG(i){var o=S.gl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};render()}
@@ -1121,7 +1161,7 @@ promise.then(function(){
   S.form={note:0,st:[],vis:f.vis,mode:f.mode,tls:tls.slice(),cat:"trad_low",cuisine:"",photo:"",editId:null,editLg:null};
   S.sr=null;S.sq="";
   if(S.noteOpen){ S.noteOpen=false; var el=document.getElementById("lb-note-modal"); if(el)el.remove(); }
-  if(priv){S.league=tls[0];S.lv="feed";save();S.tab="league"}else{S.sel=p;S.tab="map"}
+  if(priv){S.league=tls[0];S.lv="feed";S.lgTab="leagues";S.leagueOpen=true;save();S.tab="league"}else{S.sel=p;S.tab="map"}
   render()
 }).catch(function(err){alert("Enregistrement impossible: "+(err.message||""))})}
 
@@ -1132,7 +1172,242 @@ if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</
 var med=["🥇","🥈","🥉"];
 return h+G.map(function(x,i){return '<div class="card strict rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+dot(x)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
 
+// --- ONGLET LIGUE & AMIS ---
+function openLeagueCard(c){
+  S.league = c;
+  S.leagueOpen = true;
+  S.lv = "feed";
+  save();
+  subL();
+  render();
+}
+
+function closeLeagueCard(){
+  S.leagueOpen = false;
+  render();
+}
+
+function leagueMembersCount(c){
+  var revs = lrev(c);
+  var uids = {};
+  if(S.uid) uids[S.uid] = 1;
+  revs.forEach(function(x){ if(x.uid) uids[x.uid] = 1; });
+  return Object.keys(uids).length;
+}
+
+function leagueSuggestions(){
+  var seen = {};
+  var out = [];
+  S.leagues.forEach(function(c){
+    var lname = leagueLabel(c);
+    lrev(c).forEach(function(x){
+      if(!x.uid || x.uid === S.uid || isB(x.uid)) return;
+      if(seen[x.uid]){
+        if(seen[x.uid].leagues.indexOf(lname) < 0) seen[x.uid].leagues.push(lname);
+        return;
+      }
+      seen[x.uid] = {
+        uid: x.uid,
+        pseudo: x.pseudo || "Membre",
+        col: x.col || "",
+        leagues: [lname]
+      };
+      out.push(seen[x.uid]);
+    });
+  });
+  return out;
+}
+
+function searchUsersByPseudo(){
+  var inp = document.getElementById("friend-sq");
+  var q = inp ? inp.value.trim() : S.userSearchQ;
+  S.userSearchQ = q;
+  if(!q){
+    S.userSearchRes = null;
+    S.userSearchBusy = false;
+    render();
+    return;
+  }
+  var norm = normalizePseudoKey(q);
+  if(!norm){
+    S.userSearchRes = [];
+    S.userSearchBusy = false;
+    render();
+    return;
+  }
+  if(!S.fdb){
+    S.userSearchRes = [];
+    S.userSearchBusy = false;
+    render();
+    return;
+  }
+  S.userSearchBusy = true;
+  render();
+  S.fdb.collection("pseudos")
+    .orderBy(firebase.firestore.FieldPath.documentId())
+    .startAt(norm)
+    .endAt(norm + "\uf8ff")
+    .limit(20)
+    .get()
+    .then(function(snap){
+      var list = [];
+      snap.forEach(function(doc){
+        var d = doc.data() || {};
+        if(d.uid && d.uid !== S.uid && !isB(d.uid)){
+          list.push({uid: d.uid, pseudo: d.pseudo || doc.id});
+        }
+      });
+      S.userSearchRes = list;
+      S.userSearchBusy = false;
+      render();
+    })
+    .catch(function(){
+      S.userSearchRes = [];
+      S.userSearchBusy = false;
+      render();
+    });
+}
+
+function openFollowNotifs(){
+  var list = (S.followers || []).filter(function(f){ return !isB(f.uid); });
+  var h = '<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()" style="max-height:78vh;overflow:auto">';
+  h += '<div class="row" style="margin-bottom:10px"><div class="resto">Nouveaux abonnés ('+list.length+')</div><button class="back" onclick="closeSheet()">Fermer</button></div>';
+  if(!list.length){
+    h += '<div class="empty">Aucune notification de suivi pour l’instant.</div>';
+  } else {
+    h += list.map(function(f){
+      var alreadyFollowing = hasFriend(f.uid);
+      var avBg = hashColor(String(f.uid || f.pseudo || "?"));
+      return '<div class="friend-row-card">' +
+        '<div class="friend-av" style="background:'+avBg+'">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>' +
+        '<div class="friend-meta" onclick="closeSheet();openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo||"")+'\')">' +
+          '<div class="friend-name">'+esc(f.pseudo||"Utilisateur")+(alreadyFollowing?'<span class="status-badge">Ami</span>':'')+'</div>' +
+          '<div class="friend-sub">'+(alreadyFollowing?'Vous vous suivez mutuellement':'Te suit sur Belly')+'</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;align-items:center">' +
+          (alreadyFollowing
+            ? '<span class="chip on" style="cursor:default">✓ Ami</span>'
+            : '<button class="chip on" onclick="followBackFromNotif(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo||"")+'\')">Suivre en retour</button>' +
+              '<button class="chip" onclick="dismissFollowNotif(\''+encodeURIComponent(f.uid)+'\')">Ignorer</button>'
+          ) +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  h += '</div></div>';
+  document.getElementById("sheet").innerHTML = h;
+}
+
+function followBackFromNotif(encUid, encPseudo){
+  var uid = decodeURIComponent(encUid);
+  var pseudo = decodeURIComponent(encPseudo);
+  addFriend(uid, pseudo);
+  openFollowNotifs();
+}
+
+function dismissFollowNotif(encUid){
+  var uid = decodeURIComponent(encUid);
+  if((S.ignoredFollows || []).indexOf(uid) < 0){
+    S.ignoredFollows.push(uid);
+    save();
+  }
+  openFollowNotifs();
+  render();
+}
+
+function renderFriendPersonCard(person, subtitleText){
+  var uid = person.uid;
+  var pseudo = person.pseudo || "Utilisateur";
+  var following = hasFriend(uid);
+  var followsMe = isFollower(uid);
+  var mutual = following && followsMe;
+  var avBg = person.col || hashColor(String(uid || pseudo));
+  var badgeHtml = mutual ? '<span class="status-badge">Ami</span>' : (following ? '<span class="status-badge">Suivi</span>' : '');
+  var subLine = subtitleText || (mutual ? "Ami (suivi mutuel)" : (followsMe ? "Te suit · Suis-le pour devenir amis" : "Utilisateur Belly"));
+
+  return '<div class="friend-row-card">' +
+    '<div class="friend-av" style="background:'+avBg+'" onclick="openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')">'+esc(pseudo.charAt(0).toUpperCase())+'</div>' +
+    '<div class="friend-meta" onclick="openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')">' +
+      '<div class="friend-name">'+esc(pseudo)+badgeHtml+'</div>' +
+      '<div class="friend-sub">'+esc(subLine)+'</div>' +
+    '</div>' +
+    (following
+      ? '<button class="chip" onclick="delFriend(\''+esc(uid)+'\')">'+(mutual?'✓ Ami':'Suivi')+'</button>'
+      : '<button class="chip on" onclick="addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?'Suivre en retour':'+ Suivre')+'</button>'
+    ) +
+  '</div>';
+}
+
+function friendsTabView(){
+  var pendingNotifs = (S.followers || []).filter(function(f){
+    return !isB(f.uid) && !hasFriend(f.uid) && (S.ignoredFollows || []).indexOf(f.uid) < 0;
+  });
+  var badge = pendingNotifs.length ? '<span class="bell-dot">'+pendingNotifs.length+'</span>' : '';
+
+  var h = '<div class="row" style="margin:4px 0 10px">' +
+    '<div><div class="resto" style="font-size:18px">Amis & abonnements</div><div class="who" style="margin:0">Suivez-vous mutuellement pour devenir amis</div></div>' +
+    '<button class="bell-btn" onclick="openFollowNotifs()" title="Notifications de suivi">'+ICONS.bell+badge+'</button>' +
+  '</div>';
+
+  h += '<div class="row2" style="margin-bottom:12px">' +
+    '<input id="friend-sq" placeholder="Rechercher un nom d’utilisateur..." value="'+esc(S.userSearchQ||"")+'" oninput="S.userSearchQ=this.value" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">' +
+    '<button class="btn" onclick="searchUsersByPseudo()">🔍</button>' +
+    (S.userSearchQ ? '<button class="btn alt" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">✕</button>' : '') +
+  '</div>';
+
+  if(S.userSearchBusy){
+    h += '<div class="empty">Recherche d’utilisateurs…</div>';
+    return h;
+  }
+
+  if(S.userSearchQ && S.userSearchRes !== null){
+    h += '<div class="sh" style="margin-top:6px">Résultats pour « '+esc(S.userSearchQ)+' »</div>';
+    if(!S.userSearchRes.length){
+      h += '<div class="empty">Aucun utilisateur trouvé avec ce pseudo.</div>';
+    } else {
+      h += S.userSearchRes.map(function(u){ return renderFriendPersonCard(u); }).join("");
+    }
+    return h;
+  }
+
+  var sugg = leagueSuggestions().filter(function(u){ return !hasFriend(u.uid); });
+  if(sugg.length){
+    h += '<div class="sh" style="margin-top:6px">Suggestions de tes ligues</div>';
+    h += sugg.map(function(u){
+      var txt = "Dans ta ligue : " + u.leagues.join(", ");
+      return renderFriendPersonCard(u, txt);
+    }).join("");
+  }
+
+  var myFollowing = (S.friends || []).filter(function(f){ return !isB(f.uid); });
+  var mutualList = myFollowing.filter(function(f){ return isFollower(f.uid); });
+  var followingOnlyList = myFollowing.filter(function(f){ return !isFollower(f.uid); });
+
+  h += '<div class="sh" style="margin-top:14px">Mes amis ('+mutualList.length+')</div>';
+  if(mutualList.length){
+    h += mutualList.map(function(f){ return renderFriendPersonCard(f, "Ami · Suivi réciproque"); }).join("");
+  } else {
+    h += '<div class="sub">Aucun ami mutuel pour l’instant. Suis quelqu’un et attends qu’il te suive en retour !</div>';
+  }
+
+  if(followingOnlyList.length){
+    h += '<div class="sh" style="margin-top:14px">Personnes suivies ('+followingOnlyList.length+')</div>';
+    h += followingOnlyList.map(function(f){ return renderFriendPersonCard(f, "En attente de suivi en retour"); }).join("");
+  }
+
+  return h;
+}
+
 function league(){
+  var topTabs = '<div class="tabs">' +
+    '<button class="'+(S.lgTab!=="friends"?"on":"")+'" onclick="S.lgTab=\'leagues\';S.leagueOpen=false;render()">Ligue</button>' +
+    '<button class="'+(S.lgTab==="friends"?"on":"")+'" onclick="S.lgTab=\'friends\';S.leagueOpen=false;render()">Amis</button>' +
+  '</div>';
+
+  if(S.lgTab === "friends"){
+    return topTabs + friendsTabView();
+  }
+
   var createCard = '<div class="card strict" style="margin-top:14px;">'+
     '<div class="resto" style="margin-bottom:6px">Créer une nouvelle ligue</div>'+
     '<div class="sub">Un code unique et un lien d’invitation seront générés pour inviter tes amis.</div>'+
@@ -1147,32 +1422,63 @@ function league(){
     '<button class="btn alt" onclick="join()">Rejoindre cette ligue</button>'+
   '</div>';
 
-  if(!S.leagues.length) return '<h2>Mes ligues</h2><div class="sub">Crée une ligue pour obtenir un lien d’invitation ou rejoins celle de tes amis avec son code.</div>' + createCard + joinCard;
+  // Vue détaillée d'une ligue ouverte
+  if(S.leagueOpen && S.leagues.length){
+    var curCode = (S.league && S.leagues.indexOf(S.league) > -1) ? S.league : S.leagues[0];
+    var L = lrev(curCode).sort(function(a,b){ return b.ts - a.ts; });
+    var curName = (S.leagueNames && S.leagueNames[curCode]) || "";
 
-  var curCode = S.league || S.leagues[0];
-  var L = lrev(curCode).sort(function(a,b){ return b.ts - a.ts; });
-  var curName = (S.leagueNames && S.leagueNames[curCode]) || "";
+    var detail = topTabs;
+    detail += '<button class="back" onclick="closeLeagueCard()">← Mes ligues</button>';
+    detail += '<div class="card strict" style="margin-bottom:10px">' +
+      '<div class="row"><div><div class="resto">'+(curName ? esc(curName) : 'Ligue active')+'</div><div class="who">Code : <b>'+esc(curCode)+'</b></div></div>'+
+      '<button class="chip" onclick="share(\''+esc(curCode)+'\')">Inviter</button></div>'+
+    '</div>';
 
-  var h = '<div class="chips" style="margin:0 0 8px">' + S.leagues.map(function(c){
-    return '<button class="chip '+(c===curCode?"on":"")+'" onclick="pick(\''+esc(c)+'\')">'+esc(leagueLabel(c))+'</button>';
-  }).join("") + '</div>';
+    detail += '<div class="seg" style="margin-bottom:12px;">' +
+         '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
+         '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
+         '<button class="chip" onclick="leaveLeague(\''+esc(curCode)+'\')">Quitter</button>' +
+         '</div>';
 
-  h += '<div class="card strict" style="margin-bottom:10px">' +
-    '<div class="row"><div><div class="resto">'+(curName ? esc(curName) : 'Ligue active')+'</div><div class="who">Code : <b>'+esc(curCode)+'</b></div></div>'+
-    '<button class="chip" onclick="share(\''+esc(curCode)+'\')">Inviter</button></div>'+
-  '</div>';
-
-  h += '<div class="seg" style="margin-bottom:12px;">' +
-       '<button class="chip '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil</button>' +
-       '<button class="chip '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>' +
-       '<button class="chip" onclick="leaveLeague(\''+esc(curCode)+'\')">Quitter</button>' +
-       '</div>';
-
-  if(S.lv === "rank") {
-    h += rank(L);
-  } else {
-    h += (L.length ? L.map(function(x){ return rc(x, true); }).join("") : '<div class="empty">Aucun avis dans cette ligue.</div>');
+    if(S.lv === "rank") {
+      detail += rank(L);
+    } else {
+      detail += (L.length ? L.map(function(x){ return rc(x, true); }).join("") : '<div class="empty">Aucun avis dans cette ligue.</div>');
+    }
+    return detail;
   }
+
+  // Vue principale de l'onglet Ligue : grosses cartes de ligues + créer / rejoindre en dessous
+  var h = topTabs;
+  if(!S.leagues.length){
+    h += '<h2>Mes ligues</h2><div class="sub">Crée une ligue pour obtenir un lien d’invitation ou rejoins celle de tes amis avec son code.</div>';
+  } else {
+    h += S.leagues.map(function(c){
+      var title = leagueLabel(c);
+      var revs = lrev(c);
+      var members = leagueMembersCount(c);
+      var emblemBg = hashColor(String(c));
+      return '<div class="lg-big-card" onclick="openLeagueCard(\''+esc(c)+'\')">' +
+        '<div class="lg-big-top">' +
+          '<span class="lg-pill">● En cours</span>' +
+          '<span style="font-size:12px;color:rgba(244,241,233,.7);font-weight:700">'+members+' membre'+(members>1?'s':'')+' · '+revs.length+' avis</span>' +
+        '</div>' +
+        '<div class="lg-big-mid">' +
+          '<div class="lg-emblem" style="background:'+emblemBg+'">'+ini(title)+'</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="lg-title">'+esc(title)+'</div>' +
+            '<div class="lg-sub-code">Code : '+esc(c)+'</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="lg-big-foot">' +
+          '<span onclick="event.stopPropagation();share(\''+esc(c)+'\')" style="text-decoration:underline">Inviter des amis</span>' +
+          '<span>Ouvrir la ligue →</span>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
   h += createCard + joinCard;
   return h;
 }
@@ -1216,7 +1522,7 @@ function createLeague(){
   tryGenerate(5);
 }
 
-function leaveLeague(c){if(!confirm("Quitter la ligue « "+leagueLabel(c)+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.leagueNames&&S.leagueNames[c])delete S.leagueNames[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";save();render()}
+function leaveLeague(c){if(!confirm("Quitter la ligue « "+leagueLabel(c)+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.leagueNames&&S.leagueNames[c])delete S.leagueNames[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";S.leagueOpen=false;save();render()}
 
 function join(){
   var inp = document.getElementById("lg");
@@ -1255,7 +1561,7 @@ function join(){
   });
 }
 
-function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);save();subL();S.tab="league";render()}
+function pick(l){S.league=l;if(S.leagues.indexOf(l)<0)S.leagues.push(l);S.lgTab="leagues";S.leagueOpen=true;save();subL();S.tab="league";render()}
 
 function share(c){
   var url = leagueInviteUrl(c);
@@ -1329,8 +1635,35 @@ function tgl(l,p){var k=keyOf(p),i=-1;l.forEach(function(x,j){if(keyOf(x)===k)i=
 function togL(){tgl(S.likes,S.sel)}
 function togW(){tgl(S.wish,S.sel)}
 function hasFriend(uid){return S.friends.some(function(f){return f.uid===uid})}
-function addFriend(uid,pseudo){if(!hasFriend(uid)){S.friends.push({uid:uid,pseudo:pseudo});save();render()}}
-function delFriend(uid){S.friends=S.friends.filter(function(f){return f.uid!==uid});save();render()}
+function isFollower(uid){return (S.followers||[]).some(function(f){return f.uid===uid})}
+function isMutualFriend(uid){return hasFriend(uid) && isFollower(uid)}
+
+function addFriend(uid,pseudo){
+  if(!uid || uid === S.uid) return;
+  if(!hasFriend(uid)){
+    S.friends.push({uid:uid,pseudo:pseudo||"Utilisateur"});
+    save();
+    if(S.fdb && S.uid){
+      S.fdb.collection("follows").doc(S.uid+"__"+uid).set({
+        from: S.uid,
+        fromPseudo: S.pseudo || "Utilisateur",
+        to: uid,
+        toPseudo: pseudo || "Utilisateur",
+        ts: Date.now()
+      }).catch(function(){});
+    }
+    render();
+  }
+}
+
+function delFriend(uid){
+  S.friends=S.friends.filter(function(f){return f.uid!==uid});
+  save();
+  if(S.fdb && S.uid){
+    S.fdb.collection("follows").doc(S.uid+"__"+uid).delete().catch(function(){});
+  }
+  render();
+}
 
 function openUser(encUid,encPseudo){var uid=decodeURIComponent(encUid),pseudo=decodeURIComponent(encPseudo);
 if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.tab="me";render();
@@ -1356,7 +1689,17 @@ function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclic
 function home(){
 var all=allv(),now=Date.now(),mo=new Date(),m=mo.getMonth(),y=mo.getFullYear();
 var pop=groups(all.filter(function(x){return now-x.ts<30*864e5})).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c});
-var fr=[],seen={};S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
+var fr=[],seen={};
+S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
+var followedUids = (S.friends || []).map(function(f){ return f.uid; });
+if(followedUids.length){
+  all.forEach(function(x){
+    if(x.uid && x.uid !== S.uid && followedUids.indexOf(x.uid) > -1){
+      var k = (x._p?x._lg+"_":"p_")+x._id;
+      if(!seen[k]){ seen[k]=1; fr.push(x); }
+    }
+  });
+}
 fr.sort(function(a,b){return b.ts-a.ts});
 var best=groups(all.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
 
@@ -1373,7 +1716,7 @@ var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div cla
 return status() + stylesHtml + cuisineHtml
 +'<div class="big" style="margin-top:20px">Resto du moment</div>'
 +'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Pas assez d’avis récents.")
-+'<div class="sh">Derniers avis de mes amis</div>'+(S.leagues.length?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue pour voir les avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue</button></div>')
++'<div class="sh">Derniers avis de mes amis</div>'+((S.leagues.length || followedUids.length)?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue ou suis tes amis pour voir leurs avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue / des amis</button></div>')
 +'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco.")}
 
 function openReviewDetail(idx){
@@ -1429,26 +1772,27 @@ function profileReviewsList(mine){
 
 function userView(u){var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
 var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts}),uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name)),uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null],isF=hasFriend(u.uid);
+var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name)),uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null],isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
 var h='<button class="back" onclick="S.viewUser=null;S.viewProf=null;render()">← Retour</button>';
-h+='<div class="row" style="margin:6px 0"><div class="resto" style="font-size:22px">'+esc(name)+'</div></div>';
-h+='<div class="card strict"><div class="av" style="background:'+uCol+';color:#F4F1E9;cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(uBio?esc(uBio):'<span class="sub">Pas de bio.</span>')+'</div><button class="btn '+(isF?'alt':'')+'" style="margin-top:10px" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+(isF?'✓ Ami · Retirer':'+ Ajouter en ami')+'</button></div>';
+h+='<div class="row" style="margin:6px 0"><div class="resto" style="font-size:22px">'+esc(name)+(isM?'<span class="status-badge">Ami</span>':(isF?'<span class="status-badge">Suivi</span>':''))+'</div></div>';
+h+='<div class="card strict"><div class="av" style="background:'+uCol+';color:#F4F1E9;cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(uBio?esc(uBio):'<span class="sub">Pas de bio.</span>')+'</div><button class="btn '+(isF?'alt':'')+'" style="margin-top:10px" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+(isM?'✓ Ami · Ne plus suivre':(isF?'✓ Suivi · Ne plus suivre':(followsMe?'+ Suivre en retour':'+ Suivre')))+'</button></div>';
 if(uTop.some(Boolean))h+='<div class="sh">Top 5</div><div class="podium">'+slotView(1,uTop)+slotView(0,uTop)+slotView(2,uTop)+'</div><div class="pod2">'+slotView(3,uTop)+slotView(4,uTop)+'</div>';
 return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restaurants</span><b>'+uMr.length+'</b></div>';}
 
 function me(){if(S.viewUser)return userView(S.viewUser);
 if(S.pt==="set")return settings();
 var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts}),mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+var mutualFriendsCount = S.friends.filter(function(f){ return isFollower(f.uid); }).length;
 var h='<div class="row" style="margin:6px 0"><button class="gear" onclick="S.pt=\'set\';render()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="resto" style="font-size:22px">'+esc(S.pseudo||"Profil")+'</div><span style="width:34px"></span></div>';
 h+='<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>'}).join("")+'</div>';
 if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
-if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">Amis ('+S.friends.length+')</div>'+(S.friends.length?S.friends.map(function(f){return '<div class="card strict row"><b style="cursor:pointer;text-decoration:underline" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')">'+esc(f.pseudo)+'</b><button class="chip" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>'}).join(""):'<div class="empty">Aucun ami.</div>');
+if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">Amis & suivis ('+S.friends.length+')</div>'+(S.friends.length?S.friends.map(function(f){var mut=isFollower(f.uid);return '<div class="card strict row"><span style="cursor:pointer" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><b style="text-decoration:underline">'+esc(f.pseudo)+'</b><span class="status-badge">'+(mut?'Ami':'Suivi')+'</span></span><button class="chip" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>'}).join(""):'<div class="empty">Aucun ami.</div>');
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien.</div>')}
 h+='<div class="card strict"><div class="av edit" onclick="newCol()" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">'+ICONS.edit+' Modifier</button></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
 h+='<div class="sh">Derniers avis</div>'+profileReviewsList(mine);
-return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div><div class="lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+S.friends.length+' ›</b></div>'}
+return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div><div class="lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+mutualFriendsCount+' ›</b></div>'}
 
 function loadv(){return '<div class="empty">Chargement…</div>'}
 function welcome(){var up=S.wm==="up";
@@ -1489,7 +1833,7 @@ function wSubmit(){
 function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
 function authErr(e){alert("Erreur d'authentification : "+(e.code||"inconnue"))}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️")}).catch(authErr)}
-function logout(){S.user=null;S.pseudo="";S.leagues=[];S.league="";S.leagueNames={};S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
+function logout(){if(S.unsubFollows){try{S.unsubFollows()}catch(e){}S.unsubFollows=null}S.user=null;S.pseudo="";S.leagues=[];S.league="";S.leagueNames={};S.leagueOpen=false;S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.followers=[];S.ignoredFollows=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
 function delAcc(){if(!confirm("Supprimer ton compte ?"))return;var u=firebase.auth().currentUser;var oldKey=S.pseudo?normalizePseudoKey(S.pseudo):"";var delPseudo=oldKey?S.fdb.collection("pseudos").doc(oldKey).delete().catch(function(){}):Promise.resolve();delPseudo.then(function(){return S.fdb.collection("profiles").doc(u.uid).delete().catch(function(){})}).then(function(){return u.delete()}).then(function(){logout()}).catch(function(){alert("Suppression impossible.")})}
 function setP(){
   var p=document.getElementById("ps").value.trim();
@@ -1532,6 +1876,23 @@ function subL(){
   });
 }
 
+function subFollows(){
+  if(!S.fdb || !S.uid) return;
+  if(S.unsubFollows){ try{ S.unsubFollows(); }catch(e){} S.unsubFollows = null; }
+  S.unsubFollows = S.fdb.collection("follows").where("to", "==", S.uid).onSnapshot(function(q){
+    var arr = [];
+    q.forEach(function(doc){
+      var d = doc.data() || {};
+      if(d.from && d.from !== S.uid){
+        arr.push({uid: d.from, pseudo: d.fromPseudo || "Utilisateur", ts: d.ts || 0});
+      }
+    });
+    arr.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+    S.followers = arr;
+    refresh();
+  }, function(){});
+}
+
 function renderLetterboxdFeed(reviews){
   if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent</div>';
 
@@ -1565,19 +1926,19 @@ function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.crea
 var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
 function startDB(){S.fdb=firebase.firestore();S.state="ready";
 S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){var x=d.data();x._id=d.id;return x});S.state="ready";refresh()},function(){S.state="error";render()});
-S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(function(d){S.flags[d.id]=(d.data().by||[]).length});refresh()},function(){});subL()}
+S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(function(d){S.flags[d.id]=(d.data().by||[]).length});refresh()},function(){});subL();subFollows()}
 
 function loadProfile(u){S.fdb.collection("profiles").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
 if(p.leagueNames){S.leagueNames=Object.assign({},S.leagueNames||{},p.leagueNames)}
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
+if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.ignoredFollows)S.ignoredFollows=p.ignoredFollows;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL();subFollows()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
 try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
 loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
 try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
 if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
-S.user=u;S.uid=u.uid;if(!S.fdb)startDB();
+S.user=u;S.uid=u.uid;if(!S.fdb)startDB();else subFollows();
 if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";render()}});
 
 // --- Modale "Noter" style Letterboxd ---
