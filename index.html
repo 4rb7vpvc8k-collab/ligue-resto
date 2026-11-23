@@ -747,6 +747,11 @@ function applyEmptyText(){
   });
 }
 
+function mixHex(a,b,t){function p(h){h=h.replace("#","");return[0,2,4].map(function(i){return parseInt(h.substr(i,2),16)})}var x=p(a),y=p(b);return hex(Math.round(x[0]*(1-t)+y[0]*t),Math.round(x[1]*(1-t)+y[1]*t),Math.round(x[2]*(1-t)+y[2]*t))}
+function applyHeroBand(on){var de=document.documentElement,m=document.querySelector('meta[name="theme-color"]');
+if(on&&S.sel){var c=getRestoColor(S.sel),A=mixHex(c,"#000000",.1),B=mixHex(mixHex(c,"#192A3A",.5),"#000000",.25),base=ls("lr_theme")==="dark"?"#12161C":"#F4F1E9";
+de.style.setProperty("background","linear-gradient(90deg,"+A+","+B+") top/100% 420px no-repeat "+base,"important");if(m)m.setAttribute("content",A)}
+else{de.style.removeProperty("background");if(m)m.setAttribute("content","#E5B83F")}}
 function render(){S.rvl=[];S.hl=[];
 if(S.gMarkers){S.gMarkers.forEach(function(m){try{m.setMap(null)}catch(e){}});S.gMarkers=[]}
 S.map=null;
@@ -758,7 +763,7 @@ var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
-var _hr=document.querySelector(".pg-hero");if(_hr){var _t=Math.max(0,_hr.getBoundingClientRect().top+window.scrollY);_hr.style.position="relative";_hr.style.top=(-_t)+"px";_hr.style.marginTop="0";_hr.style.marginBottom=(-_t)+"px";var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop=(_sa+10)+"px";_hr.style.minHeight=(215+_sa)+"px"}
+var _hr=document.querySelector(".pg-hero");if(_hr){var _t=Math.max(0,_hr.getBoundingClientRect().top+window.scrollY);_hr.style.position="relative";_hr.style.top=(-_t)+"px";_hr.style.marginTop="0";_hr.style.marginBottom=(-_t)+"px";var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop=(_sa+10)+"px";_hr.style.minHeight=(215+_sa)+"px";applyHeroBand(true)}else{applyHeroBand(false)}
 if(S.tab==="map")initMap();
 applyEmptyText();
 if(S.noteOpen){updateNoteSheetBody()}}
