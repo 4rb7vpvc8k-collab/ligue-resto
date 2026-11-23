@@ -414,7 +414,7 @@ body.dark-mode .lb-recent-row {
   to { opacity: 1; }
 }
 .pg{animation:pgIn .3s ease;padding-bottom:140px}
-@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pgIn{from{opacity:0}to{opacity:1}}
 .pg-svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;flex-shrink:0}
 .pg-hero{margin:0 -14px;padding:14px 18px 22px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;border-radius:0 0 28px 28px;background-size:cover;background-position:center}
 .pg-top{display:flex;justify-content:space-between;align-items:center}
@@ -425,7 +425,7 @@ body.dark-mode .lb-recent-row {
 .pg-ic.heart.on{color:#ff5a6e}
 .pg-acts{display:flex;gap:10px}
 .pg-cat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:99px;margin-bottom:10px}
-.pg-name{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:0}
+.pg-name{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:0}
 .pg-score{display:flex;align-items:baseline;gap:10px;margin-top:12px}
 .pg-big{font-size:44px;font-weight:800;line-height:1}
 .pg-score .stars{font-size:16px}
@@ -758,7 +758,7 @@ var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
-var _hr=document.querySelector(".pg-hero");if(_hr){var _t=Math.max(0,_hr.getBoundingClientRect().top+window.scrollY);_hr.style.position="relative";_hr.style.top=(-_t)+"px";_hr.style.marginTop="0";_hr.style.marginBottom=(-_t)+"px";_hr.style.paddingTop=(_t+14)+"px";_hr.style.minHeight=(300+_t)+"px"}
+var _hr=document.querySelector(".pg-hero");if(_hr){var _t=Math.max(0,_hr.getBoundingClientRect().top+window.scrollY);_hr.style.position="relative";_hr.style.top=(-_t)+"px";_hr.style.marginTop="0";_hr.style.marginBottom=(-_t)+"px";var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop=(_sa+10)+"px";_hr.style.minHeight=(215+_sa)+"px"}
 if(S.tab==="map")initMap();
 applyEmptyText();
 if(S.noteOpen){updateNoteSheetBody()}}
