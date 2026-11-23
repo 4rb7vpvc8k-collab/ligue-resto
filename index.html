@@ -1752,20 +1752,20 @@ function agenda(mine){
   var h="",cur="";
   mine.forEach(function(x){
     var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();
-    if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
+    if(mo!==cur){cur=mo;h+='<div class="mh" style="margin-bottom:10px">'+esc(mo)+'</div>'}
     var modeLabel = x.mode==="deliv" ? (ICONS.delivery+" Livraison") : (ICONS.dine+" Sur place");
-    var metaLine = modeLabel + (x.addr ? ' · '+esc(x.addr) : '');
     var noteNum = typeof x.note==="number" ? String(x.note).replace(".",",")+"/5" : "";
-    var extra = x.avis ? '<div class="who" style="margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">« '+esc(x.avis)+' »</div>' : '';
-    h+='<div class="dr" onclick="openO('+hp(pl(x))+')">'+
-      '<div class="dd">'+d.getDate()+'</div>'+
-      '<div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div>'+
-      '<div class="di">'+
-        '<div class="resto">'+esc(x.resto)+dot(x)+'</div>'+
-        '<div class="who">'+metaLine+'</div>'+
-        '<div style="display:flex;align-items:center;gap:6px;margin-top:2px"><span class="stars">'+stars(x.note)+'</span>'+(noteNum?'<span class="who" style="font-weight:700">'+noteNum+'</span>':'')+'</div>'+
-        extra+
+    var stkHtml = (x.st && x.st.length)
+      ? '<div class="chips" style="margin-top:6px">'+x.st.slice(0,MAX_STICKERS).map(function(s){return '<span class="chip" style="font-size:11px;padding:2px 7px">'+esc(s)+'</span>'}).join("")+'</div>'
+      : '';
+    h+='<div class="card strict" style="border-radius:10px;padding:10px 12px;margin-bottom:8px" onclick="openO('+hp(pl(x))+')">'+
+      '<div class="row">'+
+        '<div class="resto" style="font-size:15px">'+esc(x.resto)+dot(x)+'</div>'+
+        '<span class="who" style="font-weight:700">'+d.getDate()+' '+esc(d.toLocaleDateString("fr-FR",{month:"short"}))+'</span>'+
       '</div>'+
+      '<div class="who" style="margin-top:3px">'+modeLabel+(x.addr?' · '+esc(x.addr):'')+'</div>'+
+      '<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span class="stars">'+stars(x.note)+'</span>'+(noteNum?'<span class="who" style="font-weight:700">'+noteNum+'</span>':'')+'</div>'+
+      stkHtml+
     '</div>';
   });
   return h;
