@@ -758,6 +758,7 @@ var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
+var _hr=document.querySelector(".pg-hero");if(_hr){var _t=Math.max(0,_hr.getBoundingClientRect().top+window.scrollY);_hr.style.marginTop=(-_t)+"px";_hr.style.paddingTop=(_t+14)+"px";_hr.style.minHeight=(300+_t)+"px"}
 if(S.tab==="map")initMap();
 applyEmptyText();
 if(S.noteOpen){updateNoteSheetBody()}}
