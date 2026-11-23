@@ -1747,9 +1747,29 @@ document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet(
 function setTop(i,k){closeSheet();var t=S.top.slice();while(t.length<5)t.push(null);if(k<0)t[i]=null;else{var p=cp(S.pkl[k]);for(var j=0;j<5;j++)if(t[j]&&keyOf(t[j])===keyOf(p))t[j]=null;t[i]=p}S.top=t;save();render()}
 function editBio(){var b=prompt("Ta bio (160 caractères max)",S.bio||"");if(b===null)return;S.bio=b.trim().slice(0,160);save();render()}
 
-function agenda(mine){if(!mine.length)return '<div class="empty">Ton agenda est vide.</div>';var h="",cur="";
-mine.forEach(function(x){var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
-h+='<div class="dr" onclick="openO('+hp(pl(x))+')"><div class="dd">'+d.getDate()+'</div><div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div><div class="di"><div class="resto">'+esc(x.resto)+dot(x)+'</div><div class="who">'+(x.mode==="deliv"?ICONS.delivery+" ":ICONS.dine+" ")+esc(x.addr||"")+'</div><div class="stars">'+stars(x.note)+'</div></div></div>'});return h}
+function agenda(mine){
+  if(!mine.length)return '<div class="empty">Ton agenda est vide.</div>';
+  var h="",cur="";
+  mine.forEach(function(x){
+    var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();
+    if(mo!==cur){cur=mo;h+='<div class="mh">'+esc(mo)+'</div>'}
+    var modeLabel = x.mode==="deliv" ? (ICONS.delivery+" Livraison") : (ICONS.dine+" Sur place");
+    var metaLine = modeLabel + (x.addr ? ' · '+esc(x.addr) : '');
+    var noteNum = typeof x.note==="number" ? String(x.note).replace(".",",")+"/5" : "";
+    var extra = x.avis ? '<div class="who" style="margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">« '+esc(x.avis)+' »</div>' : '';
+    h+='<div class="dr" onclick="openO('+hp(pl(x))+')">'+
+      '<div class="dd">'+d.getDate()+'</div>'+
+      '<div class="dt" style="'+tl(x.resto)+'">'+ini(x.resto)+'</div>'+
+      '<div class="di">'+
+        '<div class="resto">'+esc(x.resto)+dot(x)+'</div>'+
+        '<div class="who">'+metaLine+'</div>'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:2px"><span class="stars">'+stars(x.note)+'</span>'+(noteNum?'<span class="who" style="font-weight:700">'+noteNum+'</span>':'')+'</div>'+
+        extra+
+      '</div>'+
+    '</div>';
+  });
+  return h;
+}
 
 function profileReviewsList(mine){
   if(!mine || !mine.length) return '<div class="sub">Aucun avis.</div>';
