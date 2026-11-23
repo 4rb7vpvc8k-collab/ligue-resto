@@ -537,7 +537,7 @@ var S={
   pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
   dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,
   sq:"",sr:null,busy:false,err:false,sel:null,map:null,mlayer:null,focus:null,manual:false,mk:[],
-  viewUser:null,viewProf:null,noteOpen:false,prevTab:"home"
+  viewUser:null,viewProf:null,viewPt:"prof",viewSub:null,noteOpen:false,prevTab:"home"
 };
 
 // Détection d'un lien d'invitation (?join=CODE)
@@ -565,7 +565,7 @@ function lg(x){return x.leagues||(x.league?[x.league]:[])}
 function num(v){return typeof v==="number"&&isFinite(v)}
 function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
 function fmtD(k){return k<1?Math.round(k*1000)+" m":k.toFixed(1)+" km"}
-function go(t){S.tab=t;S.sel=null;S.focus=null;S.sub=null;S.viewUser=null;S.viewProf=null;if(t==="league"){S.leagueOpen=false}render()}
+function go(t){S.tab=t;S.sel=null;S.focus=null;S.sub=null;S.viewUser=null;S.viewProf=null;S.viewPt="prof";S.viewSub=null;if(t==="league"){S.leagueOpen=false}render()}
 S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.uid);
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
@@ -1741,7 +1741,7 @@ function delFriend(uid){
 }
 
 function openUser(encUid,encPseudo){var uid=decodeURIComponent(encUid),pseudo=decodeURIComponent(encPseudo);
-if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.tab="me";render();
+if(!uid||uid===S.uid){go("me");return}S.viewUser={uid:uid,pseudo:pseudo};S.viewProf=null;S.viewPt="prof";S.viewSub=null;S.tab="me";render();
 if(S.fdb)S.fdb.collection("profiles").doc(uid).get().then(function(d){if(S.viewUser&&S.viewUser.uid===uid){S.viewProf=d.exists?d.data():{};render()}}).catch(function(){})}
 
 function hp(p){return S.hl.push(p)-1}
@@ -1822,8 +1822,8 @@ document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet(
 function setTop(i,k){closeSheet();var t=S.top.slice();while(t.length<5)t.push(null);if(k<0)t[i]=null;else{var p=cp(S.pkl[k]);for(var j=0;j<5;j++)if(t[j]&&keyOf(t[j])===keyOf(p))t[j]=null;t[i]=p}S.top=t;save();render()}
 function editBio(){var b=prompt("Ta bio (160 caractères max)",S.bio||"");if(b===null)return;S.bio=b.trim().slice(0,160);save();render()}
 
-function agenda(mine){
-  if(!mine.length)return '<div class="empty">Ton agenda est vide.</div>';
+function agenda(mine, emptyLabel){
+  if(!mine.length)return '<div class="empty">'+(emptyLabel||'Ton agenda est vide.')+'</div>';
   var h="",cur="";
   mine.forEach(function(x){
     var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}).toUpperCase();
@@ -1848,7 +1848,7 @@ function agenda(mine){
 
 function profileReviewsList(mine){
   if(!mine || !mine.length) return '<div class="sub">Aucun avis.</div>';
-  return '<div class="prof-review-list">' + mine.slice(0, 4).map(function(x){
+  return '<div class="prof-review-list">' + mine.slice(0, 3).map(function(x){
     var d = new Date(x.ts);
     var catInfo = (STYLE_CAT_MAP[x.cat] || CUISINE_CAT_MAP[x.cat] || {});
     var thumb = x.photo || catInfo.img || "";
@@ -1867,14 +1867,79 @@ function profileReviewsList(mine){
   }).join("") + '</div>';
 }
 
-function userView(u){var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
-var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts}),uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name)),uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null],isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
-var h='<button class="back" onclick="S.viewUser=null;S.viewProf=null;render()">← Retour</button>';
-h+='<div class="row" style="margin:6px 0"><div class="resto" style="font-size:22px">'+esc(name)+(isM?'<span class="status-badge">Ami</span>':(isF?'<span class="status-badge">Suivi</span>':''))+'</div></div>';
-h+='<div class="card strict"><div class="av" style="background:'+uCol+';color:#F4F1E9;cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(uBio?esc(uBio):'<span class="sub">Pas de bio.</span>')+'</div><button class="btn '+(isF?'alt':'')+'" style="margin-top:10px" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+(isM?'✓ Ami · Ne plus suivre':(isF?'✓ Suivi · Ne plus suivre':(followsMe?'+ Suivre en retour':'+ Suivre')))+'</button></div>';
-if(uTop.some(Boolean))h+='<div class="sh">Top 5</div><div class="podium">'+slotView(1,uTop)+slotView(0,uTop)+slotView(2,uTop)+'</div><div class="pod2">'+slotView(3,uTop)+slotView(4,uTop)+'</div>';
-return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restaurants</span><b>'+uMr.length+'</b></div>';}
+function userView(u){
+  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
+  var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts}),uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name)),uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null];
+  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
+
+  // Si c'est un vrai ami (suivi mutuel) : même vue que son propre profil, sans les réglages ni édition
+  if(isM){
+    var uLikes = Array.isArray(prof.likes) ? prof.likes : [];
+    var uWish = Array.isArray(prof.wish) ? prof.wish : [];
+    var uFriends = Array.isArray(prof.friends) ? prof.friends : [];
+    var vpt = S.viewPt || "prof";
+    var vsub = S.viewSub || null;
+
+    var h = '<div class="row" style="margin:6px 0">' +
+      '<button class="back" style="width:68px;text-align:left" onclick="S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()">← Retour</button>' +
+      '<div class="resto" style="font-size:22px;justify-content:center;flex:1">'+esc(name)+'<span class="status-badge">Ami</span></div>' +
+      '<span style="width:68px"></span>' +
+    '</div>';
+
+    h += '<div class="tabs">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+      return '<button class="'+(vpt===t[0]?"on":"")+'" onclick="S.viewPt=\''+t[0]+'\';S.viewSub=null;render()">'+t[1]+'</button>';
+    }).join("")+'</div>';
+
+    if(vpt === "agenda"){
+      return h + agenda(uMine, "Son agenda est vide.");
+    }
+    if(vpt === "wish"){
+      return h + (uWish.length ? grid(uWish) : '<div class="empty">Aucun resto à tester.</div>');
+    }
+
+    if(vsub === "friends"){
+      return h + '<button class="back" onclick="S.viewSub=null;render()">← Retour</button>' +
+        '<div class="sh">Ses amis & suivis ('+uFriends.length+')</div>' +
+        (uFriends.length ? uFriends.map(function(f){
+          var isMeRow = f.uid === S.uid;
+          return '<div class="card strict row">' +
+            '<span style="cursor:pointer" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo||"")+'\')">' +
+              '<b style="text-decoration:underline">'+esc(f.pseudo||"Utilisateur")+'</b>' +
+              (isMeRow ? '<span class="status-badge">Toi</span>' : '') +
+            '</span>' +
+          '</div>';
+        }).join("") : '<div class="empty">Aucun ami.</div>');
+    }
+
+    if(vsub){
+      var L = vsub === "likes" ? uLikes : uMr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});
+      return h + '<button class="back" onclick="S.viewSub=null;render()">← Retour</button>' +
+        '<div class="sh">'+(vsub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>' +
+        (L.length ? grid(L) : '<div class="empty">Rien.</div>');
+    }
+
+    h += '<div class="card strict">' +
+      '<div class="av" style="background:'+uCol+';color:#F4F1E9;cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div>' +
+      '<div style="text-align:center">'+(uBio?esc(uBio):'<span class="sub">Pas de bio.</span>')+'</div>' +
+      '<button class="btn alt" style="margin-top:10px" onclick="delFriend(\''+esc(u.uid)+'\')">✓ Ami · Ne plus suivre</button>' +
+    '</div>';
+
+    h += '<div class="sh">Son top 5</div><div class="podium">'+slotView(1,uTop)+slotView(0,uTop)+slotView(2,uTop)+'</div><div class="pod2">'+slotView(3,uTop)+slotView(4,uTop)+'</div>';
+    h += '<div class="sh">Derniers avis</div>'+profileReviewsList(uMine);
+    return h +
+      '<div class="lr" onclick="S.viewSub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+uMr.length+' ›</b></div>' +
+      '<div class="lr" onclick="S.viewSub=\'likes\';render()"><span>Likes</span><b>'+uLikes.length+' ›</b></div>' +
+      '<div class="lr" onclick="S.viewSub=\'friends\';render()"><span>Amis</span><b>'+uFriends.length+' ›</b></div>';
+  }
+
+  // Vue simple si l'utilisateur n'est pas encore un ami mutuel
+  var h='<button class="back" onclick="S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()">← Retour</button>';
+  h+='<div class="row" style="margin:6px 0"><div class="resto" style="font-size:22px">'+esc(name)+(isF?'<span class="status-badge">Suivi</span>':'')+'</div></div>';
+  h+='<div class="card strict"><div class="av" style="background:'+uCol+';color:#F4F1E9;cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(uBio?esc(uBio):'<span class="sub">Pas de bio.</span>')+'</div><button class="btn '+(isF?'alt':'')+'" style="margin-top:10px" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+(isF?'✓ Suivi · Ne plus suivre':(followsMe?'+ Suivre en retour':'+ Suivre'))+'</button></div>';
+  if(uTop.some(Boolean))h+='<div class="sh">Top 5</div><div class="podium">'+slotView(1,uTop)+slotView(0,uTop)+slotView(2,uTop)+'</div><div class="pod2">'+slotView(3,uTop)+slotView(4,uTop)+'</div>';
+  return h+'<div class="lr" style="margin-top:14px;cursor:default"><span>Restaurants</span><b>'+uMr.length+'</b></div>';
+}
 
 function me(){if(S.viewUser)return userView(S.viewUser);
 if(S.pt==="set")return settings();
