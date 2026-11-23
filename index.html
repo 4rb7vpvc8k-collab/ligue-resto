@@ -537,7 +537,7 @@ var S={
   form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},
   pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
   dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,
-  sq:"",sr:null,busy:false,err:false,sel:null,map:null,gMarkers:[],gInfo:null,gPlacesSvc:null,gDetailsCache:{},focus:null,manual:false,mk:[],
+  sq:"",sr:null,busy:false,err:false,sel:null,map:null,gMarkers:[],gInfo:null,gDetailsCache:{},focus:null,manual:false,mk:[],
   viewUser:null,viewProf:null,viewPt:"prof",viewSub:null,noteOpen:false,prevTab:"home"
 };
 
@@ -835,7 +835,7 @@ return arr.sort(function(a,b){
 
 function strip(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim()}
 
-// --- GOOGLE MAPS & GOOGLE PLACES ---
+// --- GOOGLE MAPS & GOOGLE PLACES (NEW) ---
 var gmapsPromise = null;
 function loadGoogleMaps(cb){
   if(window.google && window.google.maps && window.google.maps.places){ cb(); return; }
@@ -852,33 +852,23 @@ function loadGoogleMaps(cb){
   gmapsPromise.then(cb).catch(function(){});
 }
 
-function getPlacesService(){
-  if(!window.google || !window.google.maps || !window.google.maps.places) return null;
-  if(S.map) return new google.maps.places.PlacesService(S.map);
-  if(!S.gPlacesSvc){
-    var div = document.createElement("div");
-    S.gPlacesSvc = new google.maps.places.PlacesService(div);
-  }
-  return S.gPlacesSvc;
-}
-
-function priceLevelToCat(name, types, priceLevel){
-  if(priceLevel === 4) return "gastronomy";
-  if(priceLevel === 3) return "trad_high";
-  if(priceLevel === 1) return "fast";
+function priceLevelNewToCat(name, types, priceLevel){
+  if(priceLevel === "PRICE_LEVEL_VERY_EXPENSIVE" || priceLevel === 4) return "gastronomy";
+  if(priceLevel === "PRICE_LEVEL_EXPENSIVE" || priceLevel === 3) return "trad_high";
+  if(priceLevel === "PRICE_LEVEL_INEXPENSIVE" || priceLevel === 1) return "fast";
   var t = (types || []).indexOf("meal_takeaway") > -1 ? "fast_food" : "restaurant";
-  return getRestoCat(name, t, priceLevel === 2 ? 20 : null, "");
+  return getRestoCat(name, t, (priceLevel === "PRICE_LEVEL_MODERATE" || priceLevel === 2) ? 20 : null, "");
 }
 
-function mapGPlaceToBelly(r){
-  var lat = r.geometry && r.geometry.location ? r.geometry.location.lat() : null;
-  var lng = r.geometry && r.geometry.location ? r.geometry.location.lng() : null;
-  var n = r.name || "Restaurant";
-  var addr = r.formatted_address || r.vicinity || "";
-  var cat = priceLevelToCat(n, r.types, r.price_level);
+function mapNewPlaceToBelly(r){
+  var lat = r.location ? (typeof r.location.lat === "function" ? r.location.lat() : r.location.lat) : null;
+  var lng = r.location ? (typeof r.location.lng === "function" ? r.location.lng() : r.location.lng) : null;
+  var n = r.displayName || "Restaurant";
+  var addr = r.formattedAddress || "";
+  var cat = priceLevelNewToCat(n, r.types, r.priceLevel);
   return {
-    pid: "gp:" + r.place_id,
-    gPlaceId: r.place_id,
+    pid: "gp:" + r.id,
+    gPlaceId: r.id,
     n: n,
     a: addr,
     lat: lat,
@@ -887,7 +877,7 @@ function mapGPlaceToBelly(r){
     cuisine: "",
     cat: cat,
     gRating: r.rating || null,
-    gCount: r.user_ratings_total || 0
+    gCount: r.userRatingCount || 0
   };
 }
 
@@ -899,56 +889,54 @@ function searchPlaces(q){
   var center = S.loc || S.home || {lat:48.8566, lng:2.3522};
   var rad = Math.max(S.filt.rad || 3000, 500);
 
-  return new Promise(function(resolve){
-    loadGoogleMaps(function(){
-      var svc = getPlacesService();
-      if(!svc){ resolve([]); return; }
-      var gLoc = new google.maps.LatLng(center.lat, center.lng);
-
-      function mergeCommunity(list){
-        var seen = {};
-        list.forEach(function(p){ seen[keyOf(p)] = 1; });
-        groups(allv()).forEach(function(o){
-          if(seen[o.k]) return;
-          var matchQ = !q || strip(o.n).indexOf(strip(q)) > -1 || strip(o.a).indexOf(strip(q)) > -1;
-          var okDist = !num(o.lat) || !num(o.lng) || dist(center.lat, center.lng, o.lat, o.lng)*1000 <= rad * 2;
-          if(matchQ && okDist){
-            list.push({pid:o.pid, n:o.n, a:o.a, lat:o.lat, lng:o.lng, cat:o.cat, cuisine:o.cuisine||""});
-          }
-        });
-        return list;
+  function mergeCommunity(list){
+    var seen = {};
+    list.forEach(function(p){ seen[keyOf(p)] = 1; });
+    groups(allv()).forEach(function(o){
+      if(seen[o.k]) return;
+      var matchQ = !q || strip(o.n).indexOf(strip(q)) > -1 || strip(o.a).indexOf(strip(q)) > -1;
+      var okDist = !num(o.lat) || !num(o.lng) || dist(center.lat, center.lng, o.lat, o.lng)*1000 <= rad * 2;
+      if(matchQ && okDist){
+        list.push({pid:o.pid, n:o.n, a:o.a, lat:o.lat, lng:o.lng, cat:o.cat, cuisine:o.cuisine||""});
       }
+    });
+    return list;
+  }
 
-      if(!q || q.length === 0){
-        svc.nearbySearch({
-          location: gLoc,
-          radius: rad,
-          type: "restaurant"
-        }, function(results, status){
-          if(status === google.maps.places.PlacesServiceStatus.OK && results){
-            resolve(mergeCommunity(results.map(mapGPlaceToBelly)));
-          } else {
-            resolve(mergeCommunity([]));
+  return new Promise(function(resolve){
+    loadGoogleMaps(async function(){
+      try {
+        var PlaceClass = google.maps.places && google.maps.places.Place;
+        if(!PlaceClass){ resolve(mergeCommunity([])); return; }
+        var fields = ["id", "displayName", "location", "formattedAddress", "rating", "userRatingCount", "priceLevel", "types"];
+
+        if(!q || q.length === 0){
+          var resp = await PlaceClass.searchNearby({
+            fields: fields,
+            locationRestriction: { center: { lat: center.lat, lng: center.lng }, radius: rad },
+            includedPrimaryTypes: ["restaurant", "cafe", "bakery", "meal_takeaway", "bar"],
+            maxResultCount: 20,
+            language: "fr"
+          });
+          var mapped = (resp && resp.places ? resp.places : []).map(mapNewPlaceToBelly);
+          resolve(mergeCommunity(mapped));
+        } else {
+          var respT = await PlaceClass.searchByText({
+            textQuery: q,
+            fields: fields,
+            locationBias: { center: { lat: center.lat, lng: center.lng }, radius: rad },
+            maxResultCount: 20,
+            language: "fr"
+          });
+          var mappedT = (respT && respT.places ? respT.places : []).map(mapNewPlaceToBelly);
+          if(mappedT.length && num(mappedT[0].lat) && num(mappedT[0].lng)){
+            S.sc = {lat: mappedT[0].lat, lng: mappedT[0].lng};
+            S.mapC = {lat: mappedT[0].lat, lng: mappedT[0].lng};
           }
-        });
-      } else {
-        svc.textSearch({
-          query: q,
-          location: gLoc,
-          radius: rad,
-          type: "restaurant"
-        }, function(results, status){
-          if(status === google.maps.places.PlacesServiceStatus.OK && results){
-            var mapped = results.map(mapGPlaceToBelly);
-            if(mapped.length && num(mapped[0].lat) && num(mapped[0].lng)){
-              S.sc = {lat: mapped[0].lat, lng: mapped[0].lng};
-              S.mapC = {lat: mapped[0].lat, lng: mapped[0].lng};
-            }
-            resolve(mergeCommunity(mapped));
-          } else {
-            resolve(mergeCommunity([]));
-          }
-        });
+          resolve(mergeCommunity(mappedT));
+        }
+      } catch(e){
+        resolve(mergeCommunity([]));
       }
     });
   });
@@ -959,29 +947,36 @@ function fetchGooglePlaceDetails(p){
   var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
   if(!gpId || S.gDetailsCache[gpId]) return;
   S.gDetailsCache[gpId] = {loading: true};
-  loadGoogleMaps(function(){
-    var svc = getPlacesService();
-    if(!svc) return;
-    svc.getDetails({
-      placeId: gpId,
-      fields: ["rating", "user_ratings_total", "reviews", "url", "formatted_address", "geometry"]
-    }, function(det, status){
-      if(status === google.maps.places.PlacesServiceStatus.OK && det){
-        S.gDetailsCache[gpId] = {
-          loading: false,
-          rating: det.rating || null,
-          total: det.user_ratings_total || 0,
-          reviews: (det.reviews || []).slice(0, 5),
-          url: det.url || ""
+  loadGoogleMaps(async function(){
+    try {
+      var PlaceClass = google.maps.places && google.maps.places.Place;
+      if(!PlaceClass) return;
+      var placeObj = new PlaceClass({ id: gpId, requestedLanguage: "fr" });
+      await placeObj.fetchFields({
+        fields: ["rating", "userRatingCount", "reviews", "googleMapsURI", "formattedAddress"]
+      });
+      var revs = (placeObj.reviews || []).slice(0, 5).map(function(rv){
+        return {
+          author_name: (rv.authorAttribution && rv.authorAttribution.displayName) || "Utilisateur Google",
+          relative_time_description: rv.relativePublishTimeDescription || "",
+          rating: rv.rating || 0,
+          text: rv.text || ""
         };
-        if(S.sel && keyOf(S.sel) === keyOf(p)){
-          if(det.formatted_address && !S.sel.a) S.sel.a = det.formatted_address;
-          render();
-        }
-      } else {
-        S.gDetailsCache[gpId] = {loading: false, error: true};
+      });
+      S.gDetailsCache[gpId] = {
+        loading: false,
+        rating: placeObj.rating || null,
+        total: placeObj.userRatingCount || 0,
+        reviews: revs,
+        url: placeObj.googleMapsURI || ""
+      };
+      if(S.sel && keyOf(S.sel) === keyOf(p)){
+        if(placeObj.formattedAddress && !S.sel.a) S.sel.a = placeObj.formattedAddress;
+        render();
       }
-    });
+    } catch(e){
+      S.gDetailsCache[gpId] = {loading: false, error: true};
+    }
   });
 }
 
@@ -1034,7 +1029,7 @@ function executeCatSearch(loc, catKey) {
   S.mapC = loc;
   S.busy = true;
   render();
-  var kw = (CUISINE_CAT_MAP[catKey] && CUISINE_CAT_MAP[catKey].label) || (STYLE_CAT_MAP[catKey] && STYLE_CAT_MAP[catKey].label) || "restaurant";
+  var kw = (CUISINE_CAT_MAP[catKey] && ("restaurant " + CUISINE_CAT_MAP[catKey].label)) || (STYLE_CAT_MAP[catKey] && STYLE_CAT_MAP[catKey].label) || "restaurant";
   searchPlaces(kw).then(function(r){
     S.sr = applyFilt(r);
     S.busy = false;
