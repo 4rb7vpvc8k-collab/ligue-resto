@@ -763,7 +763,7 @@ var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
-var _hr=document.querySelector(".pg-hero");if(_hr){var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop=(_sa+14)+"px";_hr.style.minHeight=(300+_sa)+"px";applyHeroBand(true)}else{applyHeroBand(false)}
+var _hr=document.querySelector(".pg-hero");if(_hr){var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop=Math.max(64,_sa-37)+"px";_hr.style.minHeight=(249+_sa)+"px";applyHeroBand(true)}else{applyHeroBand(false)}
 if(S.tab==="map")initMap();
 applyEmptyText();
 if(S.noteOpen){updateNoteSheetBody()}}
