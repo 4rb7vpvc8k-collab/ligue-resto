@@ -741,10 +741,19 @@ function applyEmptyText(){
 }
 
 function mixHex(a,b,t){function p(h){h=h.replace("#","");return[0,2,4].map(function(i){return parseInt(h.substr(i,2),16)})}var x=p(a),y=p(b);return hex(Math.round(x[0]*(1-t)+y[0]*t),Math.round(x[1]*(1-t)+y[1]*t),Math.round(x[2]*(1-t)+y[2]*t))}
-function applyHeroBand(on){var de=document.documentElement,m=document.querySelector('meta[name="theme-color"]');
-if(on&&S.sel){var c=getRestoColor(S.sel),A=mixHex(c,"#000000",.1),B=mixHex(mixHex(c,"#192A3A",.5),"#000000",.25),base=ls("lr_theme")==="dark"?"#12161C":"#F4F1E9";
-de.style.setProperty("background","linear-gradient(90deg,"+A+","+B+") top/100% 420px no-repeat "+base,"important");if(m)m.setAttribute("content",A)}
-else{de.style.removeProperty("background");if(m)m.setAttribute("content","#E5B83F")}}
+function applyHeroBand(on){
+  var de=document.documentElement,m=document.querySelector('meta[name="theme-color"]');
+  if(on&&S.sel){
+    var hr=document.querySelector(".pg-hero");
+    var h=hr?Math.round(hr.getBoundingClientRect().height):320;
+    var base=ls("lr_theme")==="dark"?"#12161C":"#F4F1E9";
+    de.style.setProperty("background","linear-gradient(180deg,"+base+" 0px,"+base+" "+h+"px,transparent "+h+"px) "+base,"important");
+    if(m)m.setAttribute("content",base);
+  }else{
+    de.style.removeProperty("background");
+    if(m)m.setAttribute("content","#E5B83F");
+  }
+}
 function render(){S.rvl=[];S.hl=[];
 if(S.gMarkers){S.gMarkers.forEach(function(m){try{m.setMap(null)}catch(e){}});S.gMarkers=[]}
 S.map=null;
@@ -2957,8 +2966,15 @@ function pfBg(p){
   var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
   var gDet = gpId ? S.gDetailsCache[gpId] : null;
   var gGrp = gmap(allv())[keyOf(p)];
-  var revPhoto = (gGrp && gGrp.rv) ? (gGrp.rv.find(function(r){ return r.photo; }) || {}).photo : "";
-  var photo = p.photo || revPhoto || (gDet && gDet.photo) || p.gPhoto || (gGrp && gGrp.gPhoto) || "";
+  var myLastPhoto = "";
+  if(gGrp && gGrp.rv){
+    var mineWithPhoto = gGrp.rv
+      .filter(function(r){ return r.uid === S.uid && r.photo; })
+      .sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+    if(mineWithPhoto.length) myLastPhoto = mineWithPhoto[0].photo;
+  }
+  var restoPhoto = (gDet && gDet.photo) || p.gPhoto || (gGrp && gGrp.gPhoto) || "";
+  var photo = myLastPhoto || restoPhoto || p.photo || "";
   if(!photo && gpId && !S.gDetailsCache[gpId]){
     fetchGooglePlaceDetails(p);
   }
@@ -2969,7 +2985,9 @@ function pfBg(p){
   return 'background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(12,16,22,.6)),linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
 }
 function pfSimple(o){
-  var revWithPhoto = (o.rv || []).find(function(r){ return r.photo; });
+  var myLast = (o.rv || [])
+    .filter(function(r){ return r.uid === S.uid && r.photo; })
+    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })[0];
   return {
     pid: o.pid,
     gPlaceId: o.gPlaceId || null,
@@ -2979,7 +2997,7 @@ function pfSimple(o){
     lng: o.lng,
     cat: o.cat,
     gPhoto: o.gPhoto || "",
-    photo: revWithPhoto ? revWithPhoto.photo : ""
+    photo: myLast ? myLast.photo : ""
   };
 }
 
