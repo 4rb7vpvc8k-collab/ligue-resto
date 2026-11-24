@@ -303,6 +303,95 @@ body.dark-mode .lgx-sa{border-color:var(--card)}body.dark-mode .lgx-sa.more{back
 body.dark-mode .lgx-seg-btn.on{
   color:#000 !important;
 }
+.pf{padding:6px 0 24px;animation:pgIn .3s ease}
+.pf-svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.pf-ic{position:relative;width:46px;height:46px;border-radius:50%;border:0;background:rgba(127,127,127,.15);color:inherit;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .15s}
+.pf-ic:active{transform:scale(.9)}
+.pf-bar{display:flex;align-items:center;gap:12px;margin:6px 0 16px}
+.pf-bar h1{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:0;flex:1;line-height:1.1}
+.pf-bar h1 small{font-size:16px;opacity:.5;font-weight:600}
+.pf-head{display:flex;align-items:center;gap:16px;margin:6px 0 18px}
+.pf-av{position:relative;width:84px;height:84px;border-radius:50%;color:#fff;font-size:34px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.pf-av .e{position:absolute;right:-2px;bottom:-2px;width:28px;height:28px;border-radius:50%;background:#192A3A;color:#F4F1E9;border:3px solid #F4F1E9;display:flex;align-items:center;justify-content:center}
+body.dark-mode .pf-av .e{background:#F4F1E9;color:#12161C;border-color:#12161C}
+.pf-av .e .pf-svg{width:12px;height:12px}
+.pf-id{flex:1;min-width:0}
+.pf-id h1{font-size:30px;font-weight:800;letter-spacing:-.025em;line-height:1.1;margin:0;word-break:break-word}
+.pf-id p{margin:6px 0 0;font-size:14px;line-height:1.35;opacity:.65;cursor:pointer}
+.pf-badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(127,127,127,.18);margin-top:8px}
+.pf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.pf-st{border:0;color:inherit;font:inherit;background:rgba(127,127,127,.12);border-radius:18px;padding:12px 4px;text-align:center;cursor:pointer}
+.pf-st b{display:block;font-size:22px;font-weight:800;line-height:1}
+.pf-st span{display:block;font-size:11.5px;opacity:.6;margin-top:5px}
+.pf-switch{display:flex;gap:10px;margin:0 0 6px;overflow-x:auto}
+.pf-switch::-webkit-scrollbar{display:none}
+.pf-pill{border:0;background:rgba(127,127,127,.15);color:inherit;font:inherit;font-size:15px;font-weight:600;padding:11px 20px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.pf-pill.on{background:#192A3A;color:#F4F1E9}
+body.dark-mode .pf-pill.on{background:#F4F1E9;color:#12161C}
+.pf-h2{display:flex;justify-content:space-between;align-items:baseline;font-size:24px;font-weight:800;letter-spacing:-.02em;margin:28px 0 12px}
+.pf-h2 button{border:0;background:none;color:inherit;opacity:.6;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.pf-pod{display:flex;align-items:flex-end;gap:10px}
+.pf-pc{flex:1;min-width:0;position:relative;border-radius:22px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;background:rgba(127,127,127,.13);cursor:pointer;overflow:hidden}
+.pf-pc.e{color:inherit;align-items:center;justify-content:center;gap:4px;opacity:.9}
+.pf-pc .n{position:absolute;top:10px;left:12px;font-size:28px;font-weight:800;line-height:1;opacity:.95}
+.pf-pc.e .n{position:static;opacity:.5}
+.pf-pc .t{font-size:14px;font-weight:800;line-height:1.15;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pf-rows{margin-top:10px}
+.pf-row{display:flex;align-items:center;gap:12px;background:rgba(127,127,127,.1);border-radius:20px;padding:12px 14px;margin-bottom:10px}
+.pf-row.click{cursor:pointer}
+.pf-rk{width:34px;height:34px;border-radius:50%;background:rgba(127,127,127,.2);display:inline-flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.pf-meta{flex:1;min-width:0}
+.pf-nm{font-weight:700;font-size:16px;display:flex;align-items:center;gap:6px}
+.pf-nm span.t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-sub{font-size:13px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-pav{width:46px;height:46px;border-radius:50%;color:#fff;font-weight:800;font-size:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.pf-btn{border:0;background:rgba(127,127,127,.16);color:inherit;font:inherit;font-size:14px;font-weight:700;padding:9px 16px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.pf-btn.pri{background:#192A3A;color:#F4F1E9}
+body.dark-mode .pf-btn.pri{background:#F4F1E9;color:#12161C}
+.pf-follow{width:100%;border:0;border-radius:16px;font:inherit;font-size:16px;font-weight:800;padding:14px;margin:0 0 16px;cursor:pointer;background:#E5B83F;color:#192A3A}
+.pf-follow.on{background:rgba(127,127,127,.16);color:inherit;font-weight:700}
+.pf-rv{background:rgba(127,127,127,.1);border-radius:22px;padding:14px;margin-bottom:12px}
+.pf-rv-top{display:flex;align-items:center;gap:8px;font-size:13px}
+.pf-rv-top .d{flex:1;opacity:.6}
+.pf-more{border:0;background:none;color:inherit;opacity:.6;padding:6px;cursor:pointer}
+.pf-rv-body{display:flex;gap:12px;align-items:flex-start;margin-top:8px;cursor:pointer}
+.pf-rv-main{flex:1;min-width:0}
+.pf-rv-resto{font-size:18px;font-weight:800;display:flex;align-items:center;gap:6px}
+.pf-rv-main .stars{font-size:14px;display:block;margin:4px 0}
+.pf-rv-txt{font-size:14px;line-height:1.4;opacity:.85}
+.pf-rv-img{width:84px;height:84px;border-radius:16px;object-fit:cover;flex-shrink:0}
+.pf-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pf-tags span{font-size:11px;background:rgba(127,127,127,.14);padding:3px 9px;border-radius:99px}
+.pf-month{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.55;margin:22px 0 10px}
+.pf-ag{display:flex;gap:14px;background:rgba(127,127,127,.1);border-radius:20px;padding:12px 14px;margin-bottom:10px;cursor:pointer}
+.pf-ag .dt{width:46px;text-align:center;flex-shrink:0}
+.pf-ag .dt b{display:block;font-size:26px;font-weight:800;line-height:1}
+.pf-ag .dt span{font-size:12px;opacity:.6;text-transform:uppercase}
+.pf-ag .tx{flex:1;min-width:0}
+.pf-ag .stars{font-size:13px}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pf-gc{aspect-ratio:3/4;border-radius:18px;color:#fff;padding:10px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;font-size:13px;font-weight:800;line-height:1.15;word-break:break-word;overflow:hidden}
+.pf-empty{text-align:center;padding:36px 16px;border-radius:24px;background:rgba(127,127,127,.1)}
+.pf-empty b{display:block;font-size:19px;margin-bottom:6px}
+.pf-empty p{margin:0 0 14px;opacity:.65;font-size:14px;line-height:1.45}
+.pf-empty button{border:0;border-radius:14px;background:#E5B83F;color:#192A3A;font:inherit;font-weight:800;padding:12px 20px;cursor:pointer}
+.pf-hint{font-size:13px;opacity:.6;text-align:center;margin:18px 8px}
+.pf-card{background:rgba(127,127,127,.1);border-radius:22px;padding:4px 16px;margin-bottom:6px}
+.pf-set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid rgba(127,127,127,.2);font-size:16px}
+.pf-set:last-child{border-bottom:0}
+.pf-set.col{flex-direction:column;align-items:stretch;gap:10px}
+.pf-set .l{font-weight:600}
+.pf-set .s{font-size:13px;opacity:.6}
+.pf-set button.link{border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:600;padding:0;cursor:pointer;text-align:left;width:100%}
+.pf-set button.red{color:#d9534f}
+.pf-set input.pf-in{border:0;background:rgba(127,127,127,.16);border-radius:14px;padding:13px 14px;margin:0;font-size:16px;color:inherit;width:100%}
+body.dark-mode .pf-set input.pf-in{border:0;background:rgba(127,127,127,.2);color:inherit}
+.pf-toggle{width:52px;height:32px;border-radius:99px;border:0;background:rgba(127,127,127,.35);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.pf-toggle i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.pf-toggle.on{background:#E5B83F}
+.pf-toggle.on i{transform:translateX(20px)}
+.pf-opt{display:flex;align-items:center;gap:12px;width:100%;border:0;background:rgba(127,127,127,.12);color:inherit;font:inherit;font-size:16px;font-weight:600;border-radius:16px;padding:14px;margin-bottom:8px;cursor:pointer;text-align:left}
+.pf-opt.red{color:#d9534f}
 </style>
 
 
@@ -2815,6 +2904,196 @@ function league(){
   if(!S.leagueOpen)return lgxList();
   if(S.leagues.indexOf(S.league)<0)S.league=S.leagues[0];
   return lgxDetail();
+}
+</script>
+<script>
+/* ===== Refonte Profil ===== */
+var PFI={
+back:'<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
+sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
+function pfi(k){return '<svg class="pf-svg" viewBox="0 0 24 24">'+PFI[k]+'</svg>'}
+function pfIni(s){return esc((s||"?").charAt(0).toUpperCase())}
+function pfBg(p){
+  var c=getRestoColor(p);
+  return 'background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(12,16,22,.6)),linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+}
+function pfSimple(o){var r={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};return r}
+
+/* ---------- Briques ---------- */
+function pfStat(n,label,act){return '<button class="pf-st" onclick="'+act+'"><b>'+n+'</b><span>'+label+'</span></button>'}
+function pfSwitch(c){
+  return '<div class="pf-switch">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+    return '<button class="pf-pill '+(c.pt===t[0]?"on":"")+'" onclick="'+c.setPt(t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
+}
+function pfPod(i,arr,edit){
+  var p=(arr||[])[i],hs=[190,160,140];
+  var act=edit?' onclick="pickTop('+i+')"':'';
+  if(!p)return '<div class="pf-pc e" style="height:'+hs[i]+'px"'+act+'><span class="n">'+(i+1)+'</span>'+(edit?pfi("plus"):'<span>–</span>')+'</div>';
+  return '<div class="pf-pc" style="height:'+hs[i]+'px;'+pfBg(p)+'"'+act+'><span class="n">'+(i+1)+'</span><div class="t">'+esc(p.n)+'</div></div>';
+}
+function pfRow(i,arr,edit){
+  var p=(arr||[])[i],act=edit?' click" onclick="pickTop('+i+')':'';
+  return '<div class="pf-row'+act+'"><span class="pf-rk">'+(i+1)+'</span><div class="pf-meta"><div class="pf-nm">'+(p?'<span class="t">'+esc(p.n)+'</span>'+dot(p):'<span class="t" style="opacity:.5">'+(edit?'Choisir un resto':'–')+'</span>')+'</div></div>'+(edit?pfi("plus"):'')+'</div>';
+}
+function pfTop(arr,edit,title){
+  var any=(arr||[]).some(Boolean);
+  if(!edit&&!any)return '';
+  return '<div class="pf-h2">'+title+'</div><div class="pf-pod">'+pfPod(1,arr,edit)+pfPod(0,arr,edit)+pfPod(2,arr,edit)+'</div><div class="pf-rows">'+pfRow(3,arr,edit)+pfRow(4,arr,edit)+'</div>';
+}
+function pfRv(x,own){
+  var idx=ri(x),d=new Date(x.ts);
+  var menu=(own&&x._id)?'<button class="pf-more" onclick="pfRvMenu('+idx+')">'+pfi("more")+'</button>':'';
+  return '<div class="pf-rv"><div class="pf-rv-top"><span class="d">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · Livraison':' · Sur place')+'</span>'+menu+'</div>'+
+    '<div class="pf-rv-body" onclick="openReviewDetail('+idx+')"><div class="pf-rv-main">'+
+      '<div class="pf-rv-resto">'+esc(x.resto)+dot(x)+'</div><span class="stars">'+stars(x.note)+'</span>'+
+      '<div class="pf-rv-txt">'+(x.avis?esc(x.avis):'<i style="opacity:.55">Sans commentaire</i>')+'</div>'+
+      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+    '</div>'+(x.photo?'<img class="pf-rv-img" src="'+x.photo+'">':'')+'</div></div>';
+}
+function pfRvMenu(i){
+  var x=S.rvl[i];if(!x)return;
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()">'+
+    '<button class="pf-opt" onclick="closeSheet();editReview('+i+')">'+pfi("pencil")+' Modifier</button>'+
+    '<button class="pf-opt red" onclick="closeSheet();del('+i+')">'+pfi("trash")+' Supprimer</button>'+
+    '<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
+}
+function pfAgenda(mine,emptyMsg,own){
+  if(!mine.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Chaque resto noté apparaît ici, mois par mois.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
+  var h="",cur="";
+  mine.forEach(function(x){
+    var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+    if(mo!==cur){cur=mo;h+='<div class="pf-month">'+esc(mo)+'</div>'}
+    var note=typeof x.note==="number"?String(x.note).replace(".",",")+"/5":"";
+    h+='<div class="pf-ag" onclick="openO('+hp(pl(x))+')"><div class="dt"><b>'+d.getDate()+'</b><span>'+esc(d.toLocaleDateString("fr-FR",{month:"short"}))+'</span></div>'+
+      '<div class="tx"><div class="pf-nm"><span class="t">'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+      '<div class="pf-sub">'+(x.mode==="deliv"?'Livraison':'Sur place')+(x.addr?' · '+esc(x.addr):'')+'</div>'+
+      '<div style="margin-top:4px"><span class="stars">'+stars(x.note)+'</span> <b style="font-size:13px">'+note+'</b></div>'+
+      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+    '</div></div>';
+  });
+  return h;
+}
+function pfGrid(list,emptyMsg,own){
+  if(!list.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Garde ici les restos que tu veux essayer.</p><button onclick="go(\'map\')">Explorer la carte</button>':'')+'</div>';
+  return '<div class="pf-grid" style="margin-top:14px">'+list.map(function(p){
+    return '<div class="pf-gc" style="'+pfBg(p)+'" onclick="openO('+hp(p)+')">'+esc(p.n)+'</div>';
+  }).join("")+'</div>';
+}
+function pfPerson(p,sub){
+  var uid=p.uid,pseudo=p.pseudo||"Utilisateur",isMe=uid===S.uid;
+  var following=!isMe&&hasFriend(uid),followsMe=!isMe&&isFollower(uid),mutual=following&&followsMe;
+  var col=p.col||hashColor(String(uid||pseudo));
+  var open='openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')';
+  var btn="";
+  if(!isMe)btn=following
+    ?'<button class="pf-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?'Ami ✓':'Suivi')+'</button>'
+    :'<button class="pf-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
+  return '<div class="pf-row"><div class="pf-pav" style="background:'+col+'" onclick="'+open+'">'+pfIni(pseudo)+'</div><div class="pf-meta click" style="cursor:pointer" onclick="'+open+'"><div class="pf-nm"><span class="t">'+esc(pseudo)+(isMe?' (moi)':'')+'</span></div><div class="pf-sub">'+esc(sub||(mutual?"Ami · suivi réciproque":(followsMe?"Te suit":"Suivi")))+'</div></div>'+btn+'</div>';
+}
+
+/* ---------- Corps commun (profil perso et profil d'un ami) ---------- */
+function pfSub(c){
+  var title=c.sub==="likes"?"Likes":c.sub==="friends"?"Amis & suivis":"Restos";
+  var cnt=c.sub==="likes"?c.likes.length:c.sub==="friends"?c.friends.length:c.mr.length;
+  var h='<div class="pf"><div class="pf-bar"><button class="pf-ic" onclick="'+c.clearSub+'">'+pfi("back")+'</button><h1>'+title+' <small>'+cnt+'</small></h1></div>';
+  if(c.sub==="friends"){
+    h+=c.friends.length?c.friends.map(function(f){return pfPerson(f,c.own?(isFollower(f.uid)?"Ami · suivi réciproque":"En attente de suivi en retour"):"")}).join(""):'<div class="pf-empty"><b>Aucun ami pour l’instant</b></div>';
+  } else if(c.sub==="likes"){
+    h+=pfGrid(c.likes,"Aucun like pour l’instant",false);
+  } else {
+    h+=pfGrid(c.mr.map(pfSimple),"Aucun resto noté pour l’instant",false);
+  }
+  return h+'</div>';
+}
+function pfTabs(c){
+  var h=pfSwitch(c);
+  if(c.pt==="agenda")return h+pfAgenda(c.mine,c.own?"Ton agenda est vide":"Son agenda est vide",c.own);
+  if(c.pt==="wish")return h+pfGrid(c.wish,c.own?"Ta liste est vide":"Aucun resto à tester",c.own);
+  h+=pfTop(c.top,c.own,c.own?"Mon top 5":"Son top 5");
+  h+='<div class="pf-h2">Derniers avis'+(c.mine.length>4?'<button onclick="'+c.setPt("agenda")+'">Tout voir</button>':'')+'</div>';
+  h+=c.mine.length?c.mine.slice(0,4).map(function(x){return pfRv(x,c.own)}).join(""):'<div class="pf-empty"><b>'+(c.own?"Tu n’as encore rien noté":"Aucun avis pour l’instant")+'</b>'+(c.own?'<p>Note ton premier resto pour remplir ton profil.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
+  return h;
+}
+function pfStats(c){
+  return '<div class="pf-stats">'+pfStat(c.mine.length,"Avis",c.setPt("agenda"))+pfStat(c.mr.length,"Restos",c.setSub("rest"))+pfStat(c.likes.length,"Likes",c.setSub("likes"))+pfStat(c.nfr,"Amis",c.setSub("friends"))+'</div>';
+}
+
+/* ---------- Mon profil ---------- */
+function me(){
+  if(S.viewUser)return userView(S.viewUser);
+  if(S.pt==="set")return pfSettings();
+  var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
+  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var c={own:true,mine:mine,mr:mr,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,
+    pt:S.pt,sub:S.sub,nfr:S.friends.filter(function(f){return isFollower(f.uid)}).length,
+    clearSub:"S.sub=null;render()"};
+  c.setPt=function(t){return "S.pt='"+t+"';S.sub=null;render()"};
+  c.setSub=function(t){return "S.sub='"+t+"';render()"};
+  if(c.sub)return pfSub(c);
+  var h='<div class="pf"><div class="pf-head"><div class="pf-av" style="background:'+(S.col||"#E5B83F")+'" onclick="newCol()">'+pfIni(S.pseudo)+'<span class="e">'+pfi("pencil")+'</span></div>'+
+    '<div class="pf-id"><h1>'+esc(S.pseudo||"Profil")+'</h1><p onclick="editBio()">'+(S.bio?esc(S.bio):'Ajouter une bio')+'</p></div>'+
+    '<button class="pf-ic" onclick="S.pt=\'set\';render()">'+pfi("sliders")+'</button></div>';
+  h+=pfStats(c)+pfTabs(c);
+  return h+'</div>';
+}
+
+/* ---------- Profil d'un autre utilisateur ---------- */
+function userView(u){
+  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
+  var mine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts});
+  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var col=prof.col||(mine.length&&mine[0].col)||hashColor(String(u.uid||name));
+  var bio=prof.bio||"",top=prof.top||[null,null,null,null,null];
+  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
+  var back='S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()';
+  var c={own:false,mine:mine,mr:mr,top:top,
+    likes:Array.isArray(prof.likes)?prof.likes:[],wish:Array.isArray(prof.wish)?prof.wish:[],friends:Array.isArray(prof.friends)?prof.friends:[],
+    pt:S.viewPt||"prof",sub:S.viewSub||null,
+    setPt:function(t){return "S.viewPt='"+t+"';S.viewSub=null;render()"},
+    setSub:function(t){return "S.viewSub='"+t+"';render()"},clearSub:"S.viewSub=null;render()"};
+  c.nfr=c.friends.length;
+  if(isM&&c.sub)return pfSub(c);
+  var follow=isF
+    ?'<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">'+(isM?'Ami ✓ · Ne plus suivre':'Suivi ✓ · Ne plus suivre')+'</button>'
+    :'<button class="pf-follow" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
+  var h='<div class="pf"><div class="pf-bar"><button class="pf-ic" onclick="'+back+'">'+pfi("back")+'</button></div>'+
+    '<div class="pf-head"><div class="pf-av" style="background:'+col+';cursor:default">'+pfIni(name)+'</div>'+
+    '<div class="pf-id"><h1>'+esc(name)+'</h1>'+(bio?'<p style="cursor:default">'+esc(bio)+'</p>':'')+(isM?'<span class="pf-badge">Ami</span>':(isF?'<span class="pf-badge">Suivi</span>':''))+'</div></div>'+follow;
+  if(isM)return h+pfStats(c)+pfTabs(c)+'</div>';
+  h+=pfTop(top,false,"Top 5");
+  h+='<div class="pf-stats" style="grid-template-columns:1fr;margin-top:18px">'+'<div class="pf-st" style="cursor:default"><b>'+mr.length+'</b><span>Restos notés</span></div></div>';
+  h+='<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses restos à tester.</div>';
+  return h+'</div>';
+}
+
+/* ---------- Réglages ---------- */
+function pfSettings(){
+  var acc=S.user&&!S.user.isAnonymous,dark=ls("lr_theme")==="dark";
+  var h='<div class="pf pf-set-page"><div class="pf-bar"><button class="pf-ic" onclick="S.pt=\'prof\';render()">'+pfi("back")+'</button><h1>Réglages</h1></div>';
+  h+='<div class="pf-h2" style="margin-top:6px">Apparence</div><div class="pf-card"><div class="pf-set"><span class="l">Mode sombre</span><button class="pf-toggle '+(dark?"on":"")+'" onclick="toggleTheme()"><i></i></button></div></div>';
+  h+='<div class="pf-h2">Pseudo</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="ps" placeholder="Ton pseudo unique" value="'+esc(S.pseudo)+'"><button class="pf-btn pri" onclick="setP()">Enregistrer</button></div></div>';
+  h+='<div class="pf-h2">Ma zone</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="pf-btn pri" onclick="setHome()">Enregistrer</button></div>'+
+    '<div class="pf-set"><span class="l">Position</span>'+(S.loc?'<span class="s">Activée ✓</span>':'<button class="pf-btn" onclick="getLoc()">Activer</button>')+'</div></div>';
+  h+='<div class="pf-h2">Compte</div><div class="pf-card">';
+  if(acc){
+    h+='<div class="pf-set"><span class="l">E-mail</span><span class="s">'+esc(S.user.email||"")+'</span></div>'+
+       '<div class="pf-set"><button class="link" onclick="logout()">Se déconnecter</button></div>'+
+       '<div class="pf-set"><button class="link red" onclick="delAcc()">Supprimer mon compte</button></div>';
+  } else {
+    h+='<div class="pf-set"><button class="link" onclick="S.guest=false;render()">Se connecter / S’inscrire</button></div>';
+  }
+  h+='</div>';
+  if(S.blocked.length){
+    h+='<div class="pf-h2">Bloqués</div>'+S.blocked.map(function(b,k){
+      return '<div class="pf-row"><div class="pf-meta"><div class="pf-nm"><span class="t">'+esc(b.n)+'</span></div></div><button class="pf-btn" onclick="unblk('+k+')">Débloquer</button></div>';
+    }).join("");
+  }
+  return h+'</div>';
 }
 </script>
 </body>
