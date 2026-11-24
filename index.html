@@ -79,17 +79,23 @@ nav button.on{color:#E5B83F;font-weight:700}
   opacity:0;
 }
 
-/* Bloc notifications dans le menu de ligue */
-.lgx-notif-box{background:rgba(127,127,127,.1);border-radius:16px;padding:12px 14px;margin-bottom:10px}
-.lgx-chk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:15px;font-weight:700;padding:4px 0}
-.lgx-chk-row input[type="checkbox"]{width:20px;height:20px;margin:0;accent-color:#192A3A;cursor:pointer;flex-shrink:0}
-body.dark-mode .lgx-chk-row input[type="checkbox"]{accent-color:#E5B83F}
-.lgx-sub-notifs{margin-top:8px;padding-left:14px;border-left:2px solid rgba(25,42,58,.2);display:flex;flex-direction:column;gap:8px}
-body.dark-mode .lgx-sub-notifs{border-left-color:rgba(244,241,233,.22)}
-.lgx-sub-chk{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:14px;font-weight:600;padding:2px 0}
-.lgx-sub-chk input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:#192A3A;cursor:pointer;flex-shrink:0}
-body.dark-mode .lgx-sub-chk input[type="checkbox"]{accent-color:#E5B83F}
-.lgx-notif-hint{font-size:12px;opacity:.6;margin-top:4px}
+/* Interrupteurs (toggles) notifications style iOS dans le menu de ligue */
+.lgx-notif-box{background:rgba(127,127,127,.12);border-radius:18px;padding:12px 14px;margin-bottom:10px}
+.lgx-switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:15px;font-weight:700;padding:4px 0}
+.lgx-switch-label{display:inline-flex;align-items:center;gap:8px}
+.lgx-toggle{position:relative;width:52px;height:30px;flex-shrink:0;display:inline-block}
+.lgx-toggle.sm{width:46px;height:26px}
+.lgx-toggle input{opacity:0;width:0;height:0;position:absolute}
+.lgx-slider{position:absolute;inset:0;background:#68696e;border-radius:999px;transition:background .22s ease}
+.lgx-slider::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.22,1,.36,1)}
+.lgx-toggle.sm .lgx-slider::after{width:20px;height:20px}
+.lgx-toggle input:checked + .lgx-slider{background:#34C759}
+.lgx-toggle input:checked + .lgx-slider::after{transform:translateX(22px)}
+.lgx-toggle.sm input:checked + .lgx-slider::after{transform:translateX(20px)}
+.lgx-sub-notifs{margin-top:10px;margin-left:18px;padding-left:12px;border-left:2px solid rgba(25,42,58,.18);display:flex;flex-direction:column;gap:10px}
+body.dark-mode .lgx-sub-notifs{border-left-color:rgba(244,241,233,.2)}
+.lgx-sub-row{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:14px;font-weight:600;padding:2px 0}
+.lgx-notif-hint{font-size:12px;opacity:.6;margin-top:6px}
 
 .av{width:64px;height:64px;border-radius:6px;background:#E5B83F;color:#192A3A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;cursor:pointer;position:relative}
 .av.edit::after{content:'✎';position:absolute;bottom:-5px;right:-5px;background:#192A3A;color:#E5B83F;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #F4F1E9}
@@ -2093,7 +2099,6 @@ function removeLeaguePhoto(code){
   }, {merge: true}).catch(function(){});
 }
 
-function openO(i){var o=S.hl[i];if(!o)return;S.sel={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};S.tab="map";render()}
 function settings(){
   var acc = S.user && !S.user.isAnonymous;
   var isDark = ls("lr_theme") === "dark";
@@ -2790,16 +2795,31 @@ function lgMenu(code, skipAnim){
   var animClass = skipAnim ? "" : " from-left";
 
   var notifHtml = '<div class="lgx-notif-box">' +
-    '<label class="lgx-chk-row">' +
-      '<span>'+lgi("bell")+' Notifications de la ligue</span>' +
-      '<input type="checkbox" '+(nf.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+c+'\',this.checked)">' +
+    '<label class="lgx-switch-row">' +
+      '<span class="lgx-switch-label">'+lgi("bell")+'<span>Notifications de la ligue</span></span>' +
+      '<span class="lgx-toggle">' +
+        '<input type="checkbox" '+(nf.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+c+'\',this.checked)">' +
+        '<span class="lgx-slider"></span>' +
+      '</span>' +
     '</label>' +
     (nf.enabled
       ? '<div class="lgx-sub-notifs">' +
-          '<label class="lgx-sub-chk"><span>Nouvel avis</span><input type="checkbox" '+(nf.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'reviews\',this.checked)"></label>' +
-          '<label class="lgx-sub-chk"><span>Nouveau membre</span><input type="checkbox" '+(nf.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'members\',this.checked)"></label>' +
+          '<label class="lgx-sub-row">' +
+            '<span>Nouvel avis</span>' +
+            '<span class="lgx-toggle sm">' +
+              '<input type="checkbox" '+(nf.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'reviews\',this.checked)">' +
+              '<span class="lgx-slider"></span>' +
+            '</span>' +
+          '</label>' +
+          '<label class="lgx-sub-row">' +
+            '<span>Nouveau membre</span>' +
+            '<span class="lgx-toggle sm">' +
+              '<input type="checkbox" '+(nf.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'members\',this.checked)">' +
+              '<span class="lgx-slider"></span>' +
+            '</span>' +
+          '</label>' +
         '</div>'
-      : '<div class="lgx-notif-hint">Désactivées — aucune notification pour cette ligue.</div>'
+      : '<div class="lgx-notif-hint">Notifications désactivées pour cette ligue.</div>'
     ) +
   '</div>';
 
@@ -2830,251 +2850,179 @@ function lgRvMenu(i){
 function lgCopy(btn,code){
   try{navigator.clipboard.writeText(code)}catch(e){}
   var o=btn.innerHTML;btn.innerHTML=lgi("check")+" Code copié !";
-  setTimeout(function(){btn.innerHTML=o},1400);
+  setTimeout(function(){if(btn&&btn.isConnected)btn.innerHTML=o},1500);
 }
 
-/* ---------- Personnes (amis, membres, résultats) ---------- */
-function lgxPerson(p,subtitle){
-  var uid=p.uid,pseudo=p.pseudo||"Utilisateur",isMe=uid===S.uid;
-  var following=!isMe&&hasFriend(uid),followsMe=!isMe&&isFollower(uid),mutual=following&&followsMe;
-  var col=p.col||hashColor(String(uid||pseudo));
-  var sub=subtitle||(mutual?"Ami · suivi réciproque":(followsMe?"Te suit":"Utilisateur Belly"));
-  var open='openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')';
-  var btn="";
-  if(!isMe){
-    btn=following
-      ?'<button class="lgx-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?"Ami":"Suivi")+'</button>'
-      :'<button class="lgx-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?"Suivre en retour":"Suivre")+'</button>';
-  }
-  return '<div class="lgx-row">'+
-    '<div class="lgx-av" style="background:'+col+'" onclick="'+open+'">'+lgIni(pseudo)+'</div>'+
-    '<div class="lgx-meta" onclick="'+open+'"><div class="lgx-nm">'+esc(pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">'+esc(sub)+'</div></div>'+
-    btn+'</div>';
-}
-
-/* ---------- Onglet Amis ---------- */
-function lgxFriends(){
-  var q=S.userSearchQ||"",res=S.userSearchRes;
-  var newF=(S.followers||[]).filter(function(f){return !isB(f.uid)&&!hasFriend(f.uid)&&(S.ignoredFollows||[]).indexOf(f.uid)<0});
-  var bell='<button class="lgx-ic" onclick="openFollowNotifs()" title="Notifications">'+lgi("bell")+(newF.length?'<span class="bell-dot">'+newF.length+'</span>':'')+'</button>';
-
-  var search='<div class="lgx-search">'+lgi("search")+
-    '<input id="friend-sq" class="lgx-in" placeholder="Chercher un pseudo…" value="'+esc(q)+'" oninput="S.userSearchQ=this.value;searchUsersByPseudo()" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">'+
-    (q?'<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;S.userSearchBusy=false;render()">'+lgi("x")+'</button>':'')+'</div>';
-
-  var body="";
-  if(q){
-    if(S.userSearchBusy)body='<div class="lgx-empty"><p>Recherche en cours…</p></div>';
-    else if(!res||!res.length)body='<div class="lgx-empty"><b>Aucun résultat</b><p>Aucun utilisateur trouvé pour « '+esc(q)+' ».</p></div>';
-    else body=res.map(function(u){return lgxPerson(u)}).join("");
-  } else {
-    var mutuals=S.friends.filter(function(f){return isFollower(f.uid)});
-    var followingOnly=S.friends.filter(function(f){return !isFollower(f.uid)});
-    var sugg=leagueSuggestions().filter(function(s){return !hasFriend(s.uid)});
-
-    if(!S.friends.length&&!sugg.length){
-      body='<div class="lgx-empty"><b>Aucun ami pour l’instant</b><p>Recherche un pseudo ou rejoins une ligue pour retrouver tes proches.</p><button class="lgx-cta" onclick="S.lgTab=\'leagues\';openLgSheet()">Créer ou rejoindre une ligue</button></div>';
-    } else {
-      if(mutuals.length)body+='<h2 class="lgx-h2">Amis ('+mutuals.length+')</h2>'+mutuals.map(function(f){return lgxPerson(f,"Ami · suivi réciproque")}).join("");
-      if(followingOnly.length)body+='<h2 class="lgx-h2">Suivis ('+followingOnly.length+')</h2>'+followingOnly.map(function(f){return lgxPerson(f,"Suivi")}).join("");
-      if(sugg.length){
-        body+='<h2 class="lgx-h2">Membres de tes ligues</h2><div class="lgx-hs">'+sugg.map(function(s){
-          var col=s.col||hashColor(String(s.uid||s.pseudo));
-          var open='openUser(\''+encodeURIComponent(s.uid)+'\',\''+encodeURIComponent(s.pseudo)+'\')';
-          return '<div class="lgx-sg"><div class="lgx-av" style="background:'+col+'" onclick="'+open+'">'+lgIni(s.pseudo)+'</div>'+
-            '<div class="lgx-nm" onclick="'+open+'" style="cursor:pointer">'+esc(s.pseudo)+'</div>'+
-            '<div class="lgx-sub">'+esc(s.leagues.join(" · "))+'</div>'+
-            '<button class="lgx-btn pri" onclick="addFriend(\''+esc(s.uid)+'\',\''+esc(s.pseudo)+'\')">Suivre</button></div>';
-        }).join("")+'</div>';
-      }
-    }
-  }
-  return '<div class="lgx">'+lgxTop("Amis","Tes proches et abonnements",bell)+lgxSwitch()+search+body+'</div>';
-}
-
-/* ---------- Liste des ligues ---------- */
+/* ---------- Vue 1 : Mes ligues ---------- */
 function lgxList(){
-  var addBtn='<button class="lgx-ic" onclick="openLgSheet()" title="Créer ou rejoindre">'+lgi("plus")+'</button>';
-  var head=lgxTop("Tes ligues","Tes tables entre proches",addBtn)+lgxSwitch();
+  var right='<button class="lgx-ic" onclick="openLgSheet()" title="Créer ou rejoindre">'+lgi("plus")+'</button>';
+  var h=status()+'<div class="lgx">'+lgxTop("Mes ligues",S.leagues.length?S.leagues.length+(S.leagues.length>1?" ligues actives":" ligue active"):"Crée ou rejoins une ligue",right)+lgxSwitch();
   if(!S.leagues.length){
-    return '<div class="lgx">'+head+'<div class="lgx-empty"><b>Aucune ligue</b><p>Crée une ligue pour ton groupe ou rejoins-en une avec un code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre une ligue</button></div></div>';
+    return h+'<div class="lgx-empty"><b>Aucune ligue pour l’instant</b><p>Crée ta ligue ou rejoins celle de tes amis avec un code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre une ligue</button></div></div>';
   }
-  var cards=S.leagues.map(function(c){
-    var revs=lrev(c),members=lgMembers(c),photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
-    var nf=getLeagueNotif(c);
-    var bellTag = nf.enabled ? ' · 🔔' : '';
-    return '<div class="lgx-card '+(photo?"has-photo":"")+'" style="'+lgBg(photo)+'" onclick="openLeagueCard(\''+ec+'\')">'+
+  h+=S.leagues.map(function(c){
+    var revs=lrev(c),ms=lgMembers(c),escC=esc(c);
+    var coverPhoto = S.leaguePhotos && S.leaguePhotos[c];
+    var cardCls = "lgx-card" + (coverPhoto ? " has-photo" : "");
+    return '<div class="'+cardCls+'" style="'+lgBg(coverPhoto)+'" onclick="openLeagueCard(\''+escC+'\')">'+
       '<div class="lgx-card-top">'+
-        lgStack(members,4)+
+        lgStack(ms,4)+
         '<div class="lgx-card-acts" onclick="event.stopPropagation()">'+
-          '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Partager le lien d’invitation">'+lgi("share")+'</button>'+
+          '<button class="lgx-code-chip" onclick="lgCopy(this,\''+escC+'\')" title="Copier le code">'+lgi("copy")+'<span>'+escC+'</span></button>'+
+          '<button class="lgx-ic" onclick="lgMenu(\''+escC+'\')" title="Options">'+lgi("more")+'</button>'+
         '</div>'+
       '</div>'+
-      '<div>'+
-        '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
-        '<div class="lgx-card-foot">'+
-          '<span class="lgx-card-sub">'+members.length+' membre'+(members.length>1?'s':'')+' · '+revs.length+' avis'+bellTag+'</span>'+
-          '<button class="lgx-code-chip" onclick="event.stopPropagation();lgCopy(this,\''+ec+'\')" title="Copier le code de ligue">'+lgi("copy")+'<span>'+ec+'</span></button>'+
-        '</div>'+
+      '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
+      '<div class="lgx-card-foot">'+
+        '<div class="lgx-card-sub">'+ms.length+(ms.length>1?" membres":" membre")+' · '+revs.length+(revs.length>1?" avis":" avis")+'</div>'+
       '</div>'+
     '</div>';
   }).join("");
-  return '<div class="lgx">'+head+cards+'<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
+  return h+'<button class="lgx-ghost" style="margin-top:6px" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
 }
 
-/* ---------- Fil d'une ligue ---------- */
-function lgxFeed(revs){
-  var sorted=revs.slice().sort(function(a,b){return b.ts-a.ts});
-  if(!sorted.length)return '<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Publie le premier avis pour lancer la table.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
-  return sorted.map(function(x){
-    var idx=ri(x),d=new Date(x.ts),col=colOf(x);
-    var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
-    var openP='openO('+hp(pl(x))+')';
-    var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
-    return '<div class="lgx-rv">'+
-      '<div class="lgx-rv-top">'+
-        '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
-        '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> <span>· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
-        (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
+/* ---------- Vue 2 : Détail d'une ligue ---------- */
+function lgxRv(x){
+  var idx=ri(x),d=new Date(x.ts),col=colOf(x);
+  var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
+  var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
+  return '<div class="lgx-rv">'+
+    '<div class="lgx-rv-top">'+
+      '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
+      '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> <span>· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
+      (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
+    '</div>'+
+    '<div class="lgx-rv-body" onclick="S.sel='+esc(JSON.stringify(pl(x)))+';S.tab=\'map\';render()">'+
+      '<div class="lgx-rv-main">'+
+        '<div class="lgx-rv-resto">'+esc(x.resto)+dot(x)+'</div>'+
+        '<span class="stars">'+stars(x.note)+'</span>'+
+        (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
+        ((x.st&&x.st.length)?'<div class="chips">'+x.st.slice(0,MAX_STICKERS).map(function(s){return '<span class="chip">'+esc(s)+'</span>'}).join("")+'</div>':'')+
       '</div>'+
-      '<div class="lgx-rv-body">'+
-        '<div class="lgx-rv-main">'+
-          '<div class="lgx-rv-resto" onclick="'+openP+'" style="cursor:pointer">'+dot(x)+'<span>'+esc(x.resto)+'</span></div>'+
-          '<span class="stars">'+stars(x.note)+'</span>'+
-          (x.avis?'<div class="lgx-rv-txt" onclick="'+openP+'" style="cursor:pointer">'+esc(x.avis)+'</div>':'')+
-        '</div>'+
-        (x.photo?'<img class="lgx-rv-img" src="'+x.photo+'" onclick="openLight(\''+x.photo+'\')">':'')+
-      '</div>'+
-    '</div>';
-  }).join("");
+      (x.photo?'<img class="lgx-rv-img" src="'+x.photo+'">':'')+
+    '</div>'+
+  '</div>';
 }
 
-/* ---------- Classement restos d'une ligue ---------- */
 function lgxRank(revs){
   var G=groups(revs).sort(function(a,b){return (b.s/b.c)-(a.s/a.c)||b.c-a.c});
-  if(!G.length)return '<div class="lgx-empty"><b>Classement vide</b><p>Aucun resto noté dans cette ligue pour l’instant.</p></div>';
-  var pod="",rest="";
-  if(G.length>=3){
-    var order=[G[1],G[0],G[2]],rk=[2,1,3],cls=["second","first","third"];
-    pod='<div class="lgx-pod">'+order.map(function(o,i){
-      return '<div class="lgx-pc '+cls[i]+'" onclick="openO('+hp(o)+')" style="cursor:pointer"><div class="n">'+rk[i]+'</div><div class="t">'+esc(o.n)+'</div><div class="s">'+(o.s/o.c).toFixed(1).replace(".",",")+' ★ · '+o.c+' avis</div></div>';
-    }).join("")+'</div>';
-    rest=G.slice(3).map(function(o,i){
-      return '<div class="lgx-row" onclick="openO('+hp(o)+')" style="cursor:pointer"><span class="lgx-rk">'+(i+4)+'</span><div class="lgx-meta"><div class="lgx-nm">'+dot(o)+' '+esc(o.n)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>'+(o.s/o.c).toFixed(1).replace(".",",")+' ★</b></div>';
-    }).join("");
-  } else {
-    rest=G.map(function(o,i){
-      return '<div class="lgx-row" onclick="openO('+hp(o)+')" style="cursor:pointer"><span class="lgx-rk">'+(i+1)+'</span><div class="lgx-meta"><div class="lgx-nm">'+dot(o)+' '+esc(o.n)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>'+(o.s/o.c).toFixed(1).replace(".",",")+' ★</b></div>';
-    }).join("");
-  }
-  return pod+rest;
-}
-
-/* ---------- Top contributeurs d'avis d'une ligue ---------- */
-function lgxTopReviewers(code, revs){
-  var members = lgMembers(code);
-  var counts = {};
-  members.forEach(function(m){
-    counts[m.uid] = {uid: m.uid, pseudo: m.pseudo, col: m.col, count: 0, sumNote: 0};
-  });
-  revs.forEach(function(x){
-    if(!x.uid || isB(x.uid)) return;
-    if(!counts[x.uid]){
-      counts[x.uid] = {uid: x.uid, pseudo: x.pseudo || "Membre", col: x.col || colOf(x), count: 0, sumNote: 0};
-    }
-    counts[x.uid].count++;
-    counts[x.uid].sumNote += (Number(x.note) || 0);
-  });
-  var list = Object.keys(counts).map(function(k){ return counts[k]; }).sort(function(a,b){
-    return b.count - a.count || (b.sumNote / (b.count || 1)) - (a.sumNote / (a.count || 1));
-  });
-  if(!list.length) return '<div class="lgx-empty"><b>Aucun avis</b><p>Personne n’a encore posté d’avis dans cette ligue.</p></div>';
-
-  var pod = "", rest = "";
-  if(list.length >= 3){
-    var order = [list[1], list[0], list[2]], rk = [2, 1, 3], cls = ["second", "first", "third"];
-    pod = '<div class="lgx-pod">' + order.map(function(m, i){
-      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
-      return '<div class="lgx-pc '+cls[i]+'" onclick="'+open+'" style="cursor:pointer">' +
-        '<div class="n">'+rk[i]+'</div>' +
-        '<div class="t">'+esc(m.pseudo)+'</div>' +
-        '<div class="s">'+m.count+' avis</div>' +
-      '</div>';
-    }).join("") + '</div>';
-    rest = list.slice(3).map(function(m, i){
-      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
-      var isMe = m.uid === S.uid;
-      return '<div class="lgx-row" onclick="'+open+'" style="cursor:pointer">' +
-        '<span class="lgx-rk">'+(i+4)+'</span>' +
-        '<div class="lgx-av" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</div>' +
-        '<div class="lgx-meta"><div class="lgx-nm">'+esc(m.pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">Contributeur de la ligue</div></div>' +
-        '<b>'+m.count+' avis</b>' +
-      '</div>';
-    }).join("");
-  } else {
-    rest = list.map(function(m, i){
-      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
-      var isMe = m.uid === S.uid;
-      return '<div class="lgx-row" onclick="'+open+'" style="cursor:pointer">' +
-        '<span class="lgx-rk">'+(i+1)+'</span>' +
-        '<div class="lgx-av" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</div>' +
-        '<div class="lgx-meta"><div class="lgx-nm">'+esc(m.pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">Contributeur de la ligue</div></div>' +
-        '<b>'+m.count+' avis</b>' +
-      '</div>';
-    }).join("");
-  }
-  return pod + rest;
-}
-
-/* ---------- Détail d'une ligue ---------- */
-function lgxDetail(code){
-  var revs=lrev(code),members=lgMembers(code),photo=S.leaguePhotos&&S.leaguePhotos[code],ec=esc(code);
-  var nf=getLeagueNotif(code);
-  var bar='<div class="lgx-bar">'+
-    '<button class="lgx-ic" onclick="closeLeagueCard()" title="Toutes les ligues">'+lgi("back")+'</button>'+
-    '<div class="lgx-bar-r">'+
-      '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Inviter">'+lgi("share")+'</button>'+
-      '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Options">'+lgi("more")+'</button>'+
-    '</div></div>';
-
-  var hero='<div class="lgx-hero '+(photo?"has-photo":"")+'" style="'+lgBg(photo)+'">'+
-    '<div class="lgx-hero-top">'+
-      lgStack(members,5)+
-      '<button class="lgx-code-chip" onclick="lgCopy(this,\''+ec+'\')" title="Copier le code de ligue">'+lgi("copy")+'<span>'+ec+'</span></button>'+
-    '</div>'+
-    '<div>'+
-      '<h1>'+esc(leagueLabel(code))+'</h1>'+
-      '<button class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+ec+'\')">'+lgi("camera")+'<span>'+(photo?"Changer la photo":"Ajouter une photo")+'</span></button>'+
-      '<div class="lgx-stats">'+
-        '<div><b>'+members.length+'</b><span>membre'+(members.length>1?'s':'')+'</span></div>'+
-        '<div><b>'+revs.length+'</b><span>avis</span></div>'+
-        '<div><b>'+(nf.enabled?"🔔":"🔕")+'</b><span>notifs</span></div>'+
-      '</div>'+
-    '</div></div>';
-
-  var tabs=[["feed","Fil"],["rank","Classement"],["toprev","Top avis"],["members","Membres"]];
-  var sw='<div class="lgx-switch">'+tabs.map(function(t){
-    return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
+  if(!G.length)return '<div class="lgx-empty"><b>Aucun resto noté</b><p>Les restos notés dans la ligue apparaîtront ici.</p></div>';
+  var pod=G.slice(0,3),rest=G.slice(3);
+  var order=pod.length>=3?[pod[1],pod[0],pod[2]]:pod;
+  var h='<div class="lgx-pod">'+order.map(function(o){
+    var rk=G.indexOf(o)+1,avg=(o.s/o.c).toFixed(1).replace(".",",");
+    return '<div class="lgx-pc '+(rk===1?"first":"")+'" style="'+(rk===1?"":"height:"+(120-(rk-1)*18)+"px")+'" onclick="S.sel='+esc(JSON.stringify({pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}))+';S.tab=\'map\';render()">'+
+      '<div class="n">'+avg+'</div><div class="t">'+esc(o.n)+'</div><div class="s">#'+rk+' · '+o.c+' avis</div></div>';
   }).join("")+'</div>';
-
-  var body=S.lv==="rank"
-    ?lgxRank(revs)
-    :S.lv==="toprev"
-    ?lgxTopReviewers(code,revs)
-    :S.lv==="members"
-    ?members.map(function(m){return lgxPerson(m)}).join("")
-    :lgxFeed(revs);
-
-  return '<div class="lgx">'+bar+hero+sw+body+'</div>';
+  if(rest.length)h+=rest.map(function(o,i){
+    var avg=(o.s/o.c).toFixed(1).replace(".",",");
+    return '<div class="lgx-row" onclick="S.sel='+esc(JSON.stringify({pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}))+';S.tab=\'map\';render()"><div class="lgx-rk">'+(i+4)+'</div>'+
+      '<div class="lgx-meta"><div class="lgx-nm">'+esc(o.n)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>★ '+avg+'</b></div>';
+  }).join("");
+  return h;
 }
 
-/* ---------- Point d'entrée onglet Ligue ---------- */
+function lgxDetail(c){
+  var revs=lrev(c).slice().sort(function(a,b){return b.ts-a.ts}),ms=lgMembers(c),escC=esc(c);
+  var coverPhoto = S.leaguePhotos && S.leaguePhotos[c];
+  var heroCls = "lgx-hero" + (coverPhoto ? " has-photo" : "");
+  var h='<div class="lgx">'+
+    '<div class="lgx-bar">'+
+      '<button class="lgx-ic" onclick="closeLeagueCard()" title="Toutes mes ligues">'+lgi("back")+'</button>'+
+      '<div class="lgx-bar-r">'+
+        '<button class="lgx-ic" onclick="share(\''+escC+'\')" title="Inviter">'+lgi("share")+'</button>'+
+        '<button class="lgx-ic" onclick="lgMenu(\''+escC+'\')" title="Options">'+lgi("more")+'</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="'+heroCls+'" style="'+lgBg(coverPhoto)+'">'+
+      '<div class="lgx-hero-top">'+
+        lgStack(ms,5)+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<button class="lgx-code-chip" onclick="lgCopy(this,\''+escC+'\')" title="Copier le code">'+lgi("copy")+'<span>'+escC+'</span></button>'+
+          '<button class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+escC+'\')">'+lgi("camera")+'<span>'+(coverPhoto?'Photo':'Ajouter photo')+'</span></button>'+
+        '</div>'+
+      '</div>'+
+      '<div><h1>'+esc(leagueLabel(c))+'</h1>'+
+      '<div class="lgx-stats">'+
+        '<div><b>'+ms.length+'</b><span>membres</span></div>'+
+        '<div><b>'+revs.length+'</b><span>avis</span></div>'+
+      '</div></div>'+
+    '</div>'+
+    '<div class="lgx-switch">'+[["feed","Fil"],["rank","Classement"],["top","Top avis"],["members","Membres"]].map(function(t){
+      return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
+    }).join("")+'</div>';
+  if(S.lv==="rank")return h+lgxRank(revs)+'</div>';
+  if(S.lv==="top"){
+    var top=revs.slice().sort(function(a,b){return b.note-a.note||b.ts-a.ts});
+    return h+(top.length?top.map(lgxRv).join(""):'<div class="lgx-empty"><b>Aucun avis</b><p>Sois le premier à noter un resto.</p></div>')+'</div>';
+  }
+  if(S.lv==="members"){
+    return h+ms.map(function(m){
+      var isMe=m.uid===S.uid,isF=hasFriend(m.uid);
+      var act=isMe?'<span>Toi</span>':isF?'<button class="lgx-btn" onclick="delFriend(\''+esc(m.uid)+'\')">Suivi</button>':'<button class="lgx-btn pri" onclick="addFriend(\''+esc(m.uid)+'\',\''+esc(m.pseudo)+'\')">Suivre</button>';
+      return '<div class="lgx-row"><div class="lgx-av" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</div>'+
+        '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')"><div class="lgx-nm">'+esc(m.pseudo)+'</div></div>'+act+'</div>';
+    }).join("")+'</div>';
+  }
+  return h+(revs.length?revs.map(lgxRv).join(""):'<div class="lgx-empty"><b>Le fil est vide</b><p>Partage le code '+escC+' à tes amis ou publie un avis.</p></div>')+'</div>';
+}
+
+/* ---------- Vue 3 : Amis ---------- */
+function lgxFriendRow(uid,pseudo,col,sub,isF,followsMe){
+  var eu=encodeURIComponent(uid),ep=encodeURIComponent(pseudo);
+  var btnLabel = isF ? 'Suivi' : (followsMe ? 'Suivre en retour' : 'Suivre');
+  return '<div class="lgx-row">'+
+    '<div class="lgx-av" style="background:'+(col||hashColor(String(uid||pseudo)))+'" onclick="openUser(\''+eu+'\',\''+ep+'\')" style="cursor:pointer">'+lgIni(pseudo)+'</div>'+
+    '<div class="lgx-meta" onclick="openUser(\''+eu+'\',\''+ep+'\')"><div class="lgx-nm">'+esc(pseudo)+'</div>'+(sub?'<div class="lgx-sub">'+esc(sub)+'</div>':'')+'</div>'+
+    '<button class="lgx-btn '+(isF?"":"pri")+'" onclick="'+(isF?'delFriend(\''+esc(uid)+'\')':'addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')')+'">'+btnLabel+'</button>'+
+  '</div>';
+}
+
+function lgxFriends(){
+  var q=(S.userSearchQ||"").trim();
+  var pendingNotifs=(S.followers||[]).filter(function(f){
+    return !isB(f.uid) && !hasFriend(f.uid) && (S.ignoredFollows||[]).indexOf(f.uid)<0;
+  });
+  var bellHtml='<button class="lgx-ic" onclick="openFollowNotifs()" title="Nouveaux abonnés">'+lgi("bell")+(pendingNotifs.length?'<span class="bell-dot">'+pendingNotifs.length+'</span>':'')+'</button>';
+
+  var h=status()+'<div class="lgx">'+lgxTop("Amis",S.friends.length+(S.friends.length>1?" amis suivis":" ami suivi"),bellHtml)+lgxSwitch()+
+    '<div class="lgx-search">'+lgi("search")+
+      '<input id="friend-sq" class="lgx-in" placeholder="Chercher un pseudo sur Belly…" value="'+esc(S.userSearchQ||"")+'" oninput="searchUsersByPseudo()" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">'+
+      (q?'<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>':'')+
+    '</div>';
+
+  if(q){
+    if(S.userSearchBusy) return h+'<div class="lgx-empty"><b>Recherche…</b></div></div>';
+    var res=(S.userSearchRes||[]);
+    if(!res.length) return h+'<div class="lgx-empty"><b>Aucun pseudo trouvé</b><p>Vérifie l’orthographe exacte du pseudo.</p></div></div>';
+    return h+'<div class="lgx-h2">Résultats</div>'+res.map(function(u){
+      return lgxFriendRow(u.uid,u.pseudo,hashColor(String(u.uid||u.pseudo)),"Membre Belly",hasFriend(u.uid),isFollower(u.uid));
+    }).join("")+'</div>';
+  }
+
+  var sug=leagueSuggestions().filter(function(s){return !hasFriend(s.uid)});
+  if(sug.length){
+    h+='<div class="lgx-h2">De tes ligues</div><div class="lgx-hs">'+sug.map(function(s){
+      var eu=encodeURIComponent(s.uid),ep=encodeURIComponent(s.pseudo),bg=s.col||hashColor(String(s.uid||s.pseudo));
+      return '<div class="lgx-sg"><div class="lgx-av" style="background:'+bg+'" onclick="openUser(\''+eu+'\',\''+ep+'\')" style="cursor:pointer">'+lgIni(s.pseudo)+'</div>'+
+        '<div class="lgx-nm" onclick="openUser(\''+eu+'\',\''+ep+'\')" style="cursor:pointer">'+esc(s.pseudo)+'</div>'+
+        '<div class="lgx-sub">'+esc(s.leagues.join(", "))+'</div>'+
+        '<button class="lgx-btn pri" onclick="addFriend(\''+esc(s.uid)+'\',\''+esc(s.pseudo)+'\')">Suivre</button></div>';
+    }).join("")+'</div>';
+  }
+
+  h+='<div class="lgx-h2">Mes amis ('+S.friends.length+')</div>';
+  if(!S.friends.length)return h+'<div class="lgx-empty"><b>Aucun ami suivi</b><p>Cherche un pseudo ci-dessus ou ajoute les membres de tes ligues.</p></div></div>';
+  return h+S.friends.map(function(f){
+    var mut=isFollower(f.uid);
+    return lgxFriendRow(f.uid,f.pseudo,hashColor(String(f.uid||f.pseudo)),mut?"Ami · Suivi mutuel":"Suivi",true,mut);
+  }).join("")+'</div>';
+}
+
 function league(){
-  if(S.lgTab==="friends")return status()+lgxFriends();
-  if(!S.leagues.length){S.leagueOpen=false;return status()+lgxList()}
-  if(!S.league||S.leagues.indexOf(S.league)<0)S.league=S.leagues[0];
-  if(!S.leagueOpen)return status()+lgxList();
-  return status()+lgxDetail(S.league);
+  if(S.lgTab==="friends")return lgxFriends();
+  if(S.league&&S.leagueOpen&&S.leagues.indexOf(S.league)>-1)return lgxDetail(S.league);
+  return lgxList();
 }
 </script>
 </body>
