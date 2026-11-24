@@ -416,7 +416,7 @@ body.dark-mode .lb-recent-row {
 .pg{animation:pgIn .3s ease;padding-bottom:140px}
 @keyframes pgIn{from{opacity:0}to{opacity:1}}
 .pg-svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;flex-shrink:0}
-.pg-hero{margin:0 -14px;padding:14px 18px 22px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;border-radius:0 0 28px 28px;background-size:cover;background-position:center}
+.pg-hero{margin:0 -14px;padding:14px 18px 22px;min-height:295px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;border-radius:0 0 28px 28px;background-size:cover;background-position:center}
 .pg-top{display:flex;justify-content:space-between;align-items:center}
 .pg-ic{width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
 .pg-ic:active{transform:scale(.86)}
@@ -800,7 +800,7 @@ var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
 document.getElementById("app").innerHTML=h;
-var _hr=document.querySelector(".pg-hero");if(_hr){var _pr=document.createElement("div");_pr.style.cssText="position:absolute;visibility:hidden;padding-top:env(safe-area-inset-top,0px)";document.body.appendChild(_pr);var _sa=parseFloat(getComputedStyle(_pr).paddingTop)||0;document.body.removeChild(_pr);_hr.style.paddingTop="81px";_hr.style.minHeight="367px";applyHeroBand(true)}else{applyHeroBand(false)}
+var _hr=document.querySelector(".pg-hero");if(_hr){_hr.style.paddingTop="68px";_hr.style.minHeight="295px";applyHeroBand(true)}else{applyHeroBand(false)}
 if(S.tab==="map")initMap();
 applyEmptyText();
 if(S.noteOpen){updateNoteSheetBody()}}
