@@ -462,6 +462,17 @@ body.dark-mode .pg-pill.on{background:#F4F1E9;color:#12161C}
 .pg-empty{text-align:center;padding:34px 16px;opacity:.8;font-size:14px;line-height:1.5}
 .pg-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(70px + env(safe-area-inset-bottom,0px));width:calc(100% - 28px);max-width:492px;z-index:50;border:0;border-radius:16px;background:#E5B83F;color:#192A3A;font:inherit;font-size:16px;font-weight:800;padding:15px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 10px 28px rgba(0,0,0,.28);cursor:pointer;transition:transform .15s}
 .pg-fab:active{transform:translateX(-50%) scale(.97)}
+.home-pills-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.home-pills-row::-webkit-scrollbar{display:none}
+.home-pill{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:inherit;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.home-pill img{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0}
+
+.friend-feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.friend-card{border-radius:16px;padding:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.friend-thumb{width:100%;aspect-ratio:4/3;border-radius:12px;object-fit:cover;background:rgba(255,255,255,.06)}
+.friend-place{font-weight:800;font-size:14px;line-height:1.25}
+.friend-meta{font-size:12px;opacity:.82;display:flex;flex-direction:column;gap:2px}
+
 </style>
 </head>
 <body>
@@ -2188,40 +2199,108 @@ function hmFriend(x){
     (x.avis?'<div class="hm-fr-t">'+esc(x.avis)+'</div>':'')+'</div>'+
     (x.photo?'<img class="hm-fr-img" src="'+x.photo+'">':'')+'</div></div>';
 }
-function home(){
-var all=allv(),now=Date.now(),mo=new Date();
-var startOfWeek=new Date(mo.getFullYear(),mo.getMonth(),mo.getDate()-((mo.getDay()+6)%7)).getTime();
-var weekReviews=all.filter(function(x){return x.ts>=startOfWeek});
-var pop=groups(weekReviews).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,20);
-var fr=[],seen={};
-S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
-var followedUids = (S.friends || []).map(function(f){ return f.uid; });
-if(followedUids.length){
-  all.forEach(function(x){
-    if(x.uid && x.uid !== S.uid && followedUids.indexOf(x.uid) > -1){
-      var k = (x._p?x._lg+"_":"p_")+x._id;
-      if(!seen[k]){ seen[k]=1; fr.push(x); }
-    }
-  });
+function reviewPhoto(x){
+  if(!x) return "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80";
+  if(Array.isArray(x.photos) && x.photos[0]) return x.photos[0];
+  if(x.photo) return x.photo;
+  if(x.img) return x.img;
+  if(x.image) return x.image;
+  var p = (typeof findPlace === "function") ? findPlace(x.place || x.name || "") : null;
+  if(p && (p.photo || p.img || p.image)) return p.photo || p.img || p.image;
+  return "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80";
 }
-fr=fr.sort(function(a,b){return b.ts-a.ts}).slice(0,20);
-var best=groups(weekReviews).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c}).slice(0,20);
 
-var stylesHtml = '<div class="sh">Styles & Budgets</div><div class="cat-scroll">' +
-  STYLE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
+function renderFriendCards(list){
+  if(!list || !list.length) return '<div class="card strict"><div class="sub">Aucun avis récent de tes amis.</div></div>';
+  return '<div class="friend-feed">' + list.map(function(x){
+    var name = esc(x.place || x.name || "Restaurant");
+    var author = esc(x.author || x.user || x.username || "Ami");
+    var rating = Number(x.rating || x.note || 0);
+    var src = reviewPhoto(x);
+    var clickFn = (typeof openPlaceByName === "function")
+      ? "openPlaceByName('" + esc(x.place || x.name || "") + "')"
+      : "";
+    return '<div class="friend-card"' + (clickFn ? ' onclick="' + clickFn + '"' : '') + '>' +
+      '<img class="friend-thumb" src="' + esc(src) + '" alt="' + name + '" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80\'">' +
+      '<div class="friend-place">' + name + '</div>' +
+      '<div class="friend-meta">' +
+        '<span>' + author + '</span>' +
+        (rating ? '<span class="stars">' + stars(rating) + '</span>' : '') +
+      '</div>' +
+    '</div>';
   }).join("") + '</div>';
+}
 
-var cuisineHtml = '<div class="sh" style="margin-top:10px">Cuisine</div><div class="cat-scroll">' +
-  CUISINE_CATS.map(function(c){
-    return '<div class="cat-item" onclick="searchCat(\''+c.key+'\')"><div class="cat-circle"><img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'"></div><div class="cat-name">'+esc(c.label)+'</div></div>';
-  }).join("") + '</div>';
+function home(){
+  var all=allv(), now=Date.now(), mo=new Date();
+  var startOfWeek=new Date(mo.getFullYear(),mo.getMonth(),mo.getDate()-((mo.getDay()+6)%7)).getTime();
+  var weekReviews=all.filter(function(x){return x.ts>=startOfWeek});
+  var pop=groups(weekReviews).sort(function(a,b){return b.c-a.c||b.s/b.c-a.s/a.c}).slice(0,20);
 
-return status() + stylesHtml + cuisineHtml
-+'<div class="big" style="margin-top:20px">Resto du moment</div>'
-+'<div class="sh">Restos populaires</div>'+hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Aucun avis cette semaine.")
-+'<div class="sh">Derniers avis de mes amis</div>'+((S.leagues.length || followedUids.length)?renderLetterboxdFeed(fr):'<div class="card strict"><div class="sub">Rejoins une ligue ou suis tes amis pour voir leurs avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue / des amis</button></div>')
-+'<div class="sh">Recommandations de la semaine</div>'+hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco cette semaine.")}
+  var fr=[], seen={};
+  S.leagues.forEach(function(c){
+    lrev(c).forEach(function(x){
+      var k=(x._p?x._lg+"_":"p_")+x._id;
+      if(x.uid!==S.uid && !seen[k]){seen[k]=1; fr.push(x);}
+    });
+  });
+  var followedUids=(S.friends||[]).map(function(f){return f.uid;});
+  if(followedUids.length){
+    all.forEach(function(x){
+      if(x.uid && x.uid!==S.uid && followedUids.indexOf(x.uid)>-1){
+        var k=(x._p?x._lg+"_":"p_")+x._id;
+        if(!seen[k]){seen[k]=1; fr.push(x);}
+      }
+    });
+  }
+  fr=fr.sort(function(a,b){return b.ts-a.ts}).slice(0,20);
+
+  var best=groups(weekReviews).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c}).slice(0,20);
+
+  var cuisineWithSeafood = CUISINE_CATS.slice();
+  var hasSeafood = cuisineWithSeafood.some(function(c){
+    return /fruit.*de.*mer|seafood/i.test(c.label || "") || /seafood|fruits_de_mer/i.test(c.key || "");
+  });
+  if(!hasSeafood){
+    cuisineWithSeafood.push({
+      key: "fruits_de_mer",
+      label: "Fruits de mer",
+      img: "https://images.unsplash.com/photo-1559737558-2bf22b2e12e7?auto=format&fit=crop&w=200&q=80"
+    });
+  }
+
+  var stylesLine = '<div class="sh">Styles</div><div class="home-pills-row">' +
+    STYLE_CATS.map(function(c){
+      return '<button type="button" class="home-pill" onclick="searchCat(\''+c.key+'\')">' +
+        '<img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'">' +
+        '<span>'+esc(c.label)+'</span>' +
+      '</button>';
+    }).join("") +
+  '</div>';
+
+  var categoriesLine = '<div class="sh">Catégories</div><div class="home-pills-row">' +
+    cuisineWithSeafood.map(function(c){
+      return '<button type="button" class="home-pill" onclick="searchCat(\''+c.key+'\')">' +
+        '<img src="'+c.img+'" alt="'+esc(c.label)+'" onerror="this.src=\'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&q=80\'">' +
+        '<span>'+esc(c.label)+'</span>' +
+      '</button>';
+    }).join("") +
+  '</div>';
+
+  var friendsBlock = (S.leagues.length || followedUids.length)
+    ? renderFriendCards(fr)
+    : '<div class="card strict"><div class="sub">Rejoins une ligue ou suis tes amis pour voir leurs avis.</div><button class="btn" onclick="go(\'league\')">Rejoindre une ligue / des amis</button></div>';
+
+  return status() +
+    stylesLine +
+    categoriesLine +
+    '<div class="sh">Restos populaires</div>' +
+    hs(pop.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+o.c+' avis')}),"Aucun avis cette semaine.") +
+    '<div class="sh">Derniers avis de mes amis</div>' +
+    friendsBlock +
+    '<div class="sh">Recommandations de la semaine</div>' +
+    hs(best.map(function(o){return pc(o,'<span class="stars">'+stars(o.s/o.c)+'</span>'+(o.s/o.c).toFixed(1)+'/5')}),"Aucune reco cette semaine.");
+}
 
 function openReviewDetail(idx){
   var x = S.rvl[idx];
