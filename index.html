@@ -61,8 +61,36 @@ nav button.on{color:#E5B83F;font-weight:700}
 .st{display:inline-block;position:relative;margin-right:1px}.sb{color:rgba(25,42,58,.62);opacity:.35}.sf{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:#E5B83F}.rs{font-size:42px;line-height:1;padding:0 2px;cursor:pointer}
 .rate{width:max-content;margin:6px auto 4px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .act{display:flex;gap:18px;justify-content:flex-end;margin-top:8px}.act a{color:rgba(25,42,58,.62);font-size:12px;cursor:pointer}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:flex-end;transition:opacity .24s ease}
+.ov.closing{opacity:0}
 .ovb{background:#F4F1E9;width:100%;max-width:520px;margin:0 auto;border-radius:12px 12px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+
+/* Animation gauche -> droite pour la sheet des 3 petits points */
+@keyframes slideInLeftSheet{
+  from{transform:translateX(-100%);opacity:.85}
+  to{transform:translateX(0);opacity:1}
+}
+.ovb.from-left{
+  animation:slideInLeftSheet .28s cubic-bezier(.22,1,.36,1) forwards;
+  transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s ease;
+}
+.ovb.from-left.exit-right{
+  transform:translateX(100%);
+  opacity:0;
+}
+
+/* Bloc notifications dans le menu de ligue */
+.lgx-notif-box{background:rgba(127,127,127,.1);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.lgx-chk-row{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:15px;font-weight:700;padding:4px 0}
+.lgx-chk-row input[type="checkbox"]{width:20px;height:20px;margin:0;accent-color:#192A3A;cursor:pointer;flex-shrink:0}
+body.dark-mode .lgx-chk-row input[type="checkbox"]{accent-color:#E5B83F}
+.lgx-sub-notifs{margin-top:8px;padding-left:14px;border-left:2px solid rgba(25,42,58,.2);display:flex;flex-direction:column;gap:8px}
+body.dark-mode .lgx-sub-notifs{border-left-color:rgba(244,241,233,.22)}
+.lgx-sub-chk{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:14px;font-weight:600;padding:2px 0}
+.lgx-sub-chk input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:#192A3A;cursor:pointer;flex-shrink:0}
+body.dark-mode .lgx-sub-chk input[type="checkbox"]{accent-color:#E5B83F}
+.lgx-notif-hint{font-size:12px;opacity:.6;margin-top:4px}
+
 .av{width:64px;height:64px;border-radius:6px;background:#E5B83F;color:#192A3A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;cursor:pointer;position:relative}
 .av.edit::after{content:'✎';position:absolute;bottom:-5px;right:-5px;background:#192A3A;color:#E5B83F;font-size:11px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #F4F1E9}
 .hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;margin:0 -14px;padding:0 14px 6px}.hs::-webkit-scrollbar{display:none}
@@ -496,16 +524,17 @@ body.dark-mode .pg-pill.on{background:#F4F1E9;color:#12161C}
 .lgx-ic:active{transform:scale(.9)}
 .lgx-ic .bell-dot{top:-3px;right:-3px}
 
-/* Switcher pleine largeur inspiré de la 3ème photo dans le nouveau style */
+/* Switcher pleine largeur */
 .lgx-switch-seg{display:flex;background:rgba(25,42,58,.08);border-radius:16px;padding:4px;margin:0 0 18px;gap:4px}
 body.dark-mode .lgx-switch-seg{background:#1C232D;border:1px solid rgba(255,255,255,.08)}
 .lgx-seg-btn{flex:1;border:0;background:transparent;color:rgba(25,42,58,.65);font:inherit;font-size:15px;font-weight:700;padding:11px 0;border-radius:12px;cursor:pointer;transition:all .18s ease}
 body.dark-mode .lgx-seg-btn{color:rgba(244,241,233,.6)}
 .lgx-seg-btn.on{background:#E5B83F;color:#192A3A;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 
-/* Sous-filtres pilules (Fil / Classement / Membres) */
-.lgx-switch{display:flex;gap:8px;margin:0 0 18px;overflow-x:auto}
-.lgx-pill{border:0;background:rgba(127,127,127,.15);color:inherit;font:inherit;font-size:14px;font-weight:700;padding:10px 18px;border-radius:99px;cursor:pointer;white-space:nowrap}
+/* Sous-filtres pilules (Fil / Classement / Top avis / Membres) */
+.lgx-switch{display:flex;gap:8px;margin:0 0 18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lgx-switch::-webkit-scrollbar{display:none}
+.lgx-pill{border:0;background:rgba(127,127,127,.15);color:inherit;font:inherit;font-size:14px;font-weight:700;padding:10px 16px;border-radius:99px;cursor:pointer;white-space:nowrap}
 .lgx-pill.on{background:#192A3A;color:#F4F1E9}
 body.dark-mode .lgx-pill.on{background:#E5B83F;color:#192A3A}
 
@@ -723,7 +752,7 @@ var S={
   filt:{rad:3000,cats:[],cuisine:[],sort:"auto"},smode:"poi",sc:null,slabel:"",col:"",
   likes:[],wish:[],friends:[],followers:[],ignoredFollows:[],userSearchQ:"",userSearchRes:null,userSearchBusy:false,
   top:[null,null,null,null,null],bio:"",pt:"prof",sub:null,pkl:[],tab:"home",hl:[],pv:"rev",mapC:null,
-  pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},leaguePhotos:{},photoTargetLeague:"",leagueOpen:false,lgTab:"leagues",pendingJoin:"",
+  pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},leaguePhotos:{},leagueNotifs:{},photoTargetLeague:"",leagueOpen:false,lgTab:"leagues",pendingJoin:"",
   all:[],priv:{},unsubs:{},unsubFollows:null,lv:"feed",
   form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},
   pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
@@ -762,10 +791,45 @@ S.uid=ls("lr_uid")||("u"+Math.random().toString(36).slice(2,10));ls("lr_uid",S.u
 S.pseudo=ls("lr_pseudo")||"";S.league=ls("lr_league")||"";
 try{S.leagues=JSON.parse(ls("lr_leagues")||"[]")}catch(e){}
 try{S.leagueNames=JSON.parse(ls("lr_league_names")||"{}")}catch(e){}
+try{S.leagueNotifs=JSON.parse(ls("lr_league_notifs")||"{}")}catch(e){}
 S.dept=ls("lr_dept")||"";try{S.blocked=JSON.parse(ls("lr_blocked")||"[]");S.likes=JSON.parse(ls("lr_likes")||"[]");S.wish=JSON.parse(ls("lr_wish")||"[]");S.friends=JSON.parse(ls("lr_friends")||"[]");S.ignoredFollows=JSON.parse(ls("lr_ignored_follows")||"[]");S.top=JSON.parse(ls("lr_top")||"[null,null,null,null,null]")}catch(e){}S.bio=ls("lr_bio")||"";S.col=ls("lr_col")||"";if(!S.col){S.col=newColor();ls("lr_col",S.col)}try{S.home=JSON.parse(ls("lr_home")||"null")}catch(e){}
 if(S.league&&S.leagues.indexOf(S.league)<0)S.leagues.push(S.league);
-function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_league_names",JSON.stringify(S.leagueNames||{}));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_ignored_follows",JSON.stringify(S.ignoredFollows||[]));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
-if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("profiles").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,leagueNames:S.leagueNames||{},dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,ignoredFollows:S.ignoredFollows||[],top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
+function save(){ls("lr_pseudo",S.pseudo);ls("lr_league",S.league);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_league_names",JSON.stringify(S.leagueNames||{}));ls("lr_league_notifs",JSON.stringify(S.leagueNotifs||{}));ls("lr_dept",S.dept||"");ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_ignored_follows",JSON.stringify(S.ignoredFollows||[]));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio||"");ls("lr_col",S.col||"");ls("lr_home",JSON.stringify(S.home||null));
+if(S.user&&!S.user.isAnonymous&&S.fdb)S.fdb.collection("profiles").doc(S.user.uid).set({pseudo:S.pseudo,leagues:S.leagues,leagueNames:S.leagueNames||{},leagueNotifs:S.leagueNotifs||{},dept:S.dept||"",home:S.home||null,blocked:S.blocked,likes:S.likes,wish:S.wish,friends:S.friends,ignoredFollows:S.ignoredFollows||[],top:S.top,bio:S.bio||"",col:S.col||""}).catch(function(){})}
+
+// --- Notifications par ligue ---
+function getLeagueNotif(code){
+  var cur = S.leagueNotifs && S.leagueNotifs[code];
+  if(!cur) return {enabled: false, reviews: true, members: true};
+  return {
+    enabled: !!cur.enabled,
+    reviews: cur.reviews !== false,
+    members: cur.members !== false
+  };
+}
+
+function toggleLeagueNotifMain(code, checked){
+  if(!S.leagueNotifs) S.leagueNotifs = {};
+  var prev = getLeagueNotif(code);
+  S.leagueNotifs[code] = {
+    enabled: !!checked,
+    reviews: prev.reviews,
+    members: prev.members
+  };
+  save();
+  lgMenu(code, true);
+}
+
+function toggleLeagueNotifSub(code, key, checked){
+  if(!S.leagueNotifs) S.leagueNotifs = {};
+  var prev = getLeagueNotif(code);
+  S.leagueNotifs[code] = {
+    enabled: prev.enabled,
+    reviews: key === "reviews" ? !!checked : prev.reviews,
+    members: key === "members" ? !!checked : prev.members
+  };
+  save();
+}
 
 // --- Unicité des pseudos ---
 function normalizePseudoKey(p){
@@ -1003,7 +1067,21 @@ var REASONS=["Insulte ou harcèlement","Faux avis ou spam","Contenu inapproprié
 function ridOf(x){return x._p?"l_"+x._lg+"_"+x._id:"p_"+x._id}
 function isB(u){return S.blocked.some(function(b){return b.u===u})}
 function vis(x){return !isB(x.uid)&&(S.flags[ridOf(x)]||0)<3}
-function closeSheet(){document.getElementById("sheet").innerHTML=""}
+
+function closeSheet(){
+  var sh=document.getElementById("sheet");
+  if(!sh)return;
+  var box=sh.querySelector(".ovb.from-left");
+  var ov=sh.querySelector(".ov");
+  if(box && !box.classList.contains("exit-right")){
+    box.classList.add("exit-right");
+    if(ov)ov.classList.add("closing");
+    setTimeout(function(){ sh.innerHTML=""; }, 250);
+  } else {
+    sh.innerHTML="";
+  }
+}
+
 function rep(i){var x=S.rx=S.rvl[i];closeSheet();if(!x||!S.fdb)return;
 document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()"><div class="resto" style="margin-bottom:12px">'+ICONS.flag+' Signaler l\'avis</div>'+REASONS.map(function(r,idx){return '<button class="btn alt" style="margin-bottom:8px" onclick="confirmRep('+idx+')">'+esc(r)+'</button>'}).join("")+'<button class="back" onclick="closeSheet()">Annuler</button></div></div>'}
 function confirmRep(k){var x=S.rx;closeSheet();if(!x||!S.fdb||!S.user)return;var rid=ridOf(x),u=S.user.uid;
@@ -1719,13 +1797,6 @@ promise.then(function(){
   render()
 }).catch(function(err){alert("Enregistrement impossible: "+(err.message||""))})}
 
-function rank(list){var now=new Date(),m=now.getMonth(),y=now.getFullYear();
-var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
-var h='<h2>Classement de '+esc(now.toLocaleDateString("fr-FR",{month:"long",year:"numeric"}))+'</h2>';
-if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
-var med=["🥇","🥈","🥉"];
-return h+G.map(function(x,i){return '<div class="card strict rank"><div class="pos">'+(med[i]||(i+1))+'</div><div style="flex:1"><div class="resto">'+esc(x.n)+dot(x)+'</div><div class="who">'+x.c+' avis</div></div><div><div class="stars">'+stars(x.s/x.c)+'</div><div class="who" style="text-align:right">'+(x.s/x.c).toFixed(1)+'/5</div></div></div>'}).join("")}
-
 // --- FONCTIONS COMMUNES LIGUE & AMIS ---
 function openLeagueCard(c){
   S.league = c;
@@ -1900,7 +1971,7 @@ function createLeague(){
   tryGenerate(5);
 }
 
-function leaveLeague(c){if(!confirm("Quitter la ligue « "+leagueLabel(c)+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.leagueNames&&S.leagueNames[c])delete S.leagueNames[c];if(S.leaguePhotos&&S.leaguePhotos[c])delete S.leaguePhotos[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";S.leagueOpen=false;save();render()}
+function leaveLeague(c){if(!confirm("Quitter la ligue « "+leagueLabel(c)+" » ?"))return;var i=S.leagues.indexOf(c);if(i>-1)S.leagues.splice(i,1);if(S.unsubs[c]){try{S.unsubs[c]()}catch(e){}delete S.unsubs[c]}delete S.priv[c];if(S.leagueNames&&S.leagueNames[c])delete S.leagueNames[c];if(S.leaguePhotos&&S.leaguePhotos[c])delete S.leaguePhotos[c];if(S.leagueNotifs&&S.leagueNotifs[c])delete S.leagueNotifs[c];if(S.form.tls)S.form.tls=S.form.tls.filter(function(x){return x!==c});if(S.league===c)S.league=S.leagues[0]||"";S.leagueOpen=false;save();render()}
 
 function join(){
   var inp = document.getElementById("lg");
@@ -2400,7 +2471,7 @@ function wSubmit(){
 function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
 function authErr(e){alert("Erreur d'authentification : "+(e.code||"inconnue"))}
 function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️")}).catch(authErr)}
-function logout(){if(S.unsubFollows){try{S.unsubFollows()}catch(e){}S.unsubFollows=null}S.user=null;S.pseudo="";S.leagues=[];S.league="";S.leagueNames={};S.leaguePhotos={};S.leagueOpen=false;S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.followers=[];S.ignoredFollows=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
+function logout(){if(S.unsubFollows){try{S.unsubFollows()}catch(e){}S.unsubFollows=null}S.user=null;S.pseudo="";S.leagues=[];S.league="";S.leagueNames={};S.leaguePhotos={};S.leagueNotifs={};S.leagueOpen=false;S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.followers=[];S.ignoredFollows=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
 function delAcc(){if(!confirm("Supprimer ton compte ?"))return;var u=firebase.auth().currentUser;var oldKey=S.pseudo?normalizePseudoKey(S.pseudo):"";var delPseudo=oldKey?S.fdb.collection("pseudos").doc(oldKey).delete().catch(function(){}):Promise.resolve();delPseudo.then(function(){return S.fdb.collection("profiles").doc(u.uid).delete().catch(function(){})}).then(function(){return u.delete()}).then(function(){logout()}).catch(function(){alert("Suppression impossible.")})}
 function setP(){
   var p=document.getElementById("ps").value.trim();
@@ -2499,6 +2570,7 @@ S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(funct
 function loadProfile(u){S.fdb.collection("profiles").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
 if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
 if(p.leagueNames){S.leagueNames=Object.assign({},S.leagueNames||{},p.leagueNames)}
+if(p.leagueNotifs){S.leagueNotifs=Object.assign({},S.leagueNotifs||{},p.leagueNotifs)}
 if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.ignoredFollows)S.ignoredFollows=p.ignoredFollows;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL();subFollows()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
 
 render();
@@ -2662,8 +2734,7 @@ check:'<polyline points="20 6 9 17 4 12"/>',
 copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
 x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
 camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
-trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
-users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>'};
+trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
 function lgi(k){return '<svg class="lgx-svg" viewBox="0 0 24 24">'+LGI[k]+'</svg>'}
 function lgIni(s){return esc((s||"?").charAt(0).toUpperCase())}
 
@@ -2691,7 +2762,7 @@ function lgxTop(title,sub,right){
   return '<div class="lgx-top"><div><h1>'+title+'</h1><p>'+sub+'</p></div>'+(right||'')+'</div>';
 }
 
-/* Switcher pleine largeur inspiré de la 3ème photo dans le nouveau style */
+/* Switcher pleine largeur */
 function lgxSwitch(){
   var f=S.lgTab==="friends";
   return '<div class="lgx-switch-seg">'+
@@ -2711,16 +2782,37 @@ function openLgSheet(){
     '<button class="lgx-cta alt" onclick="join()">Rejoindre</button>'+
   '</div></div>';
 }
-function lgMenu(code){
+
+function lgMenu(code, skipAnim){
   var c=esc(code);
   var hasPhoto=!!(S.leaguePhotos&&S.leaguePhotos[code]);
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">'+
+  var nf=getLeagueNotif(code);
+  var animClass = skipAnim ? "" : " from-left";
+
+  var notifHtml = '<div class="lgx-notif-box">' +
+    '<label class="lgx-chk-row">' +
+      '<span>'+lgi("bell")+' Notifications de la ligue</span>' +
+      '<input type="checkbox" '+(nf.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+c+'\',this.checked)">' +
+    '</label>' +
+    (nf.enabled
+      ? '<div class="lgx-sub-notifs">' +
+          '<label class="lgx-sub-chk"><span>Nouvel avis</span><input type="checkbox" '+(nf.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'reviews\',this.checked)"></label>' +
+          '<label class="lgx-sub-chk"><span>Nouveau membre</span><input type="checkbox" '+(nf.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'members\',this.checked)"></label>' +
+        '</div>'
+      : '<div class="lgx-notif-hint">Désactivées — aucune notification pour cette ligue.</div>'
+    ) +
+  '</div>';
+
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet'+animClass+'" onclick="event.stopPropagation()">'+
+    '<h3 class="lgx-sheet-t">'+esc(leagueLabel(code))+'</h3>'+
+    notifHtml+
     '<button class="lgx-opt" onclick="closeSheet();share(\''+c+'\')">'+lgi("share")+' Inviter des amis (Code : '+c+')</button>'+
     '<button class="lgx-opt" onclick="closeSheet();pickLeaguePhoto(\''+c+'\')">'+lgi("camera")+' '+(hasPhoto?'Changer la photo de la ligue':'Ajouter une photo à la ligue')+'</button>'+
     (hasPhoto?'<button class="lgx-opt" onclick="closeSheet();removeLeaguePhoto(\''+c+'\')">'+lgi("trash")+' Retirer la photo (fond jaune)</button>':'')+
     '<button class="lgx-opt red" onclick="closeSheet();leaveLeague(\''+c+'\')">'+lgi("x")+' Quitter la ligue</button>'+
-    '<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
+    '<button class="back" onclick="closeSheet()">Fermer</button></div></div>';
 }
+
 function lgRvMenu(i){
   var x=S.rvl[i];if(!x)return;
   var own=x.uid===S.uid,h='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">';
@@ -2751,159 +2843,239 @@ function lgxPerson(p,subtitle){
   var btn="";
   if(!isMe){
     btn=following
-      ?'<button class="lgx-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?'Ami ✓':'Suivi')+'</button>'
-      :'<button class="lgx-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
+      ?'<button class="lgx-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?"Ami":"Suivi")+'</button>'
+      :'<button class="lgx-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?"Suivre en retour":"Suivre")+'</button>';
   }
-  return '<div class="lgx-row"><div class="lgx-av" style="background:'+col+'" onclick="'+open+'">'+lgIni(pseudo)+'</div>'+
-    '<div class="lgx-meta" onclick="'+open+'"><div class="lgx-nm">'+esc(pseudo)+(isMe?' (moi)':'')+'</div><div class="lgx-sub">'+esc(sub)+'</div></div>'+btn+'</div>';
+  return '<div class="lgx-row">'+
+    '<div class="lgx-av" style="background:'+col+'" onclick="'+open+'">'+lgIni(pseudo)+'</div>'+
+    '<div class="lgx-meta" onclick="'+open+'"><div class="lgx-nm">'+esc(pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">'+esc(sub)+'</div></div>'+
+    btn+'</div>';
 }
 
-/* ---------- Page Amis ---------- */
-function friendsTabView(){
-  var pending=(S.followers||[]).filter(function(f){return !isB(f.uid)&&!hasFriend(f.uid)&&(S.ignoredFollows||[]).indexOf(f.uid)<0});
-  var bell='<button class="lgx-ic" onclick="openFollowNotifs()">'+lgi("bell")+(pending.length?'<span class="bell-dot">'+pending.length+'</span>':'')+'</button>';
-  var h='<div class="lgx">'+lgxTop("Amis","Suivez-vous mutuellement pour devenir amis",bell)+lgxSwitch();
-  h+='<div class="lgx-search">'+lgi("search")+'<input class="lgx-in" id="friend-sq" placeholder="Rechercher un nom d’utilisateur" value="'+esc(S.userSearchQ||"")+'" oninput="S.userSearchQ=this.value" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">'+
-    (S.userSearchQ?'<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>':'')+'</div>';
-  if(S.userSearchBusy)return h+'<div class="empty">Recherche en cours…</div></div>';
-  if(S.userSearchQ&&S.userSearchRes!==null){
-    h+='<div class="lgx-h2">Résultats</div>';
-    h+=S.userSearchRes.length?S.userSearchRes.map(function(u){return lgxPerson(u)}).join(""):'<div class="empty">Aucun utilisateur trouvé.</div>';
-    return h+'</div>';
+/* ---------- Onglet Amis ---------- */
+function lgxFriends(){
+  var q=S.userSearchQ||"",res=S.userSearchRes;
+  var newF=(S.followers||[]).filter(function(f){return !isB(f.uid)&&!hasFriend(f.uid)&&(S.ignoredFollows||[]).indexOf(f.uid)<0});
+  var bell='<button class="lgx-ic" onclick="openFollowNotifs()" title="Notifications">'+lgi("bell")+(newF.length?'<span class="bell-dot">'+newF.length+'</span>':'')+'</button>';
+
+  var search='<div class="lgx-search">'+lgi("search")+
+    '<input id="friend-sq" class="lgx-in" placeholder="Chercher un pseudo…" value="'+esc(q)+'" oninput="S.userSearchQ=this.value;searchUsersByPseudo()" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">'+
+    (q?'<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;S.userSearchBusy=false;render()">'+lgi("x")+'</button>':'')+'</div>';
+
+  var body="";
+  if(q){
+    if(S.userSearchBusy)body='<div class="lgx-empty"><p>Recherche en cours…</p></div>';
+    else if(!res||!res.length)body='<div class="lgx-empty"><b>Aucun résultat</b><p>Aucun utilisateur trouvé pour « '+esc(q)+' ».</p></div>';
+    else body=res.map(function(u){return lgxPerson(u)}).join("");
+  } else {
+    var mutuals=S.friends.filter(function(f){return isFollower(f.uid)});
+    var followingOnly=S.friends.filter(function(f){return !isFollower(f.uid)});
+    var sugg=leagueSuggestions().filter(function(s){return !hasFriend(s.uid)});
+
+    if(!S.friends.length&&!sugg.length){
+      body='<div class="lgx-empty"><b>Aucun ami pour l’instant</b><p>Recherche un pseudo ou rejoins une ligue pour retrouver tes proches.</p><button class="lgx-cta" onclick="S.lgTab=\'leagues\';openLgSheet()">Créer ou rejoindre une ligue</button></div>';
+    } else {
+      if(mutuals.length)body+='<h2 class="lgx-h2">Amis ('+mutuals.length+')</h2>'+mutuals.map(function(f){return lgxPerson(f,"Ami · suivi réciproque")}).join("");
+      if(followingOnly.length)body+='<h2 class="lgx-h2">Suivis ('+followingOnly.length+')</h2>'+followingOnly.map(function(f){return lgxPerson(f,"Suivi")}).join("");
+      if(sugg.length){
+        body+='<h2 class="lgx-h2">Membres de tes ligues</h2><div class="lgx-hs">'+sugg.map(function(s){
+          var col=s.col||hashColor(String(s.uid||s.pseudo));
+          var open='openUser(\''+encodeURIComponent(s.uid)+'\',\''+encodeURIComponent(s.pseudo)+'\')';
+          return '<div class="lgx-sg"><div class="lgx-av" style="background:'+col+'" onclick="'+open+'">'+lgIni(s.pseudo)+'</div>'+
+            '<div class="lgx-nm" onclick="'+open+'" style="cursor:pointer">'+esc(s.pseudo)+'</div>'+
+            '<div class="lgx-sub">'+esc(s.leagues.join(" · "))+'</div>'+
+            '<button class="lgx-btn pri" onclick="addFriend(\''+esc(s.uid)+'\',\''+esc(s.pseudo)+'\')">Suivre</button></div>';
+        }).join("")+'</div>';
+      }
+    }
   }
-  var sugg=leagueSuggestions().filter(function(u){return !hasFriend(u.uid)});
-  if(sugg.length){
-    h+='<div class="lgx-h2">Suggestions</div><div class="lgx-hs">'+sugg.map(function(u){
-      var col=u.col||hashColor(String(u.uid));
-      var fm=isFollower(u.uid);
-      return '<div class="lgx-sg"><div class="lgx-av" style="background:'+col+'" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+lgIni(u.pseudo)+'</div>'+
-        '<div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">'+esc(u.leagues.join(", "))+'</div>'+
-        '<button class="lgx-btn pri" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')">'+(fm?'Suivre en retour':'Suivre')+'</button></div>';
-    }).join("")+'</div>';
-  }
-  var mine=(S.friends||[]).filter(function(f){return !isB(f.uid)});
-  var mutual=mine.filter(function(f){return isFollower(f.uid)});
-  var only=mine.filter(function(f){return !isFollower(f.uid)});
-  h+='<div class="lgx-h2">Mes amis ('+mutual.length+')</div>';
-  h+=mutual.length?mutual.map(function(f){return lgxPerson(f,"Ami · suivi réciproque")}).join(""):'<div class="lgx-sub" style="margin-bottom:8px">Aucun ami pour l’instant. Suis quelqu’un et attends qu’il te suive en retour.</div>';
-  if(only.length){
-    h+='<div class="lgx-h2">Personnes suivies ('+only.length+')</div>'+only.map(function(f){return lgxPerson(f,"En attente de suivi en retour")}).join("");
-  }
-  return h+'</div>';
+  return '<div class="lgx">'+lgxTop("Amis","Tes proches et abonnements",bell)+lgxSwitch()+search+body+'</div>';
 }
 
-/* ---------- Avis & Classement dans une ligue ---------- */
-function lgRv(x){
-  var idx=ri(x),col=colOf(x),d=new Date(x.ts);
-  var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
-  var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
-  return '<div class="lgx-rv"><div class="lgx-rv-top">'+
-    '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
-    '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> · <span>'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
-    (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
-    '</div><div class="lgx-rv-body" onclick="openReviewDetail('+idx+')">'+
-    '<div class="lgx-rv-main"><div class="lgx-rv-resto">'+esc(x.resto)+dot(x)+'</div>'+
-    '<span class="stars">'+stars(x.note)+'</span>'+
-    (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
-    '</div>'+(x.photo?'<img class="lgx-rv-img" src="'+x.photo+'">':'')+'</div></div>';
+/* ---------- Liste des ligues ---------- */
+function lgxList(){
+  var addBtn='<button class="lgx-ic" onclick="openLgSheet()" title="Créer ou rejoindre">'+lgi("plus")+'</button>';
+  var head=lgxTop("Tes ligues","Tes tables entre proches",addBtn)+lgxSwitch();
+  if(!S.leagues.length){
+    return '<div class="lgx">'+head+'<div class="lgx-empty"><b>Aucune ligue</b><p>Crée une ligue pour ton groupe ou rejoins-en une avec un code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre une ligue</button></div></div>';
+  }
+  var cards=S.leagues.map(function(c){
+    var revs=lrev(c),members=lgMembers(c),photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
+    var nf=getLeagueNotif(c);
+    var bellTag = nf.enabled ? ' · 🔔' : '';
+    return '<div class="lgx-card '+(photo?"has-photo":"")+'" style="'+lgBg(photo)+'" onclick="openLeagueCard(\''+ec+'\')">'+
+      '<div class="lgx-card-top">'+
+        lgStack(members,4)+
+        '<div class="lgx-card-acts" onclick="event.stopPropagation()">'+
+          '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Partager le lien d’invitation">'+lgi("share")+'</button>'+
+        '</div>'+
+      '</div>'+
+      '<div>'+
+        '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
+        '<div class="lgx-card-foot">'+
+          '<span class="lgx-card-sub">'+members.length+' membre'+(members.length>1?'s':'')+' · '+revs.length+' avis'+bellTag+'</span>'+
+          '<button class="lgx-code-chip" onclick="event.stopPropagation();lgCopy(this,\''+ec+'\')" title="Copier le code de ligue">'+lgi("copy")+'<span>'+ec+'</span></button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  return '<div class="lgx">'+head+cards+'<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
 }
 
-function rank(list){
-  var now=new Date(),m=now.getMonth(),y=now.getFullYear();
-  var G=groups(list.filter(function(x){var d=new Date(x.ts);return d.getMonth()===m&&d.getFullYear()===y})).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});
-  var h='<div class="lgx-h2" style="margin-top:8px">Top '+esc(now.toLocaleDateString("fr-FR",{month:"long"}))+'</div>';
-  if(!G.length)return h+'<div class="empty">Pas encore de classement ce mois-ci.</div>';
-  if(G.length>=3){
-    var pod=function(i,hi,first){var x=G[i];return '<div class="lgx-pc'+(first?' first':'')+'" style="min-height:'+hi+'px"><div class="n">'+(i+1)+'</div><div class="t">'+esc(x.n)+'</div><div class="s">'+(x.s/x.c).toFixed(1).replace(".",",")+' ★ · '+x.c+' avis</div></div>'};
-    h+='<div class="lgx-pod">'+pod(1,132,false)+pod(0,164,true)+pod(2,116,false)+'</div>';
-  }
-  var start=G.length>=3?3:0;
-  return h+G.slice(start).map(function(x,j){
-    var pos=start+j+1;
-    return '<div class="lgx-row"><span class="lgx-rk">'+pos+'</span><div class="lgx-meta" style="cursor:default"><div class="lgx-nm">'+esc(x.n)+' '+dot(x)+'</div><div class="lgx-sub">'+x.c+' avis</div></div><b>'+(x.s/x.c).toFixed(1).replace(".",",")+' ★</b></div>';
+/* ---------- Fil d'une ligue ---------- */
+function lgxFeed(revs){
+  var sorted=revs.slice().sort(function(a,b){return b.ts-a.ts});
+  if(!sorted.length)return '<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Publie le premier avis pour lancer la table.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
+  return sorted.map(function(x){
+    var idx=ri(x),d=new Date(x.ts),col=colOf(x);
+    var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
+    var openP='openO('+hp(pl(x))+')';
+    var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
+    return '<div class="lgx-rv">'+
+      '<div class="lgx-rv-top">'+
+        '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
+        '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> <span>· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
+        (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
+      '</div>'+
+      '<div class="lgx-rv-body">'+
+        '<div class="lgx-rv-main">'+
+          '<div class="lgx-rv-resto" onclick="'+openP+'" style="cursor:pointer">'+dot(x)+'<span>'+esc(x.resto)+'</span></div>'+
+          '<span class="stars">'+stars(x.note)+'</span>'+
+          (x.avis?'<div class="lgx-rv-txt" onclick="'+openP+'" style="cursor:pointer">'+esc(x.avis)+'</div>':'')+
+        '</div>'+
+        (x.photo?'<img class="lgx-rv-img" src="'+x.photo+'" onclick="openLight(\''+x.photo+'\')">':'')+
+      '</div>'+
+    '</div>';
   }).join("");
 }
 
-function leagueMembersList(code){
-  var revs=lrev(code),map={};
-  if(S.uid)map[S.uid]={uid:S.uid,pseudo:S.pseudo||"Moi",col:S.col||hashColor(String(S.uid)),count:0};
-  revs.forEach(function(x){
-    if(!x.uid||isB(x.uid))return;
-    if(!map[x.uid])map[x.uid]={uid:x.uid,pseudo:x.pseudo||"Membre",col:x.col||colOf(x),count:0};
-    map[x.uid].count++;
-  });
-  var list=Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){if(a.uid===S.uid)return -1;if(b.uid===S.uid)return 1;return b.count-a.count});
-  return list.map(function(m){return lgxPerson(m,m.count+' avis dans cette ligue')}).join("");
+/* ---------- Classement restos d'une ligue ---------- */
+function lgxRank(revs){
+  var G=groups(revs).sort(function(a,b){return (b.s/b.c)-(a.s/a.c)||b.c-a.c});
+  if(!G.length)return '<div class="lgx-empty"><b>Classement vide</b><p>Aucun resto noté dans cette ligue pour l’instant.</p></div>';
+  var pod="",rest="";
+  if(G.length>=3){
+    var order=[G[1],G[0],G[2]],rk=[2,1,3],cls=["second","first","third"];
+    pod='<div class="lgx-pod">'+order.map(function(o,i){
+      return '<div class="lgx-pc '+cls[i]+'" onclick="openO('+hp(o)+')" style="cursor:pointer"><div class="n">'+rk[i]+'</div><div class="t">'+esc(o.n)+'</div><div class="s">'+(o.s/o.c).toFixed(1).replace(".",",")+' ★ · '+o.c+' avis</div></div>';
+    }).join("")+'</div>';
+    rest=G.slice(3).map(function(o,i){
+      return '<div class="lgx-row" onclick="openO('+hp(o)+')" style="cursor:pointer"><span class="lgx-rk">'+(i+4)+'</span><div class="lgx-meta"><div class="lgx-nm">'+dot(o)+' '+esc(o.n)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>'+(o.s/o.c).toFixed(1).replace(".",",")+' ★</b></div>';
+    }).join("");
+  } else {
+    rest=G.map(function(o,i){
+      return '<div class="lgx-row" onclick="openO('+hp(o)+')" style="cursor:pointer"><span class="lgx-rk">'+(i+1)+'</span><div class="lgx-meta"><div class="lgx-nm">'+dot(o)+' '+esc(o.n)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>'+(o.s/o.c).toFixed(1).replace(".",",")+' ★</b></div>';
+    }).join("");
+  }
+  return pod+rest;
 }
 
-/* ---------- Vue principale ---------- */
-function league(){
-  var _hd=document.querySelector(".hd");if(_hd)_hd.style.display="none";
-  if(S.lgTab==="friends")return friendsTabView();
+/* ---------- Top contributeurs d'avis d'une ligue ---------- */
+function lgxTopReviewers(code, revs){
+  var members = lgMembers(code);
+  var counts = {};
+  members.forEach(function(m){
+    counts[m.uid] = {uid: m.uid, pseudo: m.pseudo, col: m.col, count: 0, sumNote: 0};
+  });
+  revs.forEach(function(x){
+    if(!x.uid || isB(x.uid)) return;
+    if(!counts[x.uid]){
+      counts[x.uid] = {uid: x.uid, pseudo: x.pseudo || "Membre", col: x.col || colOf(x), count: 0, sumNote: 0};
+    }
+    counts[x.uid].count++;
+    counts[x.uid].sumNote += (Number(x.note) || 0);
+  });
+  var list = Object.keys(counts).map(function(k){ return counts[k]; }).sort(function(a,b){
+    return b.count - a.count || (b.sumNote / (b.count || 1)) - (a.sumNote / (a.count || 1));
+  });
+  if(!list.length) return '<div class="lgx-empty"><b>Aucun avis</b><p>Personne n’a encore posté d’avis dans cette ligue.</p></div>';
 
-  /* Détail d'une ligue */
-  if(S.leagueOpen&&S.leagues.length){
-    var c=(S.league&&S.leagues.indexOf(S.league)>-1)?S.league:S.leagues[0];
-    var L=lrev(c).sort(function(a,b){return b.ts-a.ts});
-    var members=lgMembers(c),title=leagueLabel(c);
-    var coverPhoto=(S.leaguePhotos&&S.leaguePhotos[c])||"";
-    var h='<div class="lgx"><div class="lgx-bar"><button class="lgx-ic" onclick="closeLeagueCard()">'+lgi("back")+'</button>'+
-      '<div class="lgx-bar-r"><button class="lgx-ic" title="Photo de la ligue" onclick="pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("camera")+'</button>'+
-      '<button class="lgx-ic" title="Partager" onclick="share(\''+esc(c)+'\')">'+lgi("share")+'</button>'+
-      '<button class="lgx-ic" title="Options" onclick="lgMenu(\''+esc(c)+'\')">'+lgi("more")+'</button></div></div>';
-    h+='<div class="lgx-hero'+(coverPhoto?' has-photo':'')+'" style="'+lgBg(coverPhoto)+'">'+
-      '<div class="lgx-hero-top">'+
-        lgStack(members,5)+
-        '<button class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("camera")+' '+(coverPhoto?'Modifier la photo':'Ajouter une photo')+'</button>'+
-      '</div>'+
-      '<div><h1>'+esc(title)+'</h1>'+
-      '<button class="lgx-code-chip" onclick="lgCopy(this,\''+esc(c)+'\')">'+lgi("copy")+' Code : '+esc(c)+'</button>'+
-      '<div class="lgx-stats"><div><b>'+members.length+'</b><span>membre'+(members.length>1?'s':'')+'</span></div><div><b>'+L.length+'</b><span>avis</span></div></div></div></div>';
-    h+='<div class="lgx-switch">'+[["feed","Fil"],["rank","Classement"],["members","Membres"]].map(function(t){
-      return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
-    }).join("")+'</div>';
-    if(S.lv==="rank")h+=rank(L);
-    else if(S.lv==="members")h+=leagueMembersList(c);
-    else h+=L.length?L.map(lgRv).join(""):'<div class="empty">Aucun avis dans cette ligue.<br>Note un resto et partage-le ici !</div>';
-    return h+'</div>';
-  }
-
-  /* Liste des ligues */
-  var addBtn='<button class="lgx-ic" onclick="openLgSheet()">'+lgi("plus")+'</button>';
-  var h='<div class="lgx">'+lgxTop("Tes ligues","Vos tables entre proches",addBtn)+lgxSwitch();
-  if(!S.leagues.length){
-    h+='<div class="lgx-empty"><b>Aucune ligue pour l’instant</b><p>Crée un groupe privé pour comparer vos adresses entre amis, ou rejoins celui de tes proches.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre</button></div>';
-  } else {
-    h+=S.leagues.map(function(c){
-      var title=leagueLabel(c),revs=lrev(c),members=lgMembers(c);
-      var coverPhoto=(S.leaguePhotos&&S.leaguePhotos[c])||"";
-      return '<div class="lgx-card'+(coverPhoto?' has-photo':'')+'" style="'+lgBg(coverPhoto)+'" onclick="openLeagueCard(\''+esc(c)+'\')">'+
-        '<div class="lgx-card-top">'+
-          lgStack(members,4)+
-          '<div class="lgx-card-acts">'+
-            '<button class="lgx-ic" title="Photo de la ligue" onclick="event.stopPropagation();pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("camera")+'</button>'+
-            '<button class="lgx-ic" title="Inviter des amis" onclick="event.stopPropagation();share(\''+esc(c)+'\')">'+lgi("share")+'</button>'+
-          '</div>'+
-        '</div>'+
-        '<div>'+
-          '<div class="lgx-card-name">'+esc(title)+'</div>'+
-          '<div class="lgx-card-foot">'+
-            '<div class="lgx-card-sub">'+members.length+' membre'+(members.length>1?'s':'')+' · '+revs.length+' avis</div>'+
-            '<button class="lgx-code-chip" title="Copier le code" onclick="event.stopPropagation();lgCopy(this,\''+esc(c)+'\')">'+lgi("copy")+' '+esc(c)+'</button>'+
-          '</div>'+
-        '</div>'+
+  var pod = "", rest = "";
+  if(list.length >= 3){
+    var order = [list[1], list[0], list[2]], rk = [2, 1, 3], cls = ["second", "first", "third"];
+    pod = '<div class="lgx-pod">' + order.map(function(m, i){
+      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
+      return '<div class="lgx-pc '+cls[i]+'" onclick="'+open+'" style="cursor:pointer">' +
+        '<div class="n">'+rk[i]+'</div>' +
+        '<div class="t">'+esc(m.pseudo)+'</div>' +
+        '<div class="s">'+m.count+' avis</div>' +
+      '</div>';
+    }).join("") + '</div>';
+    rest = list.slice(3).map(function(m, i){
+      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
+      var isMe = m.uid === S.uid;
+      return '<div class="lgx-row" onclick="'+open+'" style="cursor:pointer">' +
+        '<span class="lgx-rk">'+(i+4)+'</span>' +
+        '<div class="lgx-av" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</div>' +
+        '<div class="lgx-meta"><div class="lgx-nm">'+esc(m.pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">Contributeur de la ligue</div></div>' +
+        '<b>'+m.count+' avis</b>' +
       '</div>';
     }).join("");
-    h+='<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span>Créer ou rejoindre une ligue</button>';
+  } else {
+    rest = list.map(function(m, i){
+      var open = 'openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')';
+      var isMe = m.uid === S.uid;
+      return '<div class="lgx-row" onclick="'+open+'" style="cursor:pointer">' +
+        '<span class="lgx-rk">'+(i+1)+'</span>' +
+        '<div class="lgx-av" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</div>' +
+        '<div class="lgx-meta"><div class="lgx-nm">'+esc(m.pseudo)+(isMe?' <span class="status-badge">Toi</span>':'')+'</div><div class="lgx-sub">Contributeur de la ligue</div></div>' +
+        '<b>'+m.count+' avis</b>' +
+      '</div>';
+    }).join("");
   }
-  return h+'</div>';
+  return pod + rest;
 }
 
-/* Accroche l'ouverture automatique de la feuille après création/jonction */
-var _origCreateLeague=createLeague;
-createLeague=function(){closeSheet();_origCreateLeague()};
-var _origJoin=join;
-join=function(){closeSheet();_origJoin()};
+/* ---------- Détail d'une ligue ---------- */
+function lgxDetail(code){
+  var revs=lrev(code),members=lgMembers(code),photo=S.leaguePhotos&&S.leaguePhotos[code],ec=esc(code);
+  var nf=getLeagueNotif(code);
+  var bar='<div class="lgx-bar">'+
+    '<button class="lgx-ic" onclick="closeLeagueCard()" title="Toutes les ligues">'+lgi("back")+'</button>'+
+    '<div class="lgx-bar-r">'+
+      '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Inviter">'+lgi("share")+'</button>'+
+      '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Options">'+lgi("more")+'</button>'+
+    '</div></div>';
+
+  var hero='<div class="lgx-hero '+(photo?"has-photo":"")+'" style="'+lgBg(photo)+'">'+
+    '<div class="lgx-hero-top">'+
+      lgStack(members,5)+
+      '<button class="lgx-code-chip" onclick="lgCopy(this,\''+ec+'\')" title="Copier le code de ligue">'+lgi("copy")+'<span>'+ec+'</span></button>'+
+    '</div>'+
+    '<div>'+
+      '<h1>'+esc(leagueLabel(code))+'</h1>'+
+      '<button class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+ec+'\')">'+lgi("camera")+'<span>'+(photo?"Changer la photo":"Ajouter une photo")+'</span></button>'+
+      '<div class="lgx-stats">'+
+        '<div><b>'+members.length+'</b><span>membre'+(members.length>1?'s':'')+'</span></div>'+
+        '<div><b>'+revs.length+'</b><span>avis</span></div>'+
+        '<div><b>'+(nf.enabled?"🔔":"🔕")+'</b><span>notifs</span></div>'+
+      '</div>'+
+    '</div></div>';
+
+  var tabs=[["feed","Fil"],["rank","Classement"],["toprev","Top avis"],["members","Membres"]];
+  var sw='<div class="lgx-switch">'+tabs.map(function(t){
+    return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
+  }).join("")+'</div>';
+
+  var body=S.lv==="rank"
+    ?lgxRank(revs)
+    :S.lv==="toprev"
+    ?lgxTopReviewers(code,revs)
+    :S.lv==="members"
+    ?members.map(function(m){return lgxPerson(m)}).join("")
+    :lgxFeed(revs);
+
+  return '<div class="lgx">'+bar+hero+sw+body+'</div>';
+}
+
+/* ---------- Point d'entrée onglet Ligue ---------- */
+function league(){
+  if(S.lgTab==="friends")return status()+lgxFriends();
+  if(!S.leagues.length){S.leagueOpen=false;return status()+lgxList()}
+  if(!S.league||S.leagues.indexOf(S.league)<0)S.league=S.leagues[0];
+  if(!S.leagueOpen)return status()+lgxList();
+  return status()+lgxDetail(S.league);
+}
 </script>
 </body>
 </html>
