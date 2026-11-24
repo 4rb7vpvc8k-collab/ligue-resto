@@ -1932,7 +1932,21 @@ function newCol(){S.col=newColor();save();render()}
 function tl(n){return 'background:'+hashColor(n||"?")}
 function ini(n){return esc(((n||"").replace(/[^A-Za-zÀ-ÿ0-9 ]/g,"").split(/\s+/).filter(Boolean).slice(0,2).map(function(w){return w.charAt(0).toUpperCase()}).join(""))||"")}
 function pl(x){var o={pid:x.pid,n:x.resto,a:x.addr||"",cat:x.cat||getRestoCat(x.resto,x.type,x.priceLunch,x.cuisine)};if(num(x.lat)&&num(x.lng)){o.lat=x.lat;o.lng=x.lng}return o}
-function cp(p){var o={pid:p.pid||("n:"+p.n.toLowerCase().trim()),n:p.n,a:p.a||"",cat:p.cat||getRestoCat(p.n,p.type,p.priceLunch,p.cuisine)};if(num(p.lat)&&num(p.lng)){o.lat=p.lat;o.lng=p.lng}return o}
+function cp(p){
+  var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
+  var gDet = gpId ? S.gDetailsCache[gpId] : null;
+  var o = {
+    pid: p.pid || ("n:" + p.n.toLowerCase().trim()),
+    gPlaceId: gpId || null,
+    n: p.n,
+    a: p.a || "",
+    cat: p.cat || getRestoCat(p.n, p.type, p.priceLunch, p.cuisine),
+    gPhoto: (gDet && gDet.photo) || p.gPhoto || "",
+    photo: p.photo || ""
+  };
+  if(num(p.lat) && num(p.lng)){ o.lat = p.lat; o.lng = p.lng; }
+  return o;
+}
 function has(l,p){var k=keyOf(p);return l.some(function(x){return keyOf(x)===k})}
 function tgl(l,p){var k=keyOf(p),i=-1;l.forEach(function(x,j){if(keyOf(x)===k)i=j});if(i>-1)l.splice(i,1);else l.unshift(cp(p));save();render()}
 function togL(){tgl(S.likes,S.sel)}
@@ -2940,10 +2954,34 @@ trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 
 function pfi(k){return '<svg class="pf-svg" viewBox="0 0 24 24">'+PFI[k]+'</svg>'}
 function pfIni(s){return esc((s||"?").charAt(0).toUpperCase())}
 function pfBg(p){
-  var c=getRestoColor(p);
+  var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
+  var gDet = gpId ? S.gDetailsCache[gpId] : null;
+  var gGrp = gmap(allv())[keyOf(p)];
+  var revPhoto = (gGrp && gGrp.rv) ? (gGrp.rv.find(function(r){ return r.photo; }) || {}).photo : "";
+  var photo = p.photo || revPhoto || (gDet && gDet.photo) || p.gPhoto || (gGrp && gGrp.gPhoto) || "";
+  if(!photo && gpId && !S.gDetailsCache[gpId]){
+    fetchGooglePlaceDetails(p);
+  }
+  if(photo){
+    return 'background:linear-gradient(180deg,rgba(0,0,0,.05) 35%,rgba(12,16,22,.85)),url('+photo+') center/cover';
+  }
+  var c = getRestoColor(p);
   return 'background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(12,16,22,.6)),linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
 }
-function pfSimple(o){var r={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat};return r}
+function pfSimple(o){
+  var revWithPhoto = (o.rv || []).find(function(r){ return r.photo; });
+  return {
+    pid: o.pid,
+    gPlaceId: o.gPlaceId || null,
+    n: o.n,
+    a: o.a,
+    lat: o.lat,
+    lng: o.lng,
+    cat: o.cat,
+    gPhoto: o.gPhoto || "",
+    photo: revWithPhoto ? revWithPhoto.photo : ""
+  };
+}
 
 /* ---------- Briques ---------- */
 function pfStat(n,label,act){return '<button class="pf-st" onclick="'+act+'"><b>'+n+'</b><span>'+label+'</span></button>'}
