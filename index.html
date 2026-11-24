@@ -289,6 +289,22 @@ body.dark-mode .lgx-switch-seg{background:var(--card);border:1px solid rgba(255,
 body.dark-mode .lgx-seg-btn{color:rgba(244,241,233,.6)}
 body.dark-mode .lgx-pill.on,.dark-mode .lgx-btn.pri{background:var(--ac);color:#192A3A}
 body.dark-mode .lgx-sub-notifs{border-left-color:rgba(244,241,233,.2)}
+.sr {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 8px 0 6px;
+  z-index: 10;
+}
+
+.sr::before,
+.sr::after {
+  display: none !important;
+  content: none !important;
+}
+
 </style>
 
 </head>
