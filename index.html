@@ -959,6 +959,7 @@ function mapNewPlaceToBelly(r){
   var n = r.displayName || "Restaurant";
   var addr = r.formattedAddress || "";
   var cat = priceLevelNewToCat(n, r.types, r.priceLevel);
+  var gPhoto = (r.photos && r.photos.length && r.photos[0].getURI) ? r.photos[0].getURI({maxWidth: 600}) : "";
   return {
     pid: "gp:" + r.id,
     gPlaceId: r.id,
@@ -971,6 +972,8 @@ function mapNewPlaceToBelly(r){
     cat: cat,
     gRating: r.rating || null,
     gCount: r.userRatingCount || 0
+    gPhoto: gPhoto
+
   };
 }
 
@@ -1001,7 +1004,7 @@ function searchPlaces(q){
       try {
         var PlaceClass = google.maps.places && google.maps.places.Place;
         if(!PlaceClass){ resolve(mergeCommunity([])); return; }
-        var fields = ["id", "displayName", "location", "formattedAddress", "rating", "userRatingCount", "priceLevel", "types"];
+        var fields = ["id", "displayName", "location", "formattedAddress", "rating", "userRatingCount", "priceLevel", "types", "photos"];
 
         if(!q || q.length === 0){
           var resp = await PlaceClass.searchNearby({
@@ -1046,8 +1049,9 @@ function fetchGooglePlaceDetails(p){
       if(!PlaceClass) return;
       var placeObj = new PlaceClass({ id: gpId, requestedLanguage: "fr" });
       await placeObj.fetchFields({
-        fields: ["rating", "userRatingCount", "reviews", "googleMapsURI", "formattedAddress"]
+        fields: ["rating", "userRatingCount", "reviews", "googleMapsURI", "formattedAddress", "photos"]
       });
+      var gPhoto = (placeObj.photos && placeObj.photos.length && placeObj.photos[0].getURI) ? placeObj.photos[0].getURI({maxWidth: 900}) : "";
       var revs = (placeObj.reviews || []).slice(0, 5).map(function(rv){
         return {
           author_name: (rv.authorAttribution && rv.authorAttribution.displayName) || "Utilisateur Google",
@@ -1057,6 +1061,7 @@ function fetchGooglePlaceDetails(p){
         };
       });
       S.gDetailsCache[gpId] = {
+        photo: gPhoto,
         loading: false,
         rating: placeObj.rating || null,
         total: placeObj.userRatingCount || 0,
@@ -1303,10 +1308,10 @@ function place(p){
   var cat=p.cat||(g&&g.cat)||"trad_low";
   var catLbl=(STYLE_CAT_MAP[cat]||CUISINE_CAT_MAP[cat]||{}).label||"";
   var avg=g?g.s/g.c:null;
-  var photo="";if(g)g.rv.some(function(x){if(x.photo){photo=x.photo;return true}});
-  var bg=photo
-    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.35),rgba(12,16,22,.92)),url('+photo+')'
-    :'background-image:linear-gradient(180deg,rgba(0,0,0,.1),rgba(12,16,22,.85)),linear-gradient(135deg,'+getRestoColor(p)+',#192A3A)';
+  var gPhoto = (gDet && gDet.photo) || p.gPhoto || "";
+  var bg = gPhoto
+     ? 'background-image:linear-gradient(180deg,rgba(0,0,0,.35),rgba(12,16,22,.92)),url('+gPhoto+')'
+     : 'background-image:linear-gradient(180deg,rgba(0,0,0,.1),rgba(12,16,22,.85)),linear-gradient(135deg,'+getRestoColor(p)+',#192A3A)';
   var liked=has(S.likes,p),wished=has(S.wish,p);
 
   var hero='<div class="pg-hero" style="'+bg+'">'+
