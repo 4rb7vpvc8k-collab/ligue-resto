@@ -208,7 +208,11 @@ button.chip.on{border-color:var(--ac);background:var(--ac);color:#192A3A}
 .lgx-ic{position:relative;width:44px;height:44px;border-radius:50%;border:0;background:rgba(127,127,127,.15);color:inherit;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:transform .15s}.lgx-ic:active{transform:scale(.9)}.lgx-ic .bell-dot{top:-3px;right:-3px}
 .lgx-switch-seg{display:flex;background:var(--ac2);border-radius:16px;padding:4px;margin:0 0 18px;gap:4px}
 .lgx-seg-btn{flex:1;border:0;background:transparent;color:rgba(25,42,58,.65);font:inherit;font-size:15px;font-weight:700;padding:11px 0;border-radius:12px;cursor:pointer;transition:all .18s ease}
-.lgx-seg-btn.on{background:var(--ac);color:#192A3A;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.lgx-seg-btn.on{
+  background:var(--ac);
+  color:#000 !important;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
 .lgx-switch{display:flex;gap:8px;margin:0 0 18px;overflow-x:auto;-webkit-overflow-scrolling:touch}.lgx-switch::-webkit-scrollbar{display:none}
 .lgx-pill{border:0;background:rgba(127,127,127,.15);color:inherit;font:inherit;font-size:14px;font-weight:700;padding:10px 16px;border-radius:99px;cursor:pointer;white-space:nowrap}.lgx-pill.on{background:#192A3A;color:#F4F1E9}
 .lgx-h2{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:24px 0 12px}
@@ -296,7 +300,9 @@ body.dark-mode .lgx-sa{border-color:var(--card)}body.dark-mode .lgx-sa.more{back
 .lgx-card .lgx-ic, .lgx-code-chip, .lgx-photo-btn { background: rgba(244,241,233,.14) !important; color: #F4F1E9 !important; }
 .lgx-sa { border-color: #192A3A !important; }
 .lgx-sa.more { background: #E5B83F !important; color: #192A3A !important; }
-
+body.dark-mode .lgx-seg-btn.on{
+  color:#000 !important;
+}
 </style>
 
 
