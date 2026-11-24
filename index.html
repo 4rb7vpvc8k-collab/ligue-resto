@@ -758,7 +758,7 @@ S.map=null;
 var rt=route();if(rt!=="app"){document.getElementById("nav").innerHTML="";document.getElementById("hsub").textContent=rt==="welcome"?"Connecte-toi ou inscris-toi pour commencer":"Découvre et note les restos";document.getElementById("app").innerHTML=rt==="load"?loadv():rt==="welcome"?welcome():onb();applyEmptyText();if(S.noteOpen){updateNoteSheetBody()}return}
 if(S.pendingJoin && S.fdb){ processPendingJoin(); return; }
 nav();if(!S.pseudo){S.tab="me";S.pt="set"}
-var _hd=document.querySelector(".hd");if(_hd)_hd.style.display=((S.tab==="map"&&S.sel)||S.tab==="home")?"none":"";
+var _hd=document.querySelector(".hd");if(_hd)_hd.style.display=(S.tab==="map"&&S.sel)?"none":"";
 var subLabel = (S.league && S.leagueOpen) ? leagueLabel(S.league) : "";
 document.getElementById("hsub").textContent = (S.tab==="league" && S.lgTab==="leagues" && S.leagueOpen && subLabel) ? (/^ligue\b/i.test(subLabel) ? subLabel : "Ligue " + subLabel) : "Découvre et note les restos";
 var h=S.tab==="home"?home():S.tab==="map"?explore():S.tab==="add"?add():S.tab==="league"?league():me();
