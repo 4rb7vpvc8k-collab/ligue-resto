@@ -392,6 +392,27 @@ body.dark-mode .pf-set input.pf-in{border:0;background:rgba(127,127,127,.2);colo
 .pf-toggle.on i{transform:translateX(20px)}
 .pf-opt{display:flex;align-items:center;gap:12px;width:100%;border:0;background:rgba(127,127,127,.12);color:inherit;font:inherit;font-size:16px;font-weight:600;border-radius:16px;padding:14px;margin-bottom:8px;cursor:pointer;text-align:left}
 .pf-opt.red{color:#d9534f}
+
+.pf-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px}
+.pf-top h1{flex:1;text-align:center;font-size:30px;font-weight:800;letter-spacing:-.025em;margin:0;line-height:1.1;word-break:break-word}
+.pf-top .sp{width:46px;flex-shrink:0}
+.pf-seg{display:flex;background:rgba(127,127,127,.14);border-radius:20px;padding:5px;margin-bottom:16px}
+.pf-seg button{flex:1;border:0;background:none;color:inherit;font:inherit;font-size:15px;font-weight:700;padding:11px 0;border-radius:16px;cursor:pointer;opacity:.7}
+.pf-seg button.on{background:#E5B83F;color:#192A3A;opacity:1}
+.pf-idc{background:rgba(127,127,127,.1);border-radius:26px;padding:22px 16px 16px;text-align:center}
+.pf-idc .pf-av{width:92px;height:92px;border-radius:28px;margin:0 auto 14px}
+.pf-bio{font-size:15px;line-height:1.4;opacity:.85;margin:0 8px 6px}
+.pf-edit{border:0;background:none;color:#E5B83F;font:inherit;font-size:16px;font-weight:800;padding:10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.pf-idc .pf-follow{margin:14px 0 0}
+.pf-pc{align-items:center;justify-content:flex-end;text-align:center;color:#192A3A;padding:10px 6px;border-radius:22px 22px 6px 6px}
+.pf-pc .n{position:static;font-size:30px;font-weight:900;opacity:1;line-height:1}
+.pf-pc .t{font-size:12.5px;font-weight:800;margin-top:4px;-webkit-line-clamp:2}
+.pf-cr{display:flex;align-items:center;gap:12px;border-radius:18px;padding:14px 16px;margin-bottom:10px;color:#192A3A;font-weight:800;font-size:17px;cursor:pointer}
+.pf-cr .n{font-size:22px;font-weight:900;width:22px}
+.pf-links{padding:2px 16px}
+.pf-lr{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid rgba(127,127,127,.2);font-size:17px;cursor:pointer}
+.pf-lr:last-child{border-bottom:0}
+.pf-lr b{opacity:.55;font-weight:600}
 </style>
 
 
@@ -2927,23 +2948,26 @@ function pfSimple(o){var r={pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}
 /* ---------- Briques ---------- */
 function pfStat(n,label,act){return '<button class="pf-st" onclick="'+act+'"><b>'+n+'</b><span>'+label+'</span></button>'}
 function pfSwitch(c){
-  return '<div class="pf-switch">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
-    return '<button class="pf-pill '+(c.pt===t[0]?"on":"")+'" onclick="'+c.setPt(t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
+  return '<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+    return '<button class="'+(c.pt===t[0]?"on":"")+'" onclick="'+c.setPt(t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
 }
+var PFC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PFH=[150,120,100];
 function pfPod(i,arr,edit){
-  var p=(arr||[])[i],hs=[190,160,140];
-  var act=edit?' onclick="pickTop('+i+')"':'';
-  if(!p)return '<div class="pf-pc e" style="height:'+hs[i]+'px"'+act+'><span class="n">'+(i+1)+'</span>'+(edit?pfi("plus"):'<span>–</span>')+'</div>';
-  return '<div class="pf-pc" style="height:'+hs[i]+'px;'+pfBg(p)+'"'+act+'><span class="n">'+(i+1)+'</span><div class="t">'+esc(p.n)+'</div></div>';
+  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
+  return '<div class="pf-pc" style="height:'+PFH[i]+'px;background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><div class="t">'+(p?esc(p.n):(edit?'+':'–'))+'</div></div>';
 }
 function pfRow(i,arr,edit){
-  var p=(arr||[])[i],act=edit?' click" onclick="pickTop('+i+')':'';
-  return '<div class="pf-row'+act+'"><span class="pf-rk">'+(i+1)+'</span><div class="pf-meta"><div class="pf-nm">'+(p?'<span class="t">'+esc(p.n)+'</span>'+dot(p):'<span class="t" style="opacity:.5">'+(edit?'Choisir un resto':'–')+'</span>')+'</div></div>'+(edit?pfi("plus"):'')+'</div>';
+  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
+  return '<div class="pf-cr" style="background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><span class="t">'+(p?esc(p.n):(edit?'+ Choisir':'–'))+'</span></div>';
 }
 function pfTop(arr,edit,title){
   var any=(arr||[]).some(Boolean);
   if(!edit&&!any)return '';
   return '<div class="pf-h2">'+title+'</div><div class="pf-pod">'+pfPod(1,arr,edit)+pfPod(0,arr,edit)+pfPod(2,arr,edit)+'</div><div class="pf-rows">'+pfRow(3,arr,edit)+pfRow(4,arr,edit)+'</div>';
+}
+function pfIdCard(c,name,col,bio,extra){
+  return '<div class="pf-idc"><div class="pf-av" style="background:'+col+(c.own?'':';cursor:default')+'"'+(c.own?' onclick="newCol()"':'')+'>'+pfIni(name)+(c.own?'<span class="e">'+pfi("pencil")+'</span>':'')+'</div>'+
+    '<div class="pf-bio">'+(bio?esc(bio):'<span style="opacity:.55">Pas de bio.</span>')+'</div>'+extra+'</div>';
 }
 function pfRv(x,own){
   var idx=ri(x),d=new Date(x.ts);
@@ -3014,15 +3038,16 @@ function pfTabs(c){
   var h=pfSwitch(c);
   if(c.pt==="agenda")return h+pfAgenda(c.mine,c.own?"Ton agenda est vide":"Son agenda est vide",c.own);
   if(c.pt==="wish")return h+pfGrid(c.wish,c.own?"Ta liste est vide":"Aucun resto à tester",c.own);
+  h+=c.idcard;
   h+=pfTop(c.top,c.own,c.own?"Mon top 5":"Son top 5");
   h+='<div class="pf-h2">Derniers avis'+(c.mine.length>4?'<button onclick="'+c.setPt("agenda")+'">Tout voir</button>':'')+'</div>';
-  h+=c.mine.length?c.mine.slice(0,4).map(function(x){return pfRv(x,c.own)}).join(""):'<div class="pf-empty"><b>'+(c.own?"Tu n’as encore rien noté":"Aucun avis pour l’instant")+'</b>'+(c.own?'<p>Note ton premier resto pour remplir ton profil.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
-  return h;
+  h+=c.mine.length?c.mine.slice(0,3).map(function(x){return pfRv(x,c.own)}).join(""):'<div class="pf-empty"><b>'+(c.own?"Tu n’as encore rien noté":"Aucun avis pour l’instant")+'</b>'+(c.own?'<p>Note ton premier resto pour remplir ton profil.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
+  return h+pfLinks(c);
 }
-function pfStats(c){
-  return '<div class="pf-stats">'+pfStat(c.mine.length,"Avis",c.setPt("agenda"))+pfStat(c.mr.length,"Restos",c.setSub("rest"))+pfStat(c.likes.length,"Likes",c.setSub("likes"))+pfStat(c.nfr,"Amis",c.setSub("friends"))+'</div>';
+function pfLinks(c){
+  function row(l,n,act){return '<div class="pf-lr" onclick="'+act+'"><span>'+l+'</span><b>'+n+' ›</b></div>'}
+  return '<div class="pf-card pf-links">'+row("Restaurants",c.mr.length,c.setSub("rest"))+row("Likes",c.likes.length,c.setSub("likes"))+row("Amis",c.nfr,c.setSub("friends"))+'</div>';
 }
-
 /* ---------- Mon profil ---------- */
 function me(){
   if(S.viewUser)return userView(S.viewUser);
@@ -3035,11 +3060,8 @@ function me(){
   c.setPt=function(t){return "S.pt='"+t+"';S.sub=null;render()"};
   c.setSub=function(t){return "S.sub='"+t+"';render()"};
   if(c.sub)return pfSub(c);
-  var h='<div class="pf"><div class="pf-head"><div class="pf-av" style="background:'+(S.col||"#E5B83F")+'" onclick="newCol()">'+pfIni(S.pseudo)+'<span class="e">'+pfi("pencil")+'</span></div>'+
-    '<div class="pf-id"><h1>'+esc(S.pseudo||"Profil")+'</h1><p onclick="editBio()">'+(S.bio?esc(S.bio):'Ajouter une bio')+'</p></div>'+
-    '<button class="pf-ic" onclick="S.pt=\'set\';render()">'+pfi("sliders")+'</button></div>';
-  h+=pfStats(c)+pfTabs(c);
-  return h+'</div>';
+  c.idcard=pfIdCard(c,S.pseudo,S.col||"#E5B83F",S.bio,'<button class="pf-edit" onclick="editBio()">'+pfi("pencil")+' Modifier</button>');
+  return '<div class="pf"><div class="pf-top"><button class="pf-ic" onclick="S.pt=\'set\';render()">'+pfi("sliders")+'</button><h1>'+esc(S.pseudo||"Profil")+'</h1><span class="sp"></span></div>'+pfTabs(c)+'</div>';
 }
 
 /* ---------- Profil d'un autre utilisateur ---------- */
@@ -3053,22 +3075,20 @@ function userView(u){
   var back='S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()';
   var c={own:false,mine:mine,mr:mr,top:top,
     likes:Array.isArray(prof.likes)?prof.likes:[],wish:Array.isArray(prof.wish)?prof.wish:[],friends:Array.isArray(prof.friends)?prof.friends:[],
-    pt:S.viewPt||"prof",sub:S.viewSub||null,
-    setPt:function(t){return "S.viewPt='"+t+"';S.viewSub=null;render()"},
-    setSub:function(t){return "S.viewSub='"+t+"';render()"},clearSub:"S.viewSub=null;render()"};
+    pt:S.viewPt||"prof",sub:S.viewSub||null,clearSub:"S.viewSub=null;render()"};
+  c.setPt=function(t){return "S.viewPt='"+t+"';S.viewSub=null;render()"};
+  c.setSub=function(t){return "S.viewSub='"+t+"';render()"};
   c.nfr=c.friends.length;
   if(isM&&c.sub)return pfSub(c);
   var follow=isF
     ?'<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">'+(isM?'Ami ✓ · Ne plus suivre':'Suivi ✓ · Ne plus suivre')+'</button>'
     :'<button class="pf-follow" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
-  var h='<div class="pf"><div class="pf-bar"><button class="pf-ic" onclick="'+back+'">'+pfi("back")+'</button></div>'+
-    '<div class="pf-head"><div class="pf-av" style="background:'+col+';cursor:default">'+pfIni(name)+'</div>'+
-    '<div class="pf-id"><h1>'+esc(name)+'</h1>'+(bio?'<p style="cursor:default">'+esc(bio)+'</p>':'')+(isM?'<span class="pf-badge">Ami</span>':(isF?'<span class="pf-badge">Suivi</span>':''))+'</div></div>'+follow;
-  if(isM)return h+pfStats(c)+pfTabs(c)+'</div>';
-  h+=pfTop(top,false,"Top 5");
-  h+='<div class="pf-stats" style="grid-template-columns:1fr;margin-top:18px">'+'<div class="pf-st" style="cursor:default"><b>'+mr.length+'</b><span>Restos notés</span></div></div>';
-  h+='<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses restos à tester.</div>';
-  return h+'</div>';
+  c.idcard=pfIdCard(c,name,col,bio,follow);
+  var head='<div class="pf-top"><button class="pf-ic" onclick="'+back+'">'+pfi("back")+'</button><h1>'+esc(name)+'</h1><span class="sp"></span></div>';
+  if(isM)return '<div class="pf">'+head+pfTabs(c)+'</div>';
+  return '<div class="pf">'+head+c.idcard+pfTop(top,false,"Top 5")+
+    '<div class="pf-card pf-links" style="margin-top:18px"><div class="pf-lr" style="cursor:default"><span>Restaurants notés</span><b>'+mr.length+'</b></div></div>'+
+    '<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses restos à tester.</div></div>';
 }
 
 /* ---------- Réglages ---------- */
