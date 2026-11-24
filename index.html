@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -468,38 +467,35 @@ body.dark-mode .pg-pill.on{background:#F4F1E9;color:#12161C}
 .hm-hi{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
 .hm-sub{font-size:14px;opacity:.6;margin-top:3px}
 .hm-ic{width:42px;height:42px;border-radius:50%;border:0;background:rgba(127,127,127,.14);color:inherit;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
-.hm-search{display:flex;align-items:center;gap:10px;background:rgba(127,127,127,.12);border-radius:16px;padding:14px 16px;font-size:15px;opacity:.9;cursor:pointer;margin-bottom:14px}
+.hm-search{display:flex;align-items:center;gap:10px;background:rgba(127,127,127,.12);border-radius:16px;padding:14px 16px;font-size:15px;opacity:.9;cursor:pointer;margin-bottom:12px}
 .hm-search span{opacity:.6}
-.hm-chips{display:flex;gap:8px;overflow-x:auto;margin:0 -14px;padding:2px 14px 4px;-webkit-overflow-scrolling:touch}
+.hm-chips{display:flex;gap:8px;overflow-x:auto;margin:0 -14px;padding:2px 14px 6px;-webkit-overflow-scrolling:touch}
 .hm-chips::-webkit-scrollbar{display:none}
 .hm-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;background:rgba(127,127,127,.12);border:0;color:inherit;font:inherit;font-size:13px;font-weight:600;padding:6px 14px 6px 6px;border-radius:99px;cursor:pointer;white-space:nowrap}
 .hm-chip img{width:26px;height:26px;border-radius:50%;object-fit:cover}
-.hm-h{display:flex;justify-content:space-between;align-items:baseline;margin:28px 0 12px}
+.hm-h{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 10px}
 .hm-h h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em}
 .hm-h small{font-size:12px;opacity:.55}
-.hm-feat{position:relative;height:230px;border-radius:26px;overflow:hidden;color:#fff;background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;cursor:pointer;margin-top:16px;box-shadow:0 10px 28px rgba(0,0,0,.22)}
-.hm-feat:active,.hm-pc:active,.hm-fr:active{transform:scale(.98)}
-.hm-tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:.04em;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:5px 10px;border-radius:99px}
-.hm-feat-n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
-.hm-feat-m{display:flex;align-items:baseline;gap:8px;margin-top:8px;font-size:13px;opacity:.9}
-.hm-feat-m b{font-size:22px}
-.hm-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -14px;padding:0 14px 6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.hm-rail{display:flex;gap:10px;overflow-x:auto;margin:0 -14px;padding:0 14px 6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .hm-rail::-webkit-scrollbar{display:none}
-.hm-pc{flex:0 0 150px;height:205px;border-radius:22px;position:relative;overflow:hidden;color:#fff;background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;cursor:pointer;scroll-snap-align:start;transition:transform .15s}
-.hm-pc-r{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;font-weight:700;padding:4px 8px;border-radius:99px}
-.hm-pc-n{font-size:15px;font-weight:800;line-height:1.15}
-.hm-pc-s{font-size:11px;opacity:.8;margin-top:3px}
-.hm-fr{padding:14px;border-radius:20px;background:rgba(127,127,127,.1);margin-bottom:10px;cursor:pointer;transition:transform .15s}
-.hm-fr-top{display:flex;align-items:center;gap:10px}
-.hm-fr-top .w{flex:1;min-width:0;font-size:13px;opacity:.75}
+.hm-pc{flex:0 0 118px;height:155px;border-radius:18px;position:relative;overflow:hidden;color:#fff;background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;cursor:pointer;scroll-snap-align:start;transition:transform .15s}
+.hm-pc:active,.hm-fr:active{transform:scale(.98)}
+.hm-pc-r{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:11px;font-weight:700;padding:3px 7px;border-radius:99px}
+.hm-pc-n{font-size:14px;font-weight:800;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hm-pc-s{font-size:11px;opacity:.85;margin-top:2px}
+.hm-fr{flex:0 0 185px;scroll-snap-align:start;padding:10px;border-radius:16px;background:rgba(127,127,127,.1);display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:transform .15s}
+.hm-fr-top{display:flex;align-items:center;gap:7px}
+.hm-fr-top .pg-av{width:24px;height:24px;font-size:11px}
+.hm-fr-top .w{flex:1;min-width:0;font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-fr-top .w b{opacity:1;color:inherit}
-.hm-fr-body{display:flex;gap:12px;margin-top:10px;align-items:flex-start}
+.hm-fr-body{display:flex;gap:8px;margin-top:8px;align-items:flex-start}
 .hm-fr-body>div{flex:1;min-width:0}
-.hm-fr-n{font-size:17px;font-weight:800;display:flex;align-items:center;gap:6px}
-.hm-fr-t{font-size:14px;line-height:1.4;opacity:.75;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.hm-fr-img{width:68px;height:68px;border-radius:14px;object-fit:cover;flex-shrink:0}
-.hm-empty{padding:22px 16px;border-radius:20px;background:rgba(127,127,127,.1);text-align:center;font-size:14px;opacity:.85;line-height:1.5}
-.hm-empty button{margin-top:12px;border:0;background:#E5B83F;color:#192A3A;font:inherit;font-weight:800;padding:11px 18px;border-radius:14px;cursor:pointer}
+.hm-fr-n{font-size:13px;font-weight:800;display:flex;align-items:center;gap:4px}
+.hm-fr-n span.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-fr-t{font-size:11.5px;line-height:1.3;opacity:.75;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hm-fr-img{width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.hm-empty{padding:18px 14px;border-radius:16px;background:rgba(127,127,127,.1);text-align:center;font-size:13px;opacity:.85;line-height:1.5}
+.hm-empty button{margin-top:10px;border:0;background:#E5B83F;color:#192A3A;font:inherit;font-weight:800;padding:9px 16px;border-radius:12px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -553,7 +549,8 @@ var CUISINE_CATS=[
   {label:"Oriental", key:"oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
   {label:"Indien", key:"indian", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
   {label:"Végétarien", key:"veggie", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80"},
-  {label:"Mexicain", key:"mexican", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+  {label:"Mexicain", key:"mexican", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"},
+  {label:"Fruits de mer", key:"seafood", img:"https://images.unsplash.com/photo-1559737558-2bf22b2e12e7?auto=format&fit=crop&w=200&q=80"}
 ];
 
 var STYLE_CAT_MAP={
@@ -572,7 +569,8 @@ var CUISINE_CAT_MAP={
   oriental:{label:"Oriental", img:"https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=200&q=80"},
   indian:{label:"Indien", img:"https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=200&q=80"},
   veggie:{label:"Végétarien", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=200&q=80"},
-  mexican:{label:"Mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"}
+  mexican:{label:"Mexicain", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=200&q=80"},
+  seafood:{label:"Fruits de mer", img:"https://images.unsplash.com/photo-1559737558-2bf22b2e12e7?auto=format&fit=crop&w=200&q=80"}
 };
 
 function getRestoCat(name,type,priceLunch,cuisineTag){
@@ -587,6 +585,7 @@ function getRestoCat(name,type,priceLunch,cuisineTag){
   if(c.includes("indi") || n.includes("curry")) return "indian";
   if(c.includes("veg") || n.includes("veggie") || n.includes("vegan") || n.includes("végétarien")) return "veggie";
   if(c.includes("mexic") || n.includes("tacos") || n.includes("burrito")) return "mexican";
+  if(c.includes("mer") || c.includes("seafood") || n.includes("huître") || n.includes("huitre") || n.includes("poisson") || n.includes("crustacé") || n.includes("homard") || n.includes("marée")) return "seafood";
 
   if(priceLunch && priceLunch > 25) return "trad_high";
   if(type==="fast_food"||/tacos|kebab|burger|fast|pizza|sandwich|snack|boulangerie/.test(n))return "fast";
@@ -2205,10 +2204,12 @@ function hs(a,empty){return a.length?'<div class="hs">'+a.join("")+'</div>':'<di
 function grid(l){return '<div class="gr">'+l.map(function(p){return '<div onclick="openO('+hp(p)+')"><div class="pt" style="'+tl(p.n)+'">'+dot(p,'position:absolute;top:6px;right:6px')+'<b>'+ini(p.n)+'</b><small>'+esc(p.n)+'</small></div></div>'}).join("")+'</div>'}
 
 function hmBg(o){
-  var ph="";(o.rv||[]).some(function(x){if(x.photo){ph=x.photo;return true}});
-  return ph
-    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.08),rgba(12,16,22,.9)),url('+ph+')'
-    :'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.7)),linear-gradient(135deg,'+getRestoColor(o)+',#192A3A)';
+  var gpId=o.gPlaceId||(o.pid&&o.pid.indexOf("gp:")===0?o.pid.slice(3):null);
+  var gDet=gpId?S.gDetailsCache[gpId]:null;
+  var gPhoto=(gDet&&gDet.photo)||o.gPhoto||"";
+  return gPhoto
+    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.08),rgba(12,16,22,.88)),url('+gPhoto+')'
+    :'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.72)),linear-gradient(135deg,'+getRestoColor(o)+',#192A3A)';
 }
 function hmCard(o){
   var avg=(o.s/o.c);
@@ -2220,9 +2221,9 @@ function hmFriend(x){
   var idx=ri(x),col=colOf(x),d=new Date(x.ts);
   return '<div class="hm-fr" onclick="openReviewDetail('+idx+')">'+
     '<div class="hm-fr-top"><div class="pg-av" style="background:'+col+'">'+esc((x.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-    '<div class="w"><b>'+esc(x.pseudo||"Anonyme")+'</b> a noté · '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</div></div>'+
-    '<div class="hm-fr-body"><div><div class="hm-fr-n">'+esc(x.resto)+dot(x)+'</div>'+
-    '<div style="margin-top:4px;font-size:13px"><span class="stars">'+stars(x.note)+'</span></div>'+
+    '<div class="w"><b>'+esc(x.pseudo||"Anonyme")+'</b> · '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</div></div>'+
+    '<div class="hm-fr-body"><div><div class="hm-fr-n"><span class="nm">'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+    '<div style="margin-top:3px;font-size:11px"><span class="stars">'+stars(x.note)+'</span></div>'+
     (x.avis?'<div class="hm-fr-t">'+esc(x.avis)+'</div>':'')+'</div>'+
     (x.photo?'<img class="hm-fr-img" src="'+x.photo+'">':'')+'</div></div>';
 }
@@ -2236,15 +2237,13 @@ var fr=[],seen={};
 S.leagues.forEach(function(c){lrev(c).forEach(function(x){var k=(x._p?x._lg+"_":"p_")+x._id;if(x.uid!==S.uid&&!seen[k]){seen[k]=1;fr.push(x)}})});
 var fu=(S.friends||[]).map(function(f){return f.uid});
 if(fu.length)all.forEach(function(x){if(x.uid&&x.uid!==S.uid&&fu.indexOf(x.uid)>-1){var k=(x._p?x._lg+"_":"p_")+x._id;if(!seen[k]){seen[k]=1;fr.push(x)}}});
-fr=fr.sort(function(a,b){return b.ts-a.ts}).slice(0,6);
+fr=fr.sort(function(a,b){return b.ts-a.ts}).slice(0,12);
 
-var feat=best[0]||groups(all).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c})[0];
-var featHtml=feat
-  ?'<div class="hm-feat" style="'+hmBg(feat)+'" onclick="openO('+hp(feat)+')"><div class="hm-tag">RESTO DU MOMENT</div>'+
-    '<div class="hm-feat-n">'+esc(feat.n)+'</div><div class="hm-feat-m"><b>'+(feat.s/feat.c).toFixed(1).replace(".",",")+'</b><span class="stars">'+stars(feat.s/feat.c)+'</span><span>'+feat.c+' avis</span></div></div>'
-  :'';
+var styleChips='<div class="hm-chips">'+STYLE_CATS.map(function(c){
+  return '<button class="hm-chip" onclick="searchCat(\''+c.key+'\')"><img src="'+c.img+'" alt="" onerror="this.style.display=\'none\'">'+esc(c.label)+'</button>';
+}).join("")+'</div>';
 
-var chips='<div class="hm-chips">'+STYLE_CATS.concat(CUISINE_CATS).map(function(c){
+var cuisineChips='<div class="hm-chips" style="margin-top:4px">'+CUISINE_CATS.map(function(c){
   return '<button class="hm-chip" onclick="searchCat(\''+c.key+'\')"><img src="'+c.img+'" alt="" onerror="this.style.display=\'none\'">'+esc(c.label)+'</button>';
 }).join("")+'</div>';
 
@@ -2254,11 +2253,11 @@ return status()+'<div class="hm">'+
   '<div class="hm-top"><div><div class="hm-hi">Salut'+(S.pseudo?' '+esc(S.pseudo):'')+'</div><div class="hm-sub">On mange où aujourd’hui ?</div></div>'+
   '<button class="hm-ic" onclick="openLegend()" title="Légende"><svg class="pg-svg" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></button></div>'+
   '<div class="hm-search" onclick="go(\'map\')">'+pgi("pin")+'<span>Chercher un resto, une adresse…</span></div>'+
-  chips+featHtml+
+  styleChips+cuisineChips+
   '<div class="hm-h"><h3>Populaires cette semaine</h3></div>'+rail(pop,'Aucun avis cette semaine.<br>Sois le premier à noter !')+
   '<div class="hm-h"><h3>Tes amis ont noté</h3></div>'+
   ((S.leagues.length||fu.length)
-    ?(fr.length?fr.map(hmFriend).join(""):'<div class="hm-empty">Pas encore d’avis de tes amis.</div>')
+    ?(fr.length?'<div class="hm-rail">'+fr.map(hmFriend).join("")+'</div>':'<div class="hm-empty">Pas encore d’avis de tes amis.</div>')
     :'<div class="hm-empty">Rejoins une ligue ou suis tes amis pour voir leurs avis.<br><button onclick="go(\'league\')">Trouver des amis</button></div>')+
   '<div class="hm-h"><h3>Les mieux notés</h3><small>cette semaine</small></div>'+rail(best,'Aucune reco cette semaine.')+
 '</div>';}
@@ -2723,4 +2722,3 @@ function renderNoteSheet(){
 </script>
 </body>
 </html>
- 
