@@ -1355,7 +1355,7 @@ function place(p){
     '<a class="pg-mini" title="Itinéraire" href="'+externalGoogleMapsUrl(p)+'" target="_blank" rel="noopener">'+pgi("nav")+'</a>'+
   '</div>';
 
-  var revs=g?g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}):[];
+  var revs=g?sortReviewsBy(g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}),S.rsort):[];
   var pills=[["all","Tous",""],["place","Sur place",ICONS.dine],["deliv","Livraison",ICONS.delivery]].map(function(t){
     return '<button class="pg-pill '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[2]+t[1]+'</button>';
   }).join("");
@@ -1366,7 +1366,7 @@ function place(p){
   } else if(!revs.length){
     list='<div class="pg-empty">Aucun avis '+(S.pf==="deliv"?"en livraison":"sur place")+' pour l’instant.</div>';
   } else {
-    list=revs.map(rvp).join("");
+    list=reviewSortBar(S.rsort,"setPlaceRevSort")+revs.map(rvp).join("");
   }
 
   var gRev='';
