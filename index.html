@@ -3287,13 +3287,7 @@ function mpResults(){
     if(!S.sr.length)return h+'<div class="mp-empty"><b>Aucun resto trouvé</b>Élargis le rayon ou active ta position.</div>';
     return h+S.sr.map(function(p,i){return mpCard(p,'tapIndex('+i+')',p.c?p.avg:null,p.c)}).join("");
   }
-  var G=groups(allv());
-  G.forEach(function(o){o.d=(S.loc&&num(o.lat)&&num(o.lng))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
-  G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});
-  S.gl=G;
-  var h2='<div class="mp-h"><h3>Notés par la communauté</h3></div>';
-  if(!G.length)return h2+'<div class="mp-empty"><b>Aucun avis pour l’instant</b>Cherche un resto et sois le premier à le noter.</div>';
-  return h2+G.map(function(o,i){return mpCard(o,'openG('+i+')',o.s/o.c,o.c)}).join("");
+return mapPopularWeekHTML();
 }
 function mpClear(){S.sr=null;S.sq="";S.busy=false;S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};render()}
 function mpLocate(){
@@ -3373,7 +3367,7 @@ function explore(){
 function upRes(){
   var m=document.getElementById("mp-res");if(m)m.innerHTML=mpResults();
   var e=document.getElementById("res");if(e)e.innerHTML=resHTML();
-  var c=document.getElementById("cl");if(c)c.innerHTML=commList();
+  var c=document.getElementById("cl");if(c)c.innerHTML=mapPopularWeekHTML();
 }
 
 function openFilters(){
