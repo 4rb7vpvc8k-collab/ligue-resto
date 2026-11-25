@@ -418,6 +418,54 @@ body.dark-mode .pf-set input.pf-in{border:0;background:rgba(127,127,127,.2);colo
 .lgx-sort-pill{border:0;background:rgba(127,127,127,.11);color:inherit;font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:99px;cursor:pointer;white-space:nowrap;opacity:.75}
 .lgx-sort-pill.on{background:var(--ac);color:#192A3A;opacity:1}
 
+.mp{padding:6px 0 24px;animation:pgIn .3s ease}
+.mp-svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.mp-bar{display:flex;gap:10px;align-items:center;margin:6px 0 12px}
+.mp-search{flex:1;display:flex;align-items:center;gap:10px;background:rgba(127,127,127,.15);border-radius:20px;padding:0 16px;height:52px;min-width:0}
+.mp-search input#sq{border:0;background:transparent;margin:0;padding:0;font-size:16px;outline:none;width:100%;color:inherit;border-radius:0}
+body.dark-mode .mp-search input#sq{border:0;background:transparent}
+.mp-x{border:0;background:none;color:inherit;opacity:.55;padding:4px;display:inline-flex;cursor:pointer}
+.mp-ic{position:relative;width:52px;height:52px;border-radius:20px;border:0;background:rgba(127,127,127,.15);color:inherit;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.mp-ic:active{transform:scale(.94)}
+.mp-dot{position:absolute;top:11px;right:11px;width:10px;height:10px;border-radius:50%;background:#E5B83F}
+.hm-chip.on{background:#192A3A;color:#F4F1E9}
+body.dark-mode .hm-chip.on{background:#F4F1E9;color:#12161C}
+.mp-map{position:relative;margin:10px 0 10px}
+.mp .mp-map #map{height:46vh;min-height:300px;border-radius:26px;border:0;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.mp-loc{position:absolute;right:12px;bottom:36px;width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,255,255,.95);color:#192A3A;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.3);cursor:pointer;z-index:5}
+.mp-loc:active{transform:scale(.92)}
+.mp-legend{display:flex;gap:14px;overflow-x:auto;margin:0 -14px 6px;padding:0 14px;font-size:12px;opacity:.7}
+.mp-legend::-webkit-scrollbar{display:none}
+.mp-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mp-banner{display:flex;align-items:center;gap:12px;background:rgba(127,127,127,.12);border-radius:20px;padding:12px 14px;margin:10px 0 4px;font-size:14px}
+.mp-banner span{flex:1;line-height:1.3}
+.mp-banner button{border:0;border-radius:99px;background:#192A3A;color:#F4F1E9;font:inherit;font-size:14px;font-weight:700;padding:9px 16px;cursor:pointer;white-space:nowrap}
+body.dark-mode .mp-banner button{background:#F4F1E9;color:#12161C}
+.mp-h{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 12px}
+.mp-h h3{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.mp-h h3 small{font-size:15px;opacity:.5;font-weight:600}
+.mp-h button{border:0;background:none;color:inherit;opacity:.6;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.mp-card{display:flex;align-items:center;gap:12px;background:rgba(127,127,127,.1);border-radius:22px;padding:10px;margin-bottom:10px;cursor:pointer;transition:transform .15s}
+.mp-card:active{transform:scale(.98)}
+.mp-th{width:68px;height:68px;border-radius:16px;flex-shrink:0;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.9);font-size:26px;font-weight:800}
+.mp-main{flex:1;min-width:0}
+.mp-nm{display:flex;align-items:center;gap:6px;font-size:17px;font-weight:800}
+.mp-nm span.t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-ad{font-size:13px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.mp-mt{font-size:13px;margin-top:5px;font-weight:600}
+.mp-mt .s{color:#E5B83F}
+.mp-mt small{font-weight:500;opacity:.65;font-size:13px}
+.mp-chev{opacity:.35;flex-shrink:0}
+.mp-empty{text-align:center;padding:30px 16px;border-radius:24px;background:rgba(127,127,127,.1);font-size:14px;line-height:1.5}
+.mp-empty b{display:block;font-size:18px;margin-bottom:4px}
+.mp-sheet .mp-sh-t{font-size:24px;font-weight:800;margin:0 0 14px}
+.mp-sheet .mp-sh-l{font-weight:700;margin:14px 0 8px;display:flex;justify-content:space-between}
+.mp-sheet .sub{font-weight:700;opacity:.8;margin:12px 0 6px}
+.mp-sheet .chip,body.dark-mode .mp-sheet .chip{background:rgba(127,127,127,.15);border:0;color:inherit;border-radius:99px;padding:9px 14px;font-size:14px}
+.mp-sheet button.chip.on,body.dark-mode .mp-sheet button.chip.on{background:#E5B83F;color:#192A3A}
+.mp-sheet input[type=range]{border:0;padding:0;margin:4px 0 8px;accent-color:#E5B83F;background:transparent}
+body.dark-mode .mp-sheet input[type=range]{border:0;background:transparent}
+.mp-cta{width:100%;border:0;border-radius:16px;background:#E5B83F;color:#192A3A;font:inherit;font-size:16px;font-weight:800;padding:15px;margin-top:16px;cursor:pointer}
 </style>
 
 
@@ -3198,6 +3246,115 @@ function pfSettings(){
     }).join("");
   }
   return h+'</div>';
+}
+</script>
+<script>
+/* ===== Refonte Carte ===== */
+var MPI={
+search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+filter:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+target:'<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/>',
+pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+chev:'<polyline points="9 18 15 12 9 6"/>'};
+function mpi(k){return '<svg class="mp-svg" viewBox="0 0 24 24">'+MPI[k]+'</svg>'}
+
+function mpThumb(o){
+  var photo=o.gPhoto||"";
+  if(!photo&&o.rv)o.rv.some(function(x){if(x.photo){photo=x.photo;return true}});
+  var gp=o.gPlaceId||(o.pid&&o.pid.indexOf("gp:")===0?o.pid.slice(3):null);
+  if(!photo&&gp&&S.gDetailsCache[gp]&&S.gDetailsCache[gp].photo)photo=S.gDetailsCache[gp].photo;
+  var c=getRestoColor(o);
+  return photo
+    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.35)),url('+photo+')'
+    :'background-image:linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+}
+function mpCard(o,act,rating,count){
+  var dd=o.d!=null?o.d:o.dc;
+  var hasPhoto=!!(o.gPhoto||(o.rv&&o.rv.some(function(x){return x.photo})));
+  var meta="";
+  if(rating!=null)meta='<span class="s">★</span> '+rating.toFixed(1).replace(".",",")+' <small>· '+count+' avis</small>';
+  else if(o.gRating)meta='<small>Google</small> <span class="s">★</span> '+String(o.gRating).replace(".",",")+' <small>('+(o.gCount||0)+')</small>';
+  else meta='<small>Pas encore d’avis</small>';
+  if(dd!=null)meta+=' <small>· '+fmtD(dd)+'</small>';
+  return '<div class="mp-card" onclick="'+act+'"><div class="mp-th" style="'+mpThumb(o)+'">'+(hasPhoto?'':esc((o.n||"?").charAt(0).toUpperCase()))+'</div>'+
+    '<div class="mp-main"><div class="mp-nm"><span class="t">'+esc(o.n)+'</span>'+dot(o)+'</div><div class="mp-ad">'+esc(o.a||"Adresse non renseignée")+'</div><div class="mp-mt">'+meta+'</div></div><span class="mp-chev">'+mpi("chev")+'</span></div>';
+}
+function mpResults(){
+  if(S.busy)return '<div class="mp-empty">Recherche en cours…</div>';
+  if(S.sr!==null){
+    var h='<div class="mp-h"><h3>Résultats <small>'+S.sr.length+'</small></h3><button onclick="mpClear()">Effacer</button></div>';
+    if(!S.sr.length)return h+'<div class="mp-empty"><b>Aucun resto trouvé</b>Élargis le rayon ou active ta position.</div>';
+    return h+S.sr.map(function(p,i){return mpCard(p,'tapIndex('+i+')',p.c?p.avg:null,p.c)}).join("");
+  }
+  var G=groups(allv());
+  G.forEach(function(o){o.d=(S.loc&&num(o.lat)&&num(o.lng))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null});
+  G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.s/b.c-a.s/a.c||b.c-a.c});
+  S.gl=G;
+  var h2='<div class="mp-h"><h3>Notés par la communauté</h3></div>';
+  if(!G.length)return h2+'<div class="mp-empty"><b>Aucun avis pour l’instant</b>Cherche un resto et sois le premier à le noter.</div>';
+  return h2+G.map(function(o,i){return mpCard(o,'openG('+i+')',o.s/o.c,o.c)}).join("");
+}
+function mpClear(){S.sr=null;S.sq="";S.busy=false;S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};render()}
+function mpLocate(){
+  if(S.loc&&S.map){try{S.map.panTo({lat:S.loc.lat,lng:S.loc.lng});S.map.setZoom(15)}catch(e){}return}
+  getLoc();
+}
+function mpChips(){
+  function chip(c){
+    var on=S.filt.cats.indexOf(c.key)>-1||S.filt.cuisine.indexOf(c.key)>-1;
+    return '<button class="hm-chip '+(on?"on":"")+'" onclick="searchCat(\''+c.key+'\')"><img src="'+c.img+'" alt="" onerror="this.style.display=\'none\'">'+esc(c.label)+'</button>';
+  }
+  return '<div class="hm-chips">'+STYLE_CATS.map(chip).join("")+CUISINE_CATS.map(chip).join("")+'</div>';
+}
+
+function explore(){
+  if(S.sel)return place(S.sel);
+  var hasQ=!!(S.sq||S.sr!==null);
+  var bar='<div class="mp-bar"><div class="mp-search">'+mpi("search")+'<input id="sq" placeholder="Restaurant, adresse, ville…" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()">'+
+    (hasQ?'<button class="mp-x" onclick="mpClear()">'+mpi("x")+'</button>':'')+'</div>'+
+    '<button class="mp-ic" onclick="openFilters()">'+mpi("filter")+(filtOn()?'<i class="mp-dot"></i>':'')+'</button></div>';
+  var legend='<div class="mp-legend">'+Object.keys(STYLE_CAT_MAP).map(function(k){return '<span><i class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+'"></i>'+esc(STYLE_CAT_MAP[k].label)+'</span>'}).join("")+'</div>';
+  var banner=S.loc?'':(S.locDenied?'<div class="mp-banner"><span>Position refusée. Active-la dans les réglages de ton téléphone.</span></div>':
+    '<div class="mp-banner">'+mpi("pin")+'<span>Active ta position pour voir les restos proches.</span><button onclick="getLoc()">Activer</button></div>');
+  return status()+'<div class="mp">'+bar+mpChips()+
+    '<div class="mp-map"><div id="map"></div><button class="mp-loc" onclick="mpLocate()" title="Ma position">'+mpi("target")+'</button></div>'+legend+banner+
+    '<div id="mp-res">'+mpResults()+'</div></div>';
+}
+
+function upRes(){
+  var m=document.getElementById("mp-res");if(m)m.innerHTML=mpResults();
+  var e=document.getElementById("res");if(e)e.innerHTML=resHTML();
+  var c=document.getElementById("cl");if(c)c.innerHTML=commList();
+}
+
+function openFilters(){
+  var f=S.filt;
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb mp-sheet" onclick="event.stopPropagation()" style="max-height:82vh;overflow:auto">'+
+    '<h3 class="mp-sh-t">Filtres</h3>'+
+    '<div class="mp-sh-l"><span>Rayon de recherche</span><b id="radv">'+fmtR(f.rad)+'</b></div>'+
+    '<input type="range" min="500" max="10000" step="500" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)">'+
+    '<div id="fc">'+catChips()+'</div>'+
+    '<div class="mp-sh-l"><span>Classement</span></div><div class="chips" style="margin:0" id="fs">'+sortChips()+'</div>'+
+    '<button class="mp-cta" onclick="applyFilters()">Appliquer</button><button class="back" style="display:block;margin:10px auto 0" onclick="resetFilters()">Réinitialiser</button></div></div>';
+}
+
+function initMap(){
+  loadGoogleMaps(function(){
+    var el=document.getElementById("map");
+    if(S.tab!=="map"||!el)return;
+    var c=S.focus?{lat:S.focus.lat,lng:S.focus.lng}:S.loc?{lat:S.loc.lat,lng:S.loc.lng}:S.home?{lat:S.home.lat,lng:S.home.lng}:{lat:48.8566,lng:2.3522};
+    var z=S.focus?16:S.loc?14:S.home?11:13;
+    var isDark=ls("lr_theme")==="dark";
+    S.map=new google.maps.Map(el,{center:c,zoom:z,disableDefaultUI:true,zoomControl:false,mapTypeControl:false,fullscreenControl:false,streetViewControl:false,gestureHandling:"greedy",clickableIcons:false,styles:isDark?GMAPS_DARK_STYLE:[]});
+    S.gInfo=new google.maps.InfoWindow();
+    S.gMarkers=[];
+    if(S.loc){
+      S.gMarkers.push(new google.maps.Marker({position:{lat:S.loc.lat,lng:S.loc.lng},map:S.map,title:"Toi",
+        icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:"#4285F4",fillOpacity:1,strokeColor:"#FFFFFF",strokeWeight:3}}));
+    }
+    drawMarkers();
+  });
 }
 </script>
 </body>
