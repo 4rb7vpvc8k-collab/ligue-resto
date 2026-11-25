@@ -2782,7 +2782,7 @@ function lgxMembersView(c){
 }
 
 function lgxDetail(){
-  var c=S.league||S.leagues[0],rev=sortReviewsBy(lrev(c),S.lrsort);
+  var c=S.league||S.leagues[0],rev=sortReviewsBy(lrev(c),S.lrsort),mem=lgMembers(c);
   var photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
   var nf=getLeagueNotif(c);
   var body;
