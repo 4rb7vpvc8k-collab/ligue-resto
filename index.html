@@ -519,6 +519,26 @@ function getStyleKey(cat){
   if(STYLE_CAT_MAP[cat]) return cat;
   return "trad_low";
 }
+function sortReviewsBy(list, mode){
+  var arr = (list || []).slice();
+  if(mode === "best"){
+    return arr.sort(function(a,b){ return (b.note||0) - (a.note||0) || (b.ts||0) - (a.ts||0); });
+  }
+  if(mode === "worst"){
+    return arr.sort(function(a,b){ return (a.note||0) - (b.note||0) || (b.ts||0) - (a.ts||0); });
+  }
+  return arr.sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+}
+
+function reviewSortBar(curMode, onPickFn){
+  var opts = [["recent","Récents"],["best","Meilleurs"],["worst","Moins bons"]];
+  return '<div class="lgx-sort-row">' + opts.map(function(o){
+    return '<button class="lgx-sort-pill '+(curMode===o[0]?"on":"")+'" onclick="'+onPickFn+'(\''+o[0]+'\')">'+o[1]+'</button>';
+  }).join("") + '</div>';
+}
+
+function setPlaceRevSort(m){ S.rsort = m; render(); }
+function setLeagueRevSort(m){ S.lrsort = m; render(); }
 
 function getRestoColor(p){
   var c=p.cat||getRestoCat(p.n||p.resto,p.type,p.priceLunch,p.cuisine);
@@ -544,7 +564,10 @@ var S={
   pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
   dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,
   sq:"",sr:null,busy:false,err:false,sel:null,map:null,gMarkers:[],gInfo:null,gDetailsCache:{},focus:null,manual:false,mk:[],
-  viewUser:null,viewProf:null,viewPt:"prof",viewSub:null,noteOpen:false,prevTab:"home"
+  viewUser:null,viewProf:null,viewPt:"prof",viewSub:null,noteOpen:false,prevTab:"home",
+  lrsort: "recent",
+  rsort: "recent"
+
 };
 
 // Détection d'un lien d'invitation (?join=CODE)
