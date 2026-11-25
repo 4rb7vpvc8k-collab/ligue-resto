@@ -2782,11 +2782,11 @@ function lgxMembersView(c){
 }
 
 function lgxDetail(){
-  var c=S.league||S.leagues[0],rev=lrev(c).sort(function(a,b){return b.ts-a.ts}),mem=lgMembers(c);
+  var c=S.league||S.leagues[0],rev=sortReviewsBy(lrev(c),S.lrsort);
   var photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
   var nf=getLeagueNotif(c);
   var body;
-  if(S.lv==="feed")body=rev.length?rev.map(lgxRv).join(""):'<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Sois le premier à publier une note ici.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
+  if(S.lv==="feed")body=rev.length?(reviewSortBar(S.lrsort,"setLeagueRevSort")+rev.map(lgxRv).join("")):'<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Sois le premier à publier une note ici.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
   else if(S.lv==="rank")body=lgxRank(rev);
   else if(S.lv==="best")body=lgxTopReviews(rev);
   else body=lgxMembersView(c);
