@@ -541,7 +541,7 @@ var S={
   pseudo:"",uid:"",leagues:[],league:"",leagueNames:{},leaguePhotos:{},leagueNotifs:{},photoTargetLeague:"",leagueOpen:false,lgTab:"leagues",fv:"friends",pendingJoin:"",
   all:[],priv:{},unsubs:{},unsubFollows:null,lv:"feed",
   form:{note:0,st:[],vis:"pub",tls:[],cat:"trad_low",cuisine:""},
-  pf:"all",psort:"recent",lsort:"recent",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
+  pf:"all",flags:{},blocked:[],rvl:[],rx:null,guest:false,authReady:false,profLoaded:false,errMsg:"",
   dept:"",home:null,wm:"in",fdb:null,user:null,state:"loading",loc:null,locDenied:false,
   sq:"",sr:null,busy:false,err:false,sel:null,map:null,gMarkers:[],gInfo:null,gDetailsCache:{},focus:null,manual:false,mk:[],
   viewUser:null,viewProf:null,viewPt:"prof",viewSub:null,noteOpen:false,prevTab:"home"
@@ -1332,17 +1332,10 @@ function place(p){
     '<a class="pg-mini" title="Itinéraire" href="'+externalGoogleMapsUrl(p)+'" target="_blank" rel="noopener">'+pgi("nav")+'</a>'+
   '</div>';
 
-  var revs=g?g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){
-    if(S.psort==="best") return (b.note-a.note)||(b.ts-a.ts);
-    if(S.psort==="worst") return (a.note-b.note)||(b.ts-a.ts);
-    return b.ts-a.ts;
-  }):[];
+  var revs=g?g.rv.filter(function(x){return S.pf==="all"||(S.pf==="deliv"?x.mode==="deliv":x.mode!=="deliv")}).sort(function(a,b){return b.ts-a.ts}):[];
   var pills=[["all","Tous",""],["place","Sur place",ICONS.dine],["deliv","Livraison",ICONS.delivery]].map(function(t){
     return '<button class="pg-pill '+(S.pf===t[0]?"on":"")+'" onclick="S.pf=\''+t[0]+'\';render()">'+t[2]+t[1]+'</button>';
   }).join("");
-  var sortPills=g?'<div class="pg-seg" style="margin-bottom:10px;overflow-x:auto">'+[["recent","Récents"],["best","Mieux notés"],["worst","Moins bien notés"]].map(function(t){
-    return '<button class="pg-pill '+(S.psort===t[0]?"on":"")+'" onclick="S.psort=\''+t[0]+'\';render()">'+t[1]+'</button>';
-  }).join("")+'</div>':'';
 
   var list;
   if(!g){
@@ -1365,7 +1358,7 @@ function place(p){
 
   return '<div class="pg">'+hero+tiles+gLine+addr+
     '<div class="pg-h"><h3>Avis'+(g?' ('+g.c+')':'')+'</h3>'+(g?'<div class="pg-seg">'+pills+'</div>':'')+'</div>'+
-    sortPills+list+gRev+
+    list+gRev+
   '</div>'+
   '<button class="pg-fab" onclick="openNoteWithPlace()">'+pgi("star")+' Noter ce resto</button>';
 }
@@ -2556,505 +2549,627 @@ bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a
 check:'<polyline points="20 6 9 17 4 12"/>',
 copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
 x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
-camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>'};
+camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
 function lgi(k){return '<svg class="lgx-svg" viewBox="0 0 24 24">'+LGI[k]+'</svg>'}
+function lgIni(s){return esc((s||"?").charAt(0).toUpperCase())}
 
-var _lgCopyTimer=null;
-function copyLgCode(ev,code){
-  if(ev){ev.stopPropagation();ev.preventDefault()}
-  var btn=ev&&ev.currentTarget;
-  function done(){
-    if(!btn)return;
-    var old=btn.innerHTML;
-    btn.innerHTML=lgi("check")+"<span>Copié</span>";
-    clearTimeout(_lgCopyTimer);
-    _lgCopyTimer=setTimeout(function(){btn.innerHTML=old},1400);
-  }
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(code).then(done).catch(done);
-  }else{
-    try{var t=document.createElement("textarea");t.value=code;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t)}catch(e){}
-    done();
-  }
-}
-
-function lgMembersOf(code){
-  var m={},out=[];
-  function add(uid,pseudo,col){
-    if(!uid||m[uid])return;m[uid]=1;
-    out.push({uid:uid,pseudo:pseudo||"Membre",col:col||hashColor(uid)});
-  }
-  lrev(code).forEach(function(x){add(x.uid,x.pseudo,x.col)});
-  if(S.uid)add(S.uid,S.pseudo||"Moi",S.col);
-  (S.friends||[]).forEach(function(f){add(f.uid,f.pseudo,null)});
-  return out;
-}
-function lgStack(members,max){
-  max=max||4;
-  var h='<div class="lgx-stack">';
-  members.slice(0,max).forEach(function(m){
-    h+='<span class="lgx-sa" style="background:'+m.col+'">'+esc((m.pseudo||"?").charAt(0).toUpperCase())+'</span>';
+function lgMembers(c){
+  var map={};
+  if(S.uid)map[S.uid]={uid:S.uid,pseudo:S.pseudo||"Moi",col:S.col||hashColor(String(S.uid))};
+  lrev(c).forEach(function(x){
+    if(!x.uid||isB(x.uid))return;
+    if(!map[x.uid])map[x.uid]={uid:x.uid,pseudo:x.pseudo||"Membre",col:x.col||colOf(x)};
   });
-  if(members.length>max)h+='<span class="lgx-sa more">+'+(members.length-max)+'</span>';
-  return h+'</div>';
+  return Object.keys(map).map(function(k){return map[k]});
 }
-function lgHeroBg(code){
-  var photo=S.leaguePhotos&&S.leaguePhotos[code];
+function lgStack(list,max){
+  return '<div class="lgx-stack">'+list.slice(0,max).map(function(m){return '<span class="lgx-sa" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</span>'}).join("")+(list.length>max?'<span class="lgx-sa more">+'+(list.length-max)+'</span>':'')+'</div>';
+}
+
+/* Fond jaune #E5B83F uniforme par défaut, ou photo de couverture de la ligue */
+function lgBg(photo){
   return photo
-    ?'background-image:linear-gradient(180deg,rgba(12,16,22,.32),rgba(12,16,22,.82)),url('+photo+');background-size:cover;background-position:center'
-    :'background:linear-gradient(145deg,#E5B83F 0%,#C48B1A 55%,#192A3A 140%)';
+    ?'background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(12,16,22,.82)),url('+photo+') center/cover'
+    :'background:#E5B83F';
 }
-function lgCard(c){
-  var revs=lrev(c),members=lgMembersOf(c),photo=S.leaguePhotos&&S.leaguePhotos[c];
-  var count=revs.length,avg=count?(revs.reduce(function(a,b){return a+b.note},0)/count).toFixed(1).replace(".",","):"–";
-  return '<div class="lgx-card '+(photo?"has-photo":"")+'" style="'+lgHeroBg(c)+'" onclick="openLeagueCard(\''+esc(c)+'\')">'+
-    '<div class="lgx-card-top">'+lgStack(members,4)+
-      '<div class="lgx-card-acts">'+
-        '<button type="button" class="lgx-ic" title="Photo de la ligue" onclick="event.stopPropagation();pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("camera")+'</button>'+
-        '<button type="button" class="lgx-ic" title="Inviter" onclick="event.stopPropagation();share(\''+esc(c)+'\')">'+lgi("share")+'</button>'+
-      '</div>'+
-    '</div>'+
-    '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
-    '<div class="lgx-card-foot">'+
-      '<div class="lgx-card-sub">'+members.length+' membre'+(members.length>1?"s":"")+' · '+count+' avis'+(count?' · ★ '+avg:'')+'</div>'+
-      '<button type="button" class="lgx-code-chip" title="Copier le code" onclick="copyLgCode(event,\''+esc(c)+'\')">'+lgi("copy")+'<span>'+esc(c)+'</span></button>'+
-    '</div>'+
+
+function lgxTop(title,sub,right){
+  return '<div class="lgx-top"><div><h1>'+title+'</h1><p>'+sub+'</p></div>'+(right||'')+'</div>';
+}
+
+/* Switcher pleine largeur */
+function lgxSwitch(){
+  var f=S.lgTab==="friends";
+  return '<div class="lgx-switch-seg">'+
+    '<button class="lgx-seg-btn '+(!f?"on":"")+'" onclick="S.lgTab=\'leagues\';S.leagueOpen=false;render()">Ligue</button>'+
+    '<button class="lgx-seg-btn '+(f?"on":"")+'" onclick="S.lgTab=\'friends\';S.leagueOpen=false;render()">Amis</button>'+
   '</div>';
 }
 
-function lgFeedCard(x){
+/* ---------- Feuilles ---------- */
+function openLgSheet(){
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" id="lg-sheet" onclick="event.stopPropagation()">'+
+    '<h3 class="lgx-sheet-t">Nouvelle ligue</h3>'+
+    '<input id="lgn" placeholder="Nom de la ligue (ex. Team Burger)">'+
+    '<button class="lgx-cta" onclick="createLeague()">Créer la ligue</button>'+
+    '<div class="lgx-or">ou rejoins celle d’un ami</div>'+
+    '<input id="lg" placeholder="Code ou lien (ex. LG-A7K9-M2P4)" autocapitalize="characters">'+
+    '<button class="lgx-cta alt" onclick="join()">Rejoindre</button>'+
+  '</div></div>';
+}
+
+function lgMenu(code, skipAnim){
+  var c=esc(code);
+  var hasPhoto=!!(S.leaguePhotos&&S.leaguePhotos[code]);
+  var nf=getLeagueNotif(code);
+  var animClass = skipAnim ? "" : " from-left";
+
+  var notifHtml = '<div class="lgx-notif-box">' +
+    '<label class="lgx-switch-row">' +
+      '<span class="lgx-switch-label">'+lgi("bell")+'<span>Notifications de la ligue</span></span>' +
+      '<span class="lgx-toggle">' +
+        '<input type="checkbox" '+(nf.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+c+'\',this.checked)">' +
+        '<span class="lgx-slider"></span>' +
+      '</span>' +
+    '</label>' +
+    (nf.enabled
+      ? '<div class="lgx-sub-notifs">' +
+          '<label class="lgx-sub-row">' +
+            '<span>Nouvel avis</span>' +
+            '<span class="lgx-toggle sm">' +
+              '<input type="checkbox" '+(nf.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'reviews\',this.checked)">' +
+              '<span class="lgx-slider"></span>' +
+            '</span>' +
+          '</label>' +
+          '<label class="lgx-sub-row">' +
+            '<span>Nouveau membre</span>' +
+            '<span class="lgx-toggle sm">' +
+              '<input type="checkbox" '+(nf.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'members\',this.checked)">' +
+              '<span class="lgx-slider"></span>' +
+            '</span>' +
+          '</label>' +
+        '</div>'
+      : '<div class="lgx-notif-hint">Notifications désactivées pour cette ligue.</div>'
+    ) +
+  '</div>';
+
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet'+animClass+'" onclick="event.stopPropagation()">'+
+    '<h3 class="lgx-sheet-t">'+esc(leagueLabel(code))+'</h3>'+
+    notifHtml+
+    '<button class="lgx-opt" onclick="closeSheet();share(\''+c+'\')">'+lgi("share")+' Inviter des amis (Code : '+c+')</button>'+
+    '<button class="lgx-opt" onclick="closeSheet();pickLeaguePhoto(\''+c+'\')">'+lgi("camera")+' '+(hasPhoto?'Changer la photo de la ligue':'Ajouter une photo à la ligue')+'</button>'+
+    (hasPhoto?'<button class="lgx-opt" onclick="closeSheet();removeLeaguePhoto(\''+c+'\')">'+lgi("trash")+' Retirer la photo (fond jaune)</button>':'')+
+    '<button class="lgx-opt red" onclick="closeSheet();leaveLeague(\''+c+'\')">'+lgi("x")+' Quitter la ligue</button>'+
+    '<button class="back" onclick="closeSheet()">Fermer</button></div></div>';
+}
+
+function lgRvMenu(i){
+  var x=S.rvl[i];if(!x)return;
+  var own=x.uid===S.uid,h='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">';
+  if(own&&x._id){
+    h+='<button class="lgx-opt" onclick="closeSheet();editReview('+i+')">'+lgi("copy")+' Modifier</button>'+
+       '<button class="lgx-opt red" onclick="closeSheet();del('+i+')">'+lgi("x")+' Supprimer</button>';
+  } else {
+    h+='<button class="lgx-opt" onclick="rep('+i+')">Signaler</button>'+
+       '<button class="lgx-opt" onclick="closeSheet();blk('+i+')">Bloquer '+esc(x.pseudo||"")+'</button>';
+    if(isAdmin()&&x._id)h+='<button class="lgx-opt red" onclick="closeSheet();del('+i+')">Supprimer (Admin)</button>';
+  }
+  h+='<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
+  document.getElementById("sheet").innerHTML=h;
+}
+function lgCopy(btn,code){
+  try{navigator.clipboard.writeText(code)}catch(e){}
+  var o=btn.innerHTML;btn.innerHTML=lgi("check")+" Code copié !";
+  setTimeout(function(){if(btn&&btn.isConnected)btn.innerHTML=o},1500);
+}
+
+/* ---------- Vue 1 : Mes ligues ---------- */
+function lgxList(){
+  var right='<button class="lgx-ic" onclick="openLgSheet()" title="Créer ou rejoindre">'+lgi("plus")+'</button>';
+  var h=status()+'<div class="lgx">'+lgxTop("Mes ligues",S.leagues.length?S.leagues.length+(S.leagues.length>1?" ligues actives":" ligue active"):"Crée ou rejoins une ligue",right)+lgxSwitch();
+  if(!S.leagues.length){
+    return h+'<div class="lgx-empty"><b>Aucune ligue pour l’instant</b><p>Crée ta ligue ou rejoins celle de tes amis avec un code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre une ligue</button></div></div>';
+  }
+  h+=S.leagues.map(function(c){
+    var rev=lrev(c),mem=lgMembers(c),photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
+    var nf=getLeagueNotif(c);
+    var bellBtn = '<button class="lgx-ic" title="Notifications" onclick="event.stopPropagation();S.league=\''+ec+'\';lgMenu(\''+ec+'\')">'+lgi("bell")+(nf.enabled?'<span class="bell-dot" style="width:9px;height:9px;min-width:9px;padding:0;background:#34C759"></span>':'')+'</button>';
+    return '<div class="lgx-card '+(photo?'has-photo':'')+'" style="'+lgBg(photo)+'" onclick="openLeagueCard(\''+ec+'\')">'+
+      '<div class="lgx-card-top">'+
+        lgStack(mem,4)+
+        '<div class="lgx-card-acts">'+
+          bellBtn+
+          '<button class="lgx-ic" title="Options" onclick="event.stopPropagation();S.league=\''+ec+'\';lgMenu(\''+ec+'\')">'+lgi("more")+'</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
+      '<div class="lgx-card-foot">'+
+        '<div class="lgx-card-sub">'+mem.length+' '+(mem.length>1?'membres':'membre')+' · '+rev.length+' avis</div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  return h+'<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
+}
+
+/* ---------- Vue 2 : Détail d’une ligue ---------- */
+function lgxRv(x){
   var idx=ri(x),d=new Date(x.ts),col=colOf(x);
   var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
+  var openP='onclick="openReviewDetail('+idx+')"';
   var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
   return '<div class="lgx-rv">'+
     '<div class="lgx-rv-top">'+
-      '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+esc((x.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
+      '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
       '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> <span>· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
-      (hasMenu?'<button type="button" class="lgx-more" onclick="openRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
+      (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
     '</div>'+
-    '<div class="lgx-rv-body" onclick="openReviewDetail('+idx+')">'+
-      '<div class="lgx-rv-main">'+
-        '<div class="lgx-rv-resto">'+dot(x)+'<span>'+esc(x.resto)+'</span></div>'+
-        '<span class="stars">'+stars(x.note)+'</span>'+
-        (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
-        ((x.st&&x.st.length)?'<div class="pg-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
-      '</div>'+
-      (x.photo?'<img class="lgx-rv-img" src="'+x.photo+'">':'')+
-    '</div>'+
+    '<div class="lgx-rv-body" '+openP+'><div class="lgx-rv-main">'+
+      '<div class="lgx-rv-resto">'+esc(x.resto)+dot(x)+'</div>'+
+      '<span class="stars">'+stars(x.note)+'</span>'+
+      (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
+    '</div>'+(x.photo?'<img class="lgx-rv-img" src="'+x.photo+'" onclick="event.stopPropagation();openLight(\''+x.photo+'\')">':'')+'</div>'+
   '</div>';
 }
 
-function lgRank(revs){
-  var G=groups(revs).sort(function(a,b){return(b.s/b.c)-(a.s/a.c)||b.c-a.c});
-  if(!G.length)return '<div class="lgx-empty"><b>Aucun classement</b><p>Les restos notés dans cette ligue apparaîtront ici.</p></div>';
-  var pod=G.slice(0,3),order=[1,0,2],h='<div class="lgx-pod">';
-  order.forEach(function(k){
-    var o=pod[k];if(!o)return;
-    var avg=(o.s/o.c).toFixed(1).replace(".",",");
-    h+='<div class="lgx-pc '+(k===0?"first":"")+'" style="min-height:'+(k===0?148:k===1?122:104)+'px" onclick="openO('+hp(o)+')">'+
-      '<div class="n">'+(k+1)+'</div><div class="t">'+esc(o.n)+'</div><div class="s">★ '+avg+' · '+o.c+'</div></div>';
+function lgxRank(list){
+  var by={};
+  list.forEach(function(x){
+    if(!x.uid||isB(x.uid))return;
+    var u=by[x.uid]=by[x.uid]||{uid:x.uid,pseudo:x.pseudo||"?",col:x.col||colOf(x),n:0,s:0};
+    u.n++;u.s+=x.note;
   });
-  h+='</div>';
-  G.slice(3).forEach(function(o,i){
-    var avg=(o.s/o.c).toFixed(1).replace(".",",");
-    h+='<div class="lgx-row" onclick="openO('+hp(o)+')" style="cursor:pointer"><div class="lgx-rk">'+(i+4)+'</div>'+
-      '<div class="lgx-meta"><div class="lgx-nm">'+dot(o)+'<span>'+esc(o.n)+'</span></div><div class="lgx-sub">'+o.c+' avis</div></div>'+
-      '<b>★ '+avg+'</b></div>';
-  });
-  return h;
+  var a=Object.keys(by).map(function(k){return by[k]}).sort(function(x,y){return y.n-x.n||(y.s/y.n)-(x.s/x.n)});
+  if(!a.length)return '<div class="lgx-empty"><b>Aucun classement</b><p>Personne n’a encore noté de resto ici.</p></div>';
+  var pod='',rest=a;
+  if(a.length>=3){
+    var ord=[a[1],a[0],a[2]],cls=["","first",""],pos=[2,1,3];
+    pod='<div class="lgx-pod">'+ord.map(function(u,i){
+      var ulink=(u.uid&&u.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"':'';
+      return '<div class="lgx-pc '+cls[i]+'" style="min-height:'+(pos[i]===1?150:pos[i]===2?120:102)+'px"'+ulink+'><div class="n">'+pos[i]+'</div><div class="t">'+esc(u.pseudo)+'</div><div class="s">'+u.n+' avis · '+(u.s/u.n).toFixed(1)+'</div></div>';
+    }).join("")+'</div>';
+    rest=a.slice(3);
+  }
+  return pod+rest.map(function(u,i){
+    var p=a.length>=3?i+4:i+1;
+    var ulink=(u.uid&&u.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"':'';
+    return '<div class="lgx-row"><div class="lgx-rk">'+p+'</div><div class="lgx-av" style="background:'+u.col+'"'+ulink+'>'+lgIni(u.pseudo)+'</div>'+
+      '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">Moyenne '+(u.s/u.n).toFixed(1)+'/5</div></div>'+
+      '<b>'+u.n+' avis</b></div>';
+  }).join("");
 }
 
-function lgDetail(){
-  var c=S.league;
-  if(!c||S.leagues.indexOf(c)<0){S.leagueOpen=false;return lgList()}
-  var revs=lrev(c).sort(function(a,b){
-    if(S.lsort==="best") return (b.note-a.note)||(b.ts-a.ts);
-    if(S.lsort==="worst") return (a.note-b.note)||(b.ts-a.ts);
-    return b.ts-a.ts;
-  }),members=lgMembersOf(c),photo=S.leaguePhotos&&S.leaguePhotos[c];
-  var avg=revs.length?(revs.reduce(function(a,b){return a+b.note},0)/revs.length).toFixed(1).replace(".",","):"–";
-  var h='<div class="lgx">'+
+function lgxTopReviews(list){
+  var b=list.filter(function(x){return x.note>=4}).sort(function(x,y){return y.note-x.note||y.ts-x.ts});
+  if(!b.length)return '<div class="lgx-empty"><b>Aucun top avis</b><p>Les avis 4 étoiles et plus apparaîtront ici.</p></div>';
+  return b.map(lgxRv).join("");
+}
+
+function lgxMembersView(c){
+  var mem=lgMembers(c),list=lrev(c);
+  return mem.map(function(m){
+    var cnt=list.filter(function(x){return x.uid===m.uid}).length;
+    var isMe=m.uid===S.uid,f=hasFriend(m.uid);
+    var ulink=!isMe?' onclick="openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')"':'';
+    return '<div class="lgx-row"><div class="lgx-av" style="background:'+m.col+'"'+ulink+'>'+lgIni(m.pseudo)+'</div>'+
+      '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(m.pseudo)+'</div><div class="lgx-sub">'+cnt+' '+(cnt>1?'avis':'avis')+'</div></div>'+
+      (isMe?'<span class="lgx-sub">Moi</span>'
+        :'<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+(f?'delFriend(\''+esc(m.uid)+'\')':'addFriend(\''+esc(m.uid)+'\',\''+esc(m.pseudo)+'\')')+'">'+(f?'Suivi':'Suivre')+'</button>')+'</div>';
+  }).join("");
+}
+
+function lgxDetail(){
+  var c=S.league||S.leagues[0],rev=lrev(c).sort(function(a,b){return b.ts-a.ts}),mem=lgMembers(c);
+  var photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
+  var nf=getLeagueNotif(c);
+  var body;
+  if(S.lv==="feed")body=rev.length?rev.map(lgxRv).join(""):'<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Sois le premier à publier une note ici.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
+  else if(S.lv==="rank")body=lgxRank(rev);
+  else if(S.lv==="best")body=lgxTopReviews(rev);
+  else body=lgxMembersView(c);
+
+  return status()+'<div class="lgx">'+
     '<div class="lgx-bar">'+
-      '<button type="button" class="lgx-ic" onclick="closeLeagueCard()">'+lgi("back")+'</button>'+
+      '<button class="lgx-ic" onclick="closeLeagueCard()" title="Retour">'+lgi("back")+'</button>'+
       '<div class="lgx-bar-r">'+
-        '<button type="button" class="lgx-ic" title="Inviter" onclick="share(\''+esc(c)+'\')">'+lgi("share")+'</button>'+
-        '<button type="button" class="lgx-ic" title="Options" onclick="lgMenu(\''+esc(c)+'\')">'+lgi("more")+'</button>'+
+        '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Notifications">'+lgi("bell")+(nf.enabled?'<span class="bell-dot" style="width:9px;height:9px;min-width:9px;padding:0;background:#34C759"></span>':'')+'</button>'+
+        '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Inviter">'+lgi("share")+'</button>'+
+        '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Options">'+lgi("more")+'</button>'+
       '</div>'+
     '</div>'+
-    '<div class="lgx-hero '+(photo?"has-photo":"")+'" style="'+lgHeroBg(c)+'">'+
-      '<div class="lgx-hero-top">'+lgStack(members,5)+
-        '<button type="button" class="lgx-code-chip" title="Copier le code" onclick="copyLgCode(event,\''+esc(c)+'\')">'+lgi("copy")+'<span>'+esc(c)+'</span></button>'+
-      '</div>'+
-      '<div><h1>'+esc(leagueLabel(c))+'</h1>'+
-        '<div class="lgx-hero-bot">'+
-          '<div class="lgx-stats">'+
-            '<div><b>'+members.length+'</b><span>Membres</span></div>'+
-            '<div><b>'+revs.length+'</b><span>Avis</span></div>'+
-            '<div><b>'+avg+'</b><span>Moyenne</span></div>'+
-          '</div>'+
-          '<div class="lgx-hero-bot-r">'+
-            (photo?'<button type="button" class="lgx-photo-btn" onclick="removeLeaguePhoto(\''+esc(c)+'\')">'+lgi("x")+'<span>Retirer</span></button>':'')+
-            '<button type="button" class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("camera")+'<span>'+(photo?"Changer":"Photo")+'</span></button>'+
-          '</div>'+
+    '<div class="lgx-hero '+(photo?'has-photo':'')+'" style="'+lgBg(photo)+'">'+
+      '<div class="lgx-hero-top">'+lgStack(mem,5)+'</div>'+
+      '<h1>'+esc(leagueLabel(c))+'</h1>'+
+      '<div class="lgx-hero-bot">'+
+        '<div class="lgx-stats"><div><b>'+mem.length+'</b><span>'+(mem.length>1?'membres':'membre')+'</span></div><div><b>'+rev.length+'</b><span>avis</span></div></div>'+
+        '<div class="lgx-hero-bot-r">'+
+          '<button class="lgx-code-chip" title="Copier le code" onclick="event.stopPropagation();lgCopy(this,\''+ec+'\')">'+lgi("copy")+'<span>'+ec+'</span></button>'+
+          '<button class="lgx-photo-btn" onclick="event.stopPropagation();pickLeaguePhoto(\''+ec+'\')">'+lgi("camera")+'<span>'+(photo?'Photo':'Ajouter photo')+'</span></button>'+
         '</div>'+
       '</div>'+
     '</div>'+
-    '<div class="lgx-switch">'+
-      '<button type="button" class="lgx-pill '+(S.lv==="feed"?"on":"")+'" onclick="S.lv=\'feed\';render()">Fil ('+revs.length+')</button>'+
-      '<button type="button" class="lgx-pill '+(S.lv==="rank"?"on":"")+'" onclick="S.lv=\'rank\';render()">Classement</button>'+
-      '<button type="button" class="lgx-pill '+(S.lv==="members"?"on":"")+'" onclick="S.lv=\'members\';render()">Membres ('+members.length+')</button>'+
-    '</div>';
-  if(S.lv==="feed"){
-    h+='<div class="pg-seg" style="margin-bottom:12px;overflow-x:auto">'+[["recent","Récents"],["best","Mieux notés"],["worst","Moins bien notés"]].map(function(t){
-      return '<button type="button" class="pg-pill '+(S.lsort===t[0]?"on":"")+'" onclick="S.lsort=\''+t[0]+'\';render()">'+t[1]+'</button>';
+    '<div class="lgx-switch">'+[["feed","Fil"],["rank","Classement"],["best","Top avis"],["members","Membres"]].map(function(t){
+      return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
+    }).join("")+'</div>'+
+    body+'</div>';
+}
+
+/* ---------- Vue 3 : Amis (Fil / Classement / Top avis + Amis / Que je suis / Qui me suit) ---------- */
+function lgxFriendRow(uid, pseudo, col){
+  var f = hasFriend(uid);
+  var fol = isFollower(uid);
+  var mut = f && fol;
+  var avCol = col || hashColor(String(uid || pseudo || "?"));
+  var ulink = ' onclick="openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')"';
+  var badge = mut
+    ? '<span class="status-badge">Ami</span>'
+    : (fol ? '<span class="status-badge">Te suit</span>' : '');
+  var subTxt = mut
+    ? 'Vous vous suivez mutuellement'
+    : (fol ? 'Suit ton profil sur Belly' : 'Profil suivi');
+  var btnLabel = f ? 'Suivi' : (fol ? 'Suivre en retour' : 'Suivre');
+  var btnAct = f
+    ? 'delFriend(\''+esc(uid)+'\')'
+    : 'addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')';
+
+  return '<div class="lgx-row">'+
+    '<div class="lgx-av" style="background:'+avCol+'"'+ulink+'>'+lgIni(pseudo)+'</div>'+
+    '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(pseudo)+badge+'</div><div class="lgx-sub">'+subTxt+'</div></div>'+
+    '<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+btnAct+'">'+btnLabel+'</button>'+
+  '</div>';
+}
+
+function lgxFriends(){
+  var q = S.userSearchQ || "";
+  var followingList = (S.friends || []).filter(function(f){ return f && f.uid && !isB(f.uid); });
+  var followersList = (S.followers || []).filter(function(f){ return f && f.uid && !isB(f.uid); });
+  var mutualList = followingList.filter(function(f){ return isFollower(f.uid); });
+  var sugg = leagueSuggestions();
+  var unreadCount = followersList.filter(function(f){
+    return !hasFriend(f.uid) && (S.ignoredFollows || []).indexOf(f.uid) < 0;
+  }).length;
+
+  var bellBtn = '<button class="lgx-ic" onclick="openFollowNotifs()" title="Notifications d’abonnés">' +
+    lgi("bell") +
+    (unreadCount ? '<span class="bell-dot">'+(unreadCount>9?'9+':unreadCount)+'</span>' : '') +
+  '</button>';
+
+  var h = status() + '<div class="lgx">' +
+    lgxTop("Amis", mutualList.length + (mutualList.length>1?" amis · ":" ami · ") + followingList.length + " suivis · " + followersList.length + " abonnés", bellBtn) +
+    lgxSwitch();
+
+  // Barre de recherche de personnes par pseudo
+  h += '<div class="lgx-search">' +
+    lgi("search") +
+    '<input class="lgx-in" id="friend-sq" placeholder="Rechercher un pseudo…" value="'+esc(q)+'" oninput="S.userSearchQ=this.value" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">' +
+    (q ? '<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>' : '') +
+    '<button class="lgx-btn pri" style="padding:7px 12px;font-size:13px" onclick="searchUsersByPseudo()">OK</button>' +
+  '</div>';
+
+  if(S.userSearchBusy){
+    h += '<div class="lgx-empty"><b>Recherche en cours…</b></div>';
+  } else if(q && S.userSearchRes !== null){
+    h += '<div class="lgx-h2">Résultats pour « '+esc(q)+' »</div>';
+    if(!S.userSearchRes.length){
+      h += '<div class="lgx-empty"><b>Aucun utilisateur trouvé</b><p>Vérifie l’orthographe du pseudo recherché.</p></div>';
+    } else {
+      h += S.userSearchRes.map(function(u){
+        return lgxFriendRow(u.uid, u.pseudo, hashColor(String(u.uid||u.pseudo)));
+      }).join("");
+    }
+  }
+
+  // Pilules façon Ligue : Amis / Que je suis / Qui me suit
+  var fv = S.fv || "friends";
+  h += '<div class="lgx-switch">' +
+    '<button class="lgx-pill '+(fv==="friends"?"on":"")+'" onclick="S.fv=\'friends\';render()">Amis ('+mutualList.length+')</button>' +
+    '<button class="lgx-pill '+(fv==="following"?"on":"")+'" onclick="S.fv=\'following\';render()">Que je suis ('+followingList.length+')</button>' +
+    '<button class="lgx-pill '+(fv==="followers"?"on":"")+'" onclick="S.fv=\'followers\';render()">Qui me suit ('+followersList.length+')</button>' +
+  '</div>';
+
+  // Avis partagés avec les amis / personnes suivies pour Fil & Top avis
+  var circleIds = {};
+  followingList.forEach(function(f){ circleIds[f.uid] = 1; });
+  followersList.forEach(function(f){ circleIds[f.uid] = 1; });
+
+  var circleReviews = allv().filter(function(x){
+    return x.uid && x.uid !== S.uid && circleIds[x.uid];
+  }).sort(function(a,b){ return b.ts - a.ts; });
+
+  if(fv === "friends"){
+    if(!mutualList.length){
+      h += '<div class="lgx-empty"><b>Aucun ami pour l’instant</b><p>Quand toi et une autre personne vous suivez mutuellement, vous apparaissez ici comme amis.</p></div>';
+    } else {
+      h += mutualList.map(function(f){
+        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
+      }).join("");
+    }
+
+    var mutualIds = {};
+    mutualList.forEach(function(f){ mutualIds[f.uid] = 1; });
+    var friendsFeed = allv().filter(function(x){
+      return x.uid && x.uid !== S.uid && mutualIds[x.uid];
+    }).sort(function(a,b){ return b.ts - a.ts; });
+
+    h += '<div class="lgx-h2">Fil de tes amis</div>';
+    h += friendsFeed.length
+      ? friendsFeed.map(lgxRv).join("")
+      : '<div class="lgx-empty"><b>Fil vide</b><p>Les derniers avis de tes amis apparaîtront ici.</p></div>';
+
+    var friendsTop = friendsFeed.filter(function(x){ return x.note >= 4; }).sort(function(a,b){ return b.note - a.note || b.ts - a.ts; });
+    h += '<div class="lgx-h2">Top avis de tes amis</div>';
+    h += friendsTop.length
+      ? friendsTop.map(lgxRv).join("")
+      : '<div class="lgx-empty"><b>Aucun top avis</b><p>Les notes 4★ et plus de tes amis s’afficheront ici.</p></div>';
+  } else if(fv === "following"){
+    if(!followingList.length){
+      h += '<div class="lgx-empty"><b>Tu ne suis personne pour l’instant</b><p>Recherche un pseudo ci-dessus ou suis les membres de tes ligues.</p></div>';
+    } else {
+      h += followingList.map(function(f){
+        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
+      }).join("");
+    }
+
+    var followingReviews = allv().filter(function(x){
+      return x.uid && x.uid !== S.uid && followingList.some(function(f){ return f.uid === x.uid; });
+    }).sort(function(a,b){ return b.ts - a.ts; });
+
+    h += '<div class="lgx-h2">Avis des personnes que je suis</div>';
+    h += followingReviews.length
+      ? followingReviews.map(lgxRv).join("")
+      : '<div class="lgx-empty"><b>Aucun avis récent</b><p>Les personnes que tu suis n’ont pas encore publié d’avis.</p></div>';
+  } else if(fv === "followers"){
+    if(!followersList.length){
+      h += '<div class="lgx-empty"><b>Aucun abonné pour l’instant</b><p>Les personnes qui suivent ton profil apparaîtront ici.</p></div>';
+    } else {
+      h += followersList.map(function(f){
+        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
+      }).join("");
+    }
+  }
+
+  if(sugg.length){
+    h += '<div class="lgx-h2">Dans tes ligues</div><div class="lgx-hs">'+sugg.map(function(u){
+      var f=hasFriend(u.uid);
+      var ulink=' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"';
+      return '<div class="lgx-sg"><div class="lgx-av" style="background:'+u.col+'"'+ulink+'>'+lgIni(u.pseudo)+'</div>'+
+        '<div class="lgx-nm"'+ulink+'>'+esc(u.pseudo)+'</div>'+
+        '<div class="lgx-sub">'+esc(u.leagues.join(", "))+'</div>'+
+        '<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+(f?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')')+'">'+(f?'Suivi':'Suivre')+'</button></div>';
     }).join("")+'</div>';
-    h+=revs.length?revs.map(lgFeedCard).join(""):'<div class="lgx-empty"><b>Aucun avis ici</b><p>Sois le premier à noter un resto dans cette ligue.</p><button type="button" class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
-  }else if(S.lv==="rank"){h+=lgRank(revs)}
-  else{
-    h+=members.map(function(m){
-      var meRow=m.uid===S.uid,isF=!meRow&&hasFriend(m.uid);
-      var ulink=!meRow?' onclick="openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')"':'';
-      return '<div class="lgx-row"><div class="lgx-av" style="background:'+m.col+'"'+ulink+'>'+esc((m.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-        '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(m.pseudo)+(meRow?' · Toi':'')+'</div></div>'+
-        (meRow?'':(isF?'<button type="button" class="lgx-btn" onclick="delFriend(\''+esc(m.uid)+'\')">Suivi</button>':'<button type="button" class="lgx-btn pri" onclick="addFriend(\''+esc(m.uid)+'\',\''+esc(m.pseudo)+'\')">Suivre</button>'))+
-      '</div>';
-    }).join("");
   }
-  return h+'</div>';
-}
 
-function lgList(){
-  var h='<div class="lgx">'+
-    '<div class="lgx-top"><div><h1>Ligues</h1><p>Tes groupes d’amis gourmands</p></div>'+
-      '<button type="button" class="lgx-ic" title="Créer ou rejoindre" onclick="openLgModal()">'+lgi("plus")+'</button>'+
-    '</div>';
-  if(S.leagues.length){
-    h+=S.leagues.map(lgCard).join("");
-    h+='<button type="button" class="lgx-ghost" onclick="openLgModal()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button>';
-  }else{
-    h+='<div class="lgx-empty"><b>Aucune ligue pour l’instant</b><p>Crée ta ligue ou rejoins celle de tes amis avec un code ou un lien d’invitation.</p>'+
-      '<button type="button" class="lgx-cta" onclick="openLgModal()">Créer ou rejoindre</button></div>';
-  }
-  return h+'</div>';
-}
-
-function lgFriendsTab(){
-  var q=(S.userSearchQ||"").trim(),isF=S.fv==="friends";
-  var pendingFollowers=(S.followers||[]).filter(function(f){return !isB(f.uid)&&!hasFriend(f.uid)&&(S.ignoredFollows||[]).indexOf(f.uid)<0});
-  var h='<div class="lgx">'+
-    '<div class="lgx-top"><div><h1>Amis</h1><p>Découvre ce que mangent tes proches</p></div>'+
-      '<button type="button" class="lgx-ic" title="Notifications" onclick="openFollowNotifs()">'+lgi("bell")+(pendingFollowers.length?'<span class="bell-dot">'+pendingFollowers.length+'</span>':'')+'</button>'+
-    '</div>'+
-    '<div class="lgx-search">'+lgi("search")+'<input id="friend-sq" class="lgx-in" placeholder="Chercher un pseudo…" value="'+esc(S.userSearchQ||"")+'" oninput="S.userSearchQ=this.value;searchUsersByPseudo()">'+(S.userSearchQ?'<button type="button" class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>':'')+'</div>';
-  if(q){
-    h+='<div class="lgx-h2">Résultats</div>';
-    if(S.userSearchBusy)h+='<div class="lgx-empty"><p>Recherche en cours…</p></div>';
-    else if(!S.userSearchRes||!S.userSearchRes.length)h+='<div class="lgx-empty"><b>Aucun résultat</b><p>Aucun membre ne correspond à « '+esc(q)+' ».</p></div>';
-    else h+=S.userSearchRes.map(function(u){
-      var f=hasFriend(u.uid),c=hashColor(u.uid||u.pseudo);
-      return '<div class="lgx-row"><div class="lgx-av" style="background:'+c+'" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+esc((u.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-        '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')"><div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">'+(isFollower(u.uid)?"Te suit":"Membre Belly")+'</div></div>'+
-        '<button type="button" class="lgx-btn '+(f?"":"pri")+'" onclick="'+(f?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')')+'">'+(f?"Suivi":"Suivre")+'</button></div>';
-    }).join("");
-    return h+'</div>';
-  }
-  var sug=leagueSuggestions().filter(function(s){return !hasFriend(s.uid)});
-  if(sug.length){
-    h+='<div class="lgx-h2">Dans tes ligues</div><div class="lgx-hs">';
-    sug.forEach(function(s){
-      var c=s.col||hashColor(s.uid||s.pseudo);
-      h+='<div class="lgx-sg"><div class="lgx-av" style="background:'+c+'" onclick="openUser(\''+encodeURIComponent(s.uid)+'\',\''+encodeURIComponent(s.pseudo)+'\')">'+esc((s.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-        '<div class="lgx-nm" onclick="openUser(\''+encodeURIComponent(s.uid)+'\',\''+encodeURIComponent(s.pseudo)+'\')" style="cursor:pointer">'+esc(s.pseudo)+'</div>'+
-        '<div class="lgx-sub">'+esc(s.leagues.slice(0,2).join(", "))+'</div>'+
-        '<button type="button" class="lgx-btn pri" onclick="addFriend(\''+esc(s.uid)+'\',\''+esc(s.pseudo)+'\')">Suivre</button></div>';
-    });
-    h+='</div>';
-  }
-  var list=isF?(S.friends||[]).filter(function(f){return isFollower(f.uid)}):(S.friends||[]);
-  h+='<div class="lgx-switch" style="margin-top:20px;margin-bottom:12px">'+
-    '<button type="button" class="lgx-pill '+(isF?"on":"")+'" onclick="S.fv=\'friends\';render()">Amis ('+(S.friends||[]).filter(function(f){return isFollower(f.uid)}).length+')</button>'+
-    '<button type="button" class="lgx-pill '+(!isF?"on":"")+'" onclick="S.fv=\'following\';render()">Suivis ('+(S.friends||[]).length+')</button></div>';
-  if(!list.length){
-    h+='<div class="lgx-empty"><b>'+(isF?"Aucun ami pour l’instant":"Tu ne suis personne")+'</b><p>'+(isF?"Quand un suivi te suit en retour, il apparaît ici.":"Cherche un pseudo ci-dessus pour suivre tes amis.")+'</p></div>';
-  }else{
-    h+=list.map(function(f){
-      var c=hashColor(f.uid||f.pseudo);
-      return '<div class="lgx-row"><div class="lgx-av" style="background:'+c+'" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-        '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><div class="lgx-nm">'+esc(f.pseudo)+'</div><div class="lgx-sub">'+(isFollower(f.uid)?"Ami":"Suivi")+'</div></div>'+
-        '<button type="button" class="lgx-btn" onclick="delFriend(\''+esc(f.uid)+'\')">Ne plus suivre</button></div>';
-    }).join("");
-  }
   return h+'</div>';
 }
 
 function league(){
-  if(S.lgTab==="leagues"&&S.leagueOpen)return lgDetail();
-  var topSeg='<div class="lgx-switch-seg" style="margin:10px 0 4px">'+
-    '<button type="button" class="lgx-seg-btn '+(S.lgTab==="leagues"?"on":"")+'" onclick="S.lgTab=\'leagues\';S.leagueOpen=false;render()">Mes Ligues</button>'+
-    '<button type="button" class="lgx-seg-btn '+(S.lgTab==="friends"?"on":"")+'" onclick="S.lgTab=\'friends\';render()">Amis</button></div>';
-  return topSeg+(S.lgTab==="friends"?lgFriendsTab():lgList());
-}
-
-function openLgModal(){
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">'+
-    '<div class="lgx-sheet-t">Nouvelle ligue</div>'+
-    '<input id="lgn" placeholder="Nom de la ligue (optionnel)">'+
-    '<button type="button" class="lgx-cta" onclick="var c=document.getElementById(\'lgn\').value.trim();closeSheet();var inp=document.createElement(\'input\');inp.id=\'lgn\';inp.value=c;document.body.appendChild(inp);createLeague();inp.remove()">Créer une ligue</button>'+
-    '<div class="lgx-or">ou rejoindre avec un code</div>'+
-    '<input id="lg" placeholder="Code ou lien d’invitation (ex: LG-A1B2-C3D4)" onkeydown="if(event.key===\'Enter\'){var v=this.value;closeSheet();var inp=document.createElement(\'input\');inp.id=\'lg\';inp.value=v;document.body.appendChild(inp);join();inp.remove()}">'+
-    '<button type="button" class="lgx-cta alt" onclick="var v=document.getElementById(\'lg\').value;closeSheet();var inp=document.createElement(\'input\');inp.id=\'lg\';inp.value=v;document.body.appendChild(inp);join();inp.remove()">Rejoindre</button>'+
-  '</div></div>';
-}
-
-function lgMenu(code,keepOpen){
-  var n=getLeagueNotif(code),photo=S.leaguePhotos&&S.leaguePhotos[code];
-  var h='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">'+
-    '<div class="lgx-sheet-t">'+esc(leagueLabel(code))+'</div>'+
-    '<div class="lgx-notif-box">'+
-      '<label class="lgx-switch-row"><span class="lgx-switch-label">'+lgi("bell")+'<span>Notifications de la ligue</span></span>'+
-        '<span class="lgx-toggle"><input type="checkbox" '+(n.enabled?"checked":"")+' onchange="toggleLeagueNotifMain(\''+esc(code)+'\',this.checked)"><span class="lgx-slider"></span></span>'+
-      '</label>'+
-      (n.enabled?'<div class="lgx-sub-notifs">'+
-        '<label class="lgx-sub-row"><span>Nouveaux avis</span><span class="lgx-toggle sm"><input type="checkbox" '+(n.reviews?"checked":"")+' onchange="toggleLeagueNotifSub(\''+esc(code)+'\',\'reviews\',this.checked)"><span class="lgx-slider"></span></span></label>'+
-        '<label class="lgx-sub-row"><span>Nouveaux membres</span><span class="lgx-toggle sm"><input type="checkbox" '+(n.members?"checked":"")+' onchange="toggleLeagueNotifSub(\''+esc(code)+'\',\'members\',this.checked)"><span class="lgx-slider"></span></span></label>'+
-      '</div>':'')+
-    '</div>'+
-    '<button type="button" class="lgx-opt" onclick="closeSheet();pickLeaguePhoto(\''+esc(code)+'\')">'+lgi("camera")+'<span>'+(photo?"Changer la photo de la ligue":"Ajouter une photo de la ligue")+'</span></button>'+
-    (photo?'<button type="button" class="lgx-opt" onclick="closeSheet();removeLeaguePhoto(\''+esc(code)+'\')">'+lgi("x")+'<span>Retirer la photo</span></button>':'')+
-    '<button type="button" class="lgx-opt" onclick="closeSheet();share(\''+esc(code)+'\')">'+lgi("share")+'<span>Partager le lien d’invitation</span></button>'+
-    '<button type="button" class="lgx-opt red" onclick="closeSheet();leaveLeague(\''+esc(code)+'\')">'+lgi("x")+'<span>Quitter la ligue</span></button>'+
-  '</div></div>';
-  var sh=document.getElementById("sheet");
-  sh.innerHTML=h;
-  if(keepOpen&&sh.firstElementChild){sh.firstElementChild.style.transition="none";sh.firstElementChild.querySelector(".ovb").style.animation="none"}
+  if(S.lgTab==="friends")return lgxFriends();
+  if(!S.leagues.length)return lgxList();
+  if(!S.leagueOpen)return lgxList();
+  if(S.leagues.indexOf(S.league)<0)S.league=S.leagues[0];
+  return lgxDetail();
 }
 </script>
 <script>
-/* ===== Refonte Profil + Autre Utilisateur ===== */
+/* ===== Refonte Profil ===== */
 var PFI={
 back:'<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
-gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
-edit:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',
+sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
 more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
-x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
-};
+plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
 function pfi(k){return '<svg class="pf-svg" viewBox="0 0 24 24">'+PFI[k]+'</svg>'}
-var PFC=["#E5B83F","#8FB8E8","#D9915A","#8FD1A8","#C9CED6"],PFH=[128,100,82];
-
-function pfTop(arr,editable){
-  var h='<div class="pf-pod">';
-  [1,0,2].forEach(function(i){
-    var p=arr[i];
-    if(p){
-      h+='<div class="pf-pc" style="background:'+PFC[i]+';height:'+PFH[i]+'px" '+(editable?'onclick="pickTop('+i+')"':'onclick="openO('+hp(p)+')"')+'>'+
-        '<div class="n">'+(i+1)+'</div><div class="t">'+esc(p.n)+'</div></div>';
-    }else if(editable){
-      h+='<div class="pf-pc e" style="height:'+PFH[i]+'px" onclick="pickTop('+i+')">'+
-        '<div class="n">＋</div><div class="t">'+(i+1)+'</div></div>';
-    }
-  });
-  h+='</div>';
-  [3,4].forEach(function(i){
-    var p=arr[i];
-    if(p)h+='<div class="pf-cr" style="background:'+PFC[i]+'" '+(editable?'onclick="pickTop('+i+')"':'onclick="openO('+hp(p)+')"')+'>'+
-      '<span class="n">'+(i+1)+'</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.n)+'</span></div>';
-    else if(editable)h+='<div class="pf-row click" onclick="pickTop('+i+')"><div class="pf-rk">'+(i+1)+'</div>'+
-      '<div class="pf-meta"><div class="pf-nm">＋ Choisir le n°'+(i+1)+'</div></div></div>';
-  });
-  return h;
+function pfIni(s){return esc((s||"?").charAt(0).toUpperCase())}
+function pfBg(p){
+  var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
+  var gDet = gpId ? S.gDetailsCache[gpId] : null;
+  var gGrp = gmap(allv())[keyOf(p)];
+  var myLastPhoto = "";
+  if(gGrp && gGrp.rv){
+    var mineWithPhoto = gGrp.rv
+      .filter(function(r){ return r.uid === S.uid && r.photo; })
+      .sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+    if(mineWithPhoto.length) myLastPhoto = mineWithPhoto[0].photo;
+  }
+  var restoPhoto = (gDet && gDet.photo) || p.gPhoto || (gGrp && gGrp.gPhoto) || "";
+  var photo = myLastPhoto || restoPhoto || p.photo || "";
+  if(!photo && gpId && !S.gDetailsCache[gpId]){
+    fetchGooglePlaceDetails(p);
+  }
+  if(photo){
+    return 'background:linear-gradient(180deg,rgba(0,0,0,.05) 35%,rgba(12,16,22,.85)),url('+photo+') center/cover';
+  }
+  var c = getRestoColor(p);
+  return 'background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(12,16,22,.6)),linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+}
+function pfSimple(o){
+  var myLast = (o.rv || [])
+    .filter(function(r){ return r.uid === S.uid && r.photo; })
+    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })[0];
+  return {
+    pid: o.pid,
+    gPlaceId: o.gPlaceId || null,
+    n: o.n,
+    a: o.a,
+    lat: o.lat,
+    lng: o.lng,
+    cat: o.cat,
+    gPhoto: o.gPhoto || "",
+    photo: myLast ? myLast.photo : ""
+  };
 }
 
-function pfGrid(list){
-  if(!list||!list.length)return '<div class="pf-empty"><b>Rien ici</b><p>Aucun restaurant dans cette liste pour l’instant.</p></div>';
-  return '<div class="pf-grid">'+list.map(function(p){
-    var bg=p.photo||p.gPhoto
-      ?'background-image:linear-gradient(180deg,rgba(0,0,0,.1),rgba(12,16,22,.85)),url('+(p.photo||p.gPhoto)+');background-size:cover;background-position:center'
-      :'background:linear-gradient(145deg,'+getRestoColor(p)+',#192A3A)';
-    return '<div class="pf-gc" style="'+bg+'" onclick="openO('+hp(p)+')"><span>'+esc(p.n)+'</span></div>';
-  }).join("")+'</div>';
+/* ---------- Briques ---------- */
+function pfStat(n,label,act){return '<button class="pf-st" onclick="'+act+'"><b>'+n+'</b><span>'+label+'</span></button>'}
+function pfSwitch(c){
+  return '<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+    return '<button class="'+(c.pt===t[0]?"on":"")+'" onclick="'+c.setPt(t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
 }
-
-function pfAgenda(mine){
-  if(!mine||!mine.length)return '<div class="pf-empty"><b>Agenda vide</b><p>Tes restos notés apparaîtront ici mois par mois.</p><button onclick="openNoteSheet()">Noter un resto</button></div>';
+var PFC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PFH=[150,120,100];
+function pfPod(i,arr,edit){
+  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
+  return '<div class="pf-pc" style="height:'+PFH[i]+'px;background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><div class="t">'+(p?esc(p.n):(edit?'+':'–'))+'</div></div>';
+}
+function pfRow(i,arr,edit){
+  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
+  return '<div class="pf-cr" style="background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><span class="t">'+(p?esc(p.n):(edit?'+ Choisir':'–'))+'</span></div>';
+}
+function pfTop(arr,edit,title){
+  var any=(arr||[]).some(Boolean);
+  if(!edit&&!any)return '';
+  return '<div class="pf-h2">'+title+'</div><div class="pf-pod">'+pfPod(1,arr,edit)+pfPod(0,arr,edit)+pfPod(2,arr,edit)+'</div><div class="pf-rows">'+pfRow(3,arr,edit)+pfRow(4,arr,edit)+'</div>';
+}
+function pfIdCard(c,name,col,bio,extra){
+  return '<div class="pf-idc"><div class="pf-av" style="background:'+col+(c.own?'':';cursor:default')+'"'+(c.own?' onclick="newCol()"':'')+'>'+pfIni(name)+(c.own?'<span class="e">'+pfi("pencil")+'</span>':'')+'</div>'+
+    '<div class="pf-bio">'+(bio?esc(bio):'<span style="opacity:.55">Pas de bio.</span>')+'</div>'+extra+'</div>';
+}
+function pfRv(x,own){
+  var idx=ri(x),d=new Date(x.ts);
+  var menu=(own&&x._id)?'<button class="pf-more" onclick="pfRvMenu('+idx+')">'+pfi("more")+'</button>':'';
+  return '<div class="pf-rv"><div class="pf-rv-top"><span class="d">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · Livraison':' · Sur place')+'</span>'+menu+'</div>'+
+    '<div class="pf-rv-body" onclick="openReviewDetail('+idx+')"><div class="pf-rv-main">'+
+      '<div class="pf-rv-resto">'+esc(x.resto)+dot(x)+'</div><span class="stars">'+stars(x.note)+'</span>'+
+      '<div class="pf-rv-txt">'+(x.avis?esc(x.avis):'<i style="opacity:.55">Sans commentaire</i>')+'</div>'+
+      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+    '</div>'+(x.photo?'<img class="pf-rv-img" src="'+x.photo+'">':'')+'</div></div>';
+}
+function pfRvMenu(i){
+  var x=S.rvl[i];if(!x)return;
+  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()">'+
+    '<button class="pf-opt" onclick="closeSheet();editReview('+i+')">'+pfi("pencil")+' Modifier</button>'+
+    '<button class="pf-opt red" onclick="closeSheet();del('+i+')">'+pfi("trash")+' Supprimer</button>'+
+    '<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
+}
+function pfAgenda(mine,emptyMsg,own){
+  if(!mine.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Chaque resto noté apparaît ici, mois par mois.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
   var h="",cur="";
   mine.forEach(function(x){
     var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
     if(mo!==cur){cur=mo;h+='<div class="pf-month">'+esc(mo)+'</div>'}
+    var note=typeof x.note==="number"?String(x.note).replace(".",",")+"/5":"";
     h+='<div class="pf-ag" onclick="openO('+hp(pl(x))+')"><div class="dt"><b>'+d.getDate()+'</b><span>'+esc(d.toLocaleDateString("fr-FR",{month:"short"}))+'</span></div>'+
-      '<div class="tx"><div class="pf-nm">'+dot(x)+'<span class="t">'+esc(x.resto)+'</span></div>'+
-      '<span class="stars">'+stars(x.note)+'</span>'+(x.avis?'<div class="pf-sub" style="margin-top:3px">'+esc(x.avis)+'</div>':'')+'</div></div>';
+      '<div class="tx"><div class="pf-nm"><span class="t">'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+      '<div class="pf-sub">'+(x.mode==="deliv"?'Livraison':'Sur place')+(x.addr?' · '+esc(x.addr):'')+'</div>'+
+      '<div style="margin-top:4px"><span class="stars">'+stars(x.note)+'</span> <b style="font-size:13px">'+note+'</b></div>'+
+      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+    '</div></div>';
   });
   return h;
 }
-
-function pfReviews(mine,editable){
-  if(!mine||!mine.length)return '<div class="pf-empty"><b>Aucun avis</b><p>'+(editable?"Partage ta première table avec tes amis.":"Aucun avis publié pour l’instant.")+'</p>'+(editable?'<button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
-  return mine.map(function(x){
-    var idx=ri(x),d=new Date(x.ts);
-    var hasMenu=editable||(x.uid&&x.uid!==S.uid);
-    return '<div class="pf-rv"><div class="pf-rv-top"><span class="d">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})+'</span>'+
-      '<span>'+(x.mode==="deliv"?"Livraison":"Sur place")+'</span>'+
-      (hasMenu?'<button class="pf-more" onclick="openRvMenu('+idx+')">'+pfi("more")+'</button>':'')+'</div>'+
-      '<div class="pf-rv-body" onclick="openReviewDetail('+idx+')"><div class="pf-rv-main">'+
-      '<div class="pf-rv-resto">'+dot(x)+'<span>'+esc(x.resto)+'</span></div>'+
-      '<span class="stars">'+stars(x.note)+'</span>'+
-      (x.avis?'<div class="pf-rv-txt">'+esc(x.avis)+'</div>':'')+
-      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
-      '</div>'+(x.photo?'<img class="pf-rv-img" src="'+x.photo+'">':'')+'</div></div>';
-  }).join("");
+function pfGrid(list,emptyMsg,own){
+  if(!list.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Garde ici les restos que tu veux essayer.</p><button onclick="go(\'map\')">Explorer la carte</button>':'')+'</div>';
+  return '<div class="pf-grid" style="margin-top:14px">'+list.map(function(p){
+    return '<div class="pf-gc" style="'+pfBg(p)+'" onclick="openO('+hp(p)+')">'+esc(p.n)+'</div>';
+  }).join("")+'</div>';
+}
+function pfPerson(p,sub){
+  var uid=p.uid,pseudo=p.pseudo||"Utilisateur",isMe=uid===S.uid;
+  var following=!isMe&&hasFriend(uid),followsMe=!isMe&&isFollower(uid),mutual=following&&followsMe;
+  var col=p.col||hashColor(String(uid||pseudo));
+  var open='openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')';
+  var btn="";
+  if(!isMe)btn=following
+    ?'<button class="pf-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?'Ami ✓':'Suivi')+'</button>'
+    :'<button class="pf-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
+  return '<div class="pf-row"><div class="pf-pav" style="background:'+col+'" onclick="'+open+'">'+pfIni(pseudo)+'</div><div class="pf-meta click" style="cursor:pointer" onclick="'+open+'"><div class="pf-nm"><span class="t">'+esc(pseudo)+(isMe?' (moi)':'')+'</span></div><div class="pf-sub">'+esc(sub||(mutual?"Ami · suivi réciproque":(followsMe?"Te suit":"Suivi")))+'</div></div>'+btn+'</div>';
 }
 
-function pfSettings(){
-  var acc=S.user&&!S.user.isAnonymous,dark=ls("lr_theme")==="dark";
-  return '<div class="pf">'+
-    '<div class="pf-bar"><button class="pf-ic" onclick="S.pt=\'prof\';render()">'+pfi("back")+'</button><h1>Réglages</h1></div>'+
-    '<div class="pf-card">'+
-      '<div class="pf-set"><div><div class="l">Mode sombre</div></div><button class="pf-toggle '+(dark?"on":"")+'" onclick="toggleTheme()"><i></i></button></div>'+
-      '<div class="pf-set col"><div class="l">Pseudo <span class="s">· unique</span></div><div class="row2"><input id="ps" class="pf-in" placeholder="Ton pseudo" value="'+esc(S.pseudo)+'"><button class="pf-btn pri" onclick="setP()">OK</button></div></div>'+
-      '<div class="pf-set col"><div class="l">Ma zone</div><div class="row2"><input id="dp" class="pf-in" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="pf-btn" onclick="setHome()">OK</button></div>'+
-        (S.loc?'<div class="s">Position activée</div>':'<button class="pf-btn" onclick="getLoc()">Activer ma position</button>')+'</div>'+
-    '</div>'+
-    '<div class="pf-card" style="margin-top:14px">'+
-      (acc
-        ?'<div class="pf-set"><div><div class="l">Compte</div><div class="s">'+esc(S.user.email)+'</div></div><button class="pf-btn" onclick="logout()">Déconnexion</button></div>'+
-         '<div class="pf-set"><button class="link red" onclick="delAcc()">Supprimer mon compte</button></div>'
-        :'<div class="pf-set"><button class="link" onclick="S.guest=false;render()">Se connecter ou créer un compte</button></div>')+
-    '</div>'+
-    (S.blocked.length
-      ?'<div class="pf-h2">Bloqués</div><div class="pf-card">'+S.blocked.map(function(b,k){
-          return '<div class="pf-set"><span class="l">'+esc(b.n)+'</span><button class="pf-btn" onclick="unblk('+k+')">Débloquer</button></div>';
-        }).join("")+'</div>':'')+
-  '</div>';
-}
-
-function openBioSheet(){
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()">'+
-    '<div class="resto" style="margin-bottom:10px">Modifier ma bio</div>'+
-    '<textarea id="bio-in" maxlength="160" placeholder="Quelques mots sur tes goûts…">'+esc(S.bio||"")+'</textarea>'+
-    '<button class="btn" onclick="S.bio=document.getElementById(\'bio-in\').value.trim().slice(0,160);save();closeSheet();render()">Enregistrer</button>'+
-  '</div></div>';
-}
-
-function pfUserView(u){
-  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
-  var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts});
-  var uMr=groups(uMine).sort(function(a,b){return(b.s/b.c)-(a.s/a.c)});
-  var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(u.uid||name);
-  var uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null];
-  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
-  var backBtn='<button class="pf-ic" onclick="S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()">'+pfi("back")+'</button>';
-
-  if(!isM){
-    return '<div class="pf">'+
-      '<div class="pf-top">'+backBtn+'<h1>'+esc(name)+'</h1><div class="sp"></div></div>'+
-      '<div class="pf-idc"><div class="pf-av" style="background:'+uCol+';cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div>'+
-        (uBio?'<p class="pf-bio">'+esc(uBio)+'</p>':'')+
-        (followsMe&&!isF?'<span class="pf-badge">Te suit</span>':'')+
-        '<button class="pf-follow '+(isF?"on":"")+'" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+
-          (isF?"Suivi":(followsMe?"Suivre en retour":"Suivre"))+'</button>'+
-      '</div>'+
-      (uTop.some(Boolean)?'<div class="pf-h2">Top 5</div>'+pfTop(uTop,false):'')+
-      '<p class="pf-hint">Suivez-vous mutuellement pour voir ses avis, son agenda et ses listes.</p>'+
-    '</div>';
+/* ---------- Corps commun (profil perso et profil d'un ami) ---------- */
+function pfSub(c){
+  var title=c.sub==="likes"?"Likes":c.sub==="friends"?"Amis & suivis":"Restos";
+  var cnt=c.sub==="likes"?c.likes.length:c.sub==="friends"?c.friends.length:c.mr.length;
+  var h='<div class="pf"><div class="pf-bar"><button class="pf-ic" onclick="'+c.clearSub+'">'+pfi("back")+'</button><h1>'+title+' <small>'+cnt+'</small></h1></div>';
+  if(c.sub==="friends"){
+    h+=c.friends.length?c.friends.map(function(f){return pfPerson(f,c.own?(isFollower(f.uid)?"Ami · suivi réciproque":"En attente de suivi en retour"):"")}).join(""):'<div class="pf-empty"><b>Aucun ami pour l’instant</b></div>';
+  } else if(c.sub==="likes"){
+    h+=pfGrid(c.likes,"Aucun like pour l’instant",false);
+  } else {
+    h+=pfGrid(c.mr.map(pfSimple),"Aucun resto noté pour l’instant",false);
   }
-
-  var uLikes=Array.isArray(prof.likes)?prof.likes:[];
-  var uWish=Array.isArray(prof.wish)?prof.wish:[];
-  var uFriends=Array.isArray(prof.friends)?prof.friends:[];
-  var vpt=S.viewPt||"prof",vsub=S.viewSub||null;
-
-  if(vsub){
-    var title=vsub==="likes"?"Likes":vsub==="rest"?"Restaurants":vsub==="wish"?"À tester":"Amis";
-    var body;
-    if(vsub==="friends"){
-      body=uFriends.length?uFriends.map(function(f){
-        var meRow=f.uid===S.uid,c=hashColor(f.uid||f.pseudo);
-        return '<div class="pf-row '+(meRow?"":"click")+'" '+(meRow?"":'onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo||"")+'\')"')+'>'+
-          '<div class="pf-pav" style="background:'+c+'">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-          '<div class="pf-meta"><div class="pf-nm"><span class="t">'+esc(f.pseudo||"Utilisateur")+'</span>'+(meRow?'<span class="pf-badge">Toi</span>':'')+'</div></div></div>';
-      }).join(""): '<div class="pf-empty"><b>Aucun ami</b><p>Sa liste d’amis est vide.</p></div>';
-    }else{
-      var L=vsub==="likes"?uLikes:vsub==="wish"?uWish:uMr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat,gPhoto:o.gPhoto}});
-      body=pfGrid(L);
-    }
-    return '<div class="pf"><div class="pf-top"><button class="pf-ic" onclick="S.viewSub=null;render()">'+pfi("back")+'</button><h1>'+title+'</h1><div class="sp"></div></div>'+body+'</div>';
-  }
-
-  var h='<div class="pf"><div class="pf-top">'+backBtn+'<h1>'+esc(name)+'</h1><div class="sp"></div></div>'+
-    '<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["reviews","Avis"]].map(function(t){
-      return '<button class="'+(vpt===t[0]?"on":"")+'" onclick="S.viewPt=\''+t[0]+'\';render()">'+t[1]+'</button>';
-    }).join("")+'</div>';
-  if(vpt==="agenda")return h+pfAgenda(uMine)+'</div>';
-  if(vpt==="reviews")return h+pfReviews(uMine,false)+'</div>';
-  h+='<div class="pf-idc"><div class="pf-av" style="background:'+uCol+';cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div>'+
-    (uBio?'<p class="pf-bio">'+esc(uBio)+'</p>':'')+
-    '<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">Ami · Ne plus suivre</button></div>'+
-    '<div class="pf-h2">Top 5</div>'+pfTop(uTop,false)+
-    '<div class="pf-card pf-links" style="margin-top:20px">'+
-      '<div class="pf-lr" onclick="S.viewSub=\'rest\';render()"><span>Restaurants</span><b>'+uMr.length+'</b></div>'+
-      '<div class="pf-lr" onclick="S.viewSub=\'likes\';render()"><span>Likes</span><b>'+uLikes.length+'</b></div>'+
-      '<div class="pf-lr" onclick="S.viewSub=\'wish\';render()"><span>À tester</span><b>'+uWish.length+'</b></div>'+
-      '<div class="pf-lr" onclick="S.viewSub=\'friends\';render()"><span>Amis</span><b>'+uFriends.length+'</b></div>'+
-    '</div></div>';
-  return h;
+  return h+'</div>';
 }
-
+function pfTabs(c){
+  var h=pfSwitch(c);
+  if(c.pt==="agenda")return h+pfAgenda(c.mine,c.own?"Ton agenda est vide":"Son agenda est vide",c.own);
+  if(c.pt==="wish")return h+pfGrid(c.wish,c.own?"Ta liste est vide":"Aucun resto à tester",c.own);
+  h+=c.idcard;
+  h+=pfTop(c.top,c.own,c.own?"Mon top 5":"Son top 5");
+  h+='<div class="pf-h2">Derniers avis'+(c.mine.length>4?'<button onclick="'+c.setPt("agenda")+'">Tout voir</button>':'')+'</div>';
+  h+=c.mine.length?c.mine.slice(0,3).map(function(x){return pfRv(x,c.own)}).join(""):'<div class="pf-empty"><b>'+(c.own?"Tu n’as encore rien noté":"Aucun avis pour l’instant")+'</b>'+(c.own?'<p>Note ton premier resto pour remplir ton profil.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
+  return h+pfLinks(c);
+}
+function pfLinks(c){
+  function row(l,n,act){return '<div class="pf-lr" onclick="'+act+'"><span>'+l+'</span><b>'+n+' ›</b></div>'}
+  return '<div class="pf-card pf-links">'+row("Restaurants",c.mr.length,c.setSub("rest"))+row("Likes",c.likes.length,c.setSub("likes"))+row("Amis",c.nfr,c.setSub("friends"))+'</div>';
+}
+/* ---------- Mon profil ---------- */
 function me(){
-  if(S.viewUser)return pfUserView(S.viewUser);
+  if(S.viewUser)return userView(S.viewUser);
   if(S.pt==="set")return pfSettings();
   var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
-  var mr=groups(mine).sort(function(a,b){return(b.s/b.c)-(a.s/a.c)});
-  var mutual=S.friends.filter(function(f){return isFollower(f.uid)}).length;
-  var col=S.col||"#E5B83F",name=S.pseudo||"Profil";
-  var h='<div class="pf">'+
-    '<div class="pf-bar"><h1>'+esc(name)+'</h1>'+
-      '<button class="pf-ic" title="Réglages" onclick="S.pt=\'set\';render()">'+pfi("gear")+'</button>'+
-    '</div>'+
-    '<div class="pf-head">'+
-      '<div class="pf-av" style="background:'+col+'" onclick="newCol()">'+esc(name.charAt(0).toUpperCase())+
-        '<span class="e">'+pfi("edit")+'</span></div>'+
-      '<div class="pf-id"><h1>'+esc(name)+'</h1>'+
-        '<p onclick="openBioSheet()">'+(S.bio?esc(S.bio):"Ajouter une bio…")+'</p>'+
-      '</div>'+
-    '</div>'+
-    '<div class="pf-stats">'+
-      '<button class="pf-st" onclick="S.pt=\'agenda\';render()"><b>'+mine.length+'</b><span>Avis</span></button>'+
-      '<button class="pf-st" onclick="S.pt=\'prof\';S.sub=\'rest\';render()"><b>'+mr.length+'</b><span>Restos</span></button>'+
-      '<button class="pf-st" onclick="S.pt=\'prof\';S.sub=\'likes\';render()"><b>'+S.likes.length+'</b><span>Likes</span></button>'+
-      '<button class="pf-st" onclick="S.pt=\'prof\';S.sub=\'friends\';render()"><b>'+mutual+'</b><span>Amis</span></button>'+
-    '</div>'+
-    '<div class="pf-switch">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
-      return '<button class="pf-pill '+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>';
-    }).join("")+'</div>';
-
-  if(S.pt==="agenda")return h+pfAgenda(mine)+'</div>';
-  if(S.pt==="wish")return h+pfGrid(S.wish)+'</div>';
-  if(S.sub){
-    var back='<div class="pf-h2"><button onclick="S.sub=null;render()">← Retour au profil</button></div>';
-    if(S.sub==="friends"){
-      return h+back+(S.friends.length?S.friends.map(function(f){
-        var mut=isFollower(f.uid),c=hashColor(f.uid||f.pseudo);
-        return '<div class="pf-row"><div class="pf-pav" style="background:'+c+'" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')" style="cursor:pointer">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
-          '<div class="pf-meta click" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><div class="pf-nm"><span class="t">'+esc(f.pseudo)+'</span></div><div class="pf-sub">'+(mut?"Ami":"Suivi")+'</div></div>'+
-          '<button class="pf-btn" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>';
-      }).join(""):'<div class="pf-empty"><b>Aucun ami</b><p>Ajoute des amis depuis l’onglet Ligue.</p></div>')+'</div>';
-    }
-    var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat,gPhoto:o.gPhoto}});
-    return h+back+pfGrid(L)+'</div>';
-  }
-
-  return h+
-    '<div class="pf-h2">Mon top 5</div>'+pfTop(S.top,true)+
-    '<div class="pf-h2">Derniers avis'+(mine.length>3?'<button onclick="S.pt=\'agenda\';render()">Tout voir</button>':'')+'</div>'+
-    pfReviews(mine.slice(0,3),true)+
-  '</div>';
+  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var c={own:true,mine:mine,mr:mr,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,
+    pt:S.pt,sub:S.sub,nfr:S.friends.filter(function(f){return isFollower(f.uid)}).length,
+    clearSub:"S.sub=null;render()"};
+  c.setPt=function(t){return "S.pt='"+t+"';S.sub=null;render()"};
+  c.setSub=function(t){return "S.sub='"+t+"';render()"};
+  if(c.sub)return pfSub(c);
+  c.idcard=pfIdCard(c,S.pseudo,S.col||"#E5B83F",S.bio,'<button class="pf-edit" onclick="editBio()">'+pfi("pencil")+' Modifier</button>');
+  return '<div class="pf"><div class="pf-top"><button class="pf-ic" onclick="S.pt=\'set\';render()">'+pfi("sliders")+'</button><h1>'+esc(S.pseudo||"Profil")+'</h1><span class="sp"></span></div>'+pfTabs(c)+'</div>';
 }
-</script>
-<script>
-if("serviceWorker" in navigator){
-  window.addEventListener("load",function(){
-    navigator.serviceWorker.register("./sw.js").catch(function(){});
-  });
+
+/* ---------- Profil d'un autre utilisateur ---------- */
+function userView(u){
+  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
+  var mine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts});
+  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var col=prof.col||(mine.length&&mine[0].col)||hashColor(String(u.uid||name));
+  var bio=prof.bio||"",top=prof.top||[null,null,null,null,null];
+  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
+  var back='S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()';
+  var c={own:false,mine:mine,mr:mr,top:top,
+    likes:Array.isArray(prof.likes)?prof.likes:[],wish:Array.isArray(prof.wish)?prof.wish:[],friends:Array.isArray(prof.friends)?prof.friends:[],
+    pt:S.viewPt||"prof",sub:S.viewSub||null,clearSub:"S.viewSub=null;render()"};
+  c.setPt=function(t){return "S.viewPt='"+t+"';S.viewSub=null;render()"};
+  c.setSub=function(t){return "S.viewSub='"+t+"';render()"};
+  c.nfr=c.friends.length;
+  if(isM&&c.sub)return pfSub(c);
+  var follow=isF
+    ?'<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">'+(isM?'Ami ✓ · Ne plus suivre':'Suivi ✓ · Ne plus suivre')+'</button>'
+    :'<button class="pf-follow" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
+  c.idcard=pfIdCard(c,name,col,bio,follow);
+  var head='<div class="pf-top"><button class="pf-ic" onclick="'+back+'">'+pfi("back")+'</button><h1>'+esc(name)+'</h1><span class="sp"></span></div>';
+  if(isM)return '<div class="pf">'+head+pfTabs(c)+'</div>';
+  return '<div class="pf">'+head+c.idcard+pfTop(top,false,"Top 5")+
+    '<div class="pf-card pf-links" style="margin-top:18px"><div class="pf-lr" style="cursor:default"><span>Restaurants notés</span><b>'+mr.length+'</b></div></div>'+
+    '<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses restos à tester.</div></div>';
+}
+
+/* ---------- Réglages ---------- */
+function pfSettings(){
+  var acc=S.user&&!S.user.isAnonymous,dark=ls("lr_theme")==="dark";
+  var h='<div class="pf pf-set-page"><div class="pf-bar"><button class="pf-ic" onclick="S.pt=\'prof\';render()">'+pfi("back")+'</button><h1>Réglages</h1></div>';
+  h+='<div class="pf-h2" style="margin-top:6px">Apparence</div><div class="pf-card"><div class="pf-set"><span class="l">Mode sombre</span><button class="pf-toggle '+(dark?"on":"")+'" onclick="toggleTheme()"><i></i></button></div></div>';
+  h+='<div class="pf-h2">Pseudo</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="ps" placeholder="Ton pseudo unique" value="'+esc(S.pseudo)+'"><button class="pf-btn pri" onclick="setP()">Enregistrer</button></div></div>';
+  h+='<div class="pf-h2">Ma zone</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="pf-btn pri" onclick="setHome()">Enregistrer</button></div>'+
+    '<div class="pf-set"><span class="l">Position</span>'+(S.loc?'<span class="s">Activée ✓</span>':'<button class="pf-btn" onclick="getLoc()">Activer</button>')+'</div></div>';
+  h+='<div class="pf-h2">Compte</div><div class="pf-card">';
+  if(acc){
+    h+='<div class="pf-set"><span class="l">E-mail</span><span class="s">'+esc(S.user.email||"")+'</span></div>'+
+       '<div class="pf-set"><button class="link" onclick="logout()">Se déconnecter</button></div>'+
+       '<div class="pf-set"><button class="link red" onclick="delAcc()">Supprimer mon compte</button></div>';
+  } else {
+    h+='<div class="pf-set"><button class="link" onclick="S.guest=false;render()">Se connecter / S’inscrire</button></div>';
+  }
+  h+='</div>';
+  if(S.blocked.length){
+    h+='<div class="pf-h2">Bloqués</div>'+S.blocked.map(function(b,k){
+      return '<div class="pf-row"><div class="pf-meta"><div class="pf-nm"><span class="t">'+esc(b.n)+'</span></div></div><button class="pf-btn" onclick="unblk('+k+')">Débloquer</button></div>';
+    }).join("");
+  }
+  return h+'</div>';
 }
 </script>
 </body>
