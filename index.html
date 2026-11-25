@@ -3295,11 +3295,17 @@ function mpLocate(){
   getLoc();
 }
 function mpChips(){
-  function chip(c){
-    var on=S.filt.cats.indexOf(c.key)>-1||S.filt.cuisine.indexOf(c.key)>-1;
-    return '<button class="hm-chip '+(on?"on":"")+'" onclick="searchCat(\''+c.key+'\')"><img src="'+c.img+'" alt="" onerror="this.style.display=\'none\'">'+esc(c.label)+'</button>';
-  }
-  return '<div class="hm-chips">'+STYLE_CATS.map(chip).join("")+CUISINE_CATS.map(chip).join("")+'</div>';
+  var styleLine = '<div class="hm-chips">' + STYLE_CATS.map(function(c){
+    var on = S.filt.cats.indexOf(c.key) > -1 ? " on" : "";
+    return '<button class="hm-chip' + on + '" onclick="searchCat(\'' + c.key + '\')"><img src="' + c.img + '" alt="" onerror="this.style.display=\'none\'">' + esc(c.label) + '</button>';
+  }).join("") + '</div>';
+
+  var cuisineLine = '<div class="hm-chips" style="margin-top:4px">' + CUISINE_CATS.map(function(c){
+    var on = S.filt.cuisine.indexOf(c.key) > -1 ? " on" : "";
+    return '<button class="hm-chip' + on + '" onclick="searchCat(\'' + c.key + '\')"><img src="' + c.img + '" alt="" onerror="this.style.display=\'none\'">' + esc(c.label) + '</button>';
+  }).join("") + '</div>';
+
+  return styleLine + cuisineLine;
 }
 
 function mapPopularWeek(){
