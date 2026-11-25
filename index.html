@@ -3308,6 +3308,54 @@ function mpChips(){
   return '<div class="hm-chips">'+STYLE_CATS.map(chip).join("")+CUISINE_CATS.map(chip).join("")+'</div>';
 }
 
+function mapPopularWeek(){
+  var now = new Date();
+  var startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7)).getTime();
+  var weekReviews = allv().filter(function(x){ return (x.ts || 0) >= startOfWeek; });
+  var list = groups(weekReviews).sort(function(a, b){
+    return b.c - a.c || (b.s / b.c) - (a.s / a.c);
+  }).slice(0, 12);
+
+  list.forEach(function(o){
+    if(o.gPlaceId && !o.gPhoto && !S.gDetailsCache[o.gPlaceId]){
+      fetchGooglePlaceDetails(o);
+    }
+  });
+  return list;
+}
+
+function getPlaceOnlyPhoto(o){
+  var gpId = o.gPlaceId || (o.pid && o.pid.indexOf("gp:") === 0 ? o.pid.slice(3) : null);
+  var gDet = gpId ? S.gDetailsCache[gpId] : null;
+  return (gDet && gDet.photo) || o.gPhoto || o.photo || "";
+}
+function mapPopularWeekHTML(){
+  if(S.sr !== null || S.busy) return "";
+  var list = mapPopularWeek();
+  if(!list.length){
+    return '<h2>Populaires cette semaine</h2><div class="empty">Aucun avis cette semaine.</div>';
+  }
+  return '<h2>Populaires cette semaine</h2>' + list.map(function(o){
+    var p = {pid: o.pid, gPlaceId: o.gPlaceId, n: o.n, a: o.a, lat: o.lat, lng: o.lng, cat: o.cat, gPhoto: getPlaceOnlyPhoto(o)};
+    var avg = (o.s / o.c).toFixed(1).replace(".", ",");
+    var d = (S.loc && num(o.lat) && num(o.lng)) ? dist(S.loc.lat, S.loc.lng, o.lat, o.lng) : null;
+    var thumb = getPlaceOnlyPhoto(o);
+    var thumbHtml = thumb
+      ? '<img src="'+thumb+'" alt="" style="width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">'
+      : '<div style="width:52px;height:52px;border-radius:8px;background:'+getRestoColor(o)+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+ini(o.n)+'</div>';
+
+    return '<div class="card strict" onclick="openO('+hp(p)+')">' +
+      '<div style="display:flex;gap:10px;align-items:center">' +
+        thumbHtml +
+        '<div style="flex:1;min-width:0">' +
+          '<div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><span class="who">★ '+avg+'</span></div>' +
+          '<div class="who">'+(o.a ? esc(o.a)+' · ' : '')+o.c+' avis'+(d != null ? ' · <span class="dist">'+fmtD(d)+'</span>' : '')+'</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join("");
+}
+
 function explore(){
   if(S.sel)return place(S.sel);
   var hasQ=!!(S.sq||S.sr!==null);
