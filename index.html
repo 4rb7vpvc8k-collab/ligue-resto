@@ -142,14 +142,72 @@ button.chip.on{border-color:var(--ac);background:var(--ac);color:#192A3A}
 @keyframes slideInLeftSheet{from{transform:translateX(-100%);opacity:.85}to{transform:translateX(0);opacity:1}}
 .ovb.from-left{animation:slideInLeftSheet .28s cubic-bezier(.22,1,.36,1) forwards;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s ease}
 .ovb.from-left.exit-right{transform:translateX(100%);opacity:0}
-.lb-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:flex;flex-direction:column;justify-content:flex-end;animation:fadeInModal .18s ease-out}
-.lb-sheet{background:var(--bg);color:var(--tx);height:94vh;max-width:520px;width:100%;margin:0 auto;border-radius:16px 16px 0 0;display:flex;flex-direction:column;overflow:hidden;animation:slideUpSheet .24s cubic-bezier(.22,1,.36,1)}
-.lb-sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(25,42,58,.12)}
-.lb-sheet-hd .cancel-btn{background:none;border:0;color:rgba(25,42,58,.65);font-size:16px;cursor:pointer;padding:0;font-family:inherit}.lb-sheet-hd .sheet-title{font-size:16px;font-weight:700}
-.lb-sheet-search{padding:12px 16px 8px}.lb-sheet-search input{background:var(--ac2);border:1px solid rgba(25,42,58,.15);border-radius:10px;padding:10px 14px;font-size:16px;margin:0}
-.lb-sheet-body{flex:1;overflow-y:auto;padding:8px 16px 40px}.lb-sheet-body .card{box-shadow:none !important;margin-bottom:10px !important;border-radius:10px !important}
-.lb-recent-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(25,42,58,.5);margin:12px 0 6px}
-.lb-recent-row{padding:13px 0;border-bottom:1px solid rgba(25,42,58,.1);font-size:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+
+/* Modale Noter (Style harmonisé) */
+.lb-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.68);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;flex-direction:column;justify-content:flex-end;animation:fadeInModal .18s ease-out}
+.lb-sheet{background:var(--bg);color:var(--tx);height:94vh;max-width:520px;width:100%;margin:0 auto;border-radius:26px 26px 0 0;display:flex;flex-direction:column;overflow:hidden;animation:slideUpSheet .26s cubic-bezier(.22,1,.36,1);box-shadow:0 -10px 30px rgba(0,0,0,.22)}
+.lb-sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 14px;border-bottom:1px solid rgba(127,127,127,.14)}
+.lb-sheet-hd .cancel-btn{border:0;background:rgba(127,127,127,.14);color:inherit;font-size:14px;font-weight:700;cursor:pointer;padding:8px 14px;border-radius:99px;font-family:inherit;transition:transform .15s}
+.lb-sheet-hd .cancel-btn:active{transform:scale(.95)}
+.lb-sheet-hd .sheet-title{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.lb-sheet-search{padding:12px 16px 6px}
+.nt-search-box{display:flex;align-items:center;gap:10px;background:rgba(127,127,127,.14);border-radius:20px;padding:0 16px;height:52px}
+.nt-search-box svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55;flex-shrink:0}
+.nt-search-box input{border:0 !important;background:transparent !important;margin:0 !important;padding:0 !important;font-size:16px;outline:none;width:100%;color:inherit;border-radius:0 !important;box-shadow:none !important}
+.nt-search-x{border:0;background:none;color:inherit;opacity:.55;padding:4px;display:inline-flex;cursor:pointer}
+.lb-sheet-body{flex:1;overflow-y:auto;padding:10px 16px 48px;-webkit-overflow-scrolling:touch}
+
+.nt-place{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(127,127,127,.11);border-radius:22px;padding:14px 16px;margin-bottom:18px}
+.nt-place-info{flex:1;min-width:0}
+.nt-place-name{font-size:18px;font-weight:800;display:flex;align-items:center;gap:7px;line-height:1.2}
+.nt-place-addr{font-size:13px;opacity:.62;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-change-btn{border:0;background:rgba(127,127,127,.16);color:inherit;font:inherit;font-size:13px;font-weight:700;padding:8px 14px;border-radius:99px;cursor:pointer;flex-shrink:0;transition:transform .15s}
+.nt-change-btn:active{transform:scale(.95)}
+
+.nt-sec{margin-bottom:18px}
+.nt-lbl{font-size:13px;font-weight:700;opacity:.7;margin:0 0 8px 2px;display:flex;justify-content:space-between;align-items:center}
+.nt-chips{display:flex;flex-wrap:wrap;gap:8px}
+.nt-chip{border:0;background:rgba(127,127,127,.13);color:inherit;font:inherit;font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .15s,background .15s}
+.nt-chip:active{transform:scale(.96)}
+.nt-chip.on{background:var(--ac);color:#192A3A;font-weight:800;box-shadow:0 3px 10px rgba(229,184,63,.25)}
+
+.nt-rate-box{background:rgba(127,127,127,.1);border-radius:22px;padding:16px 12px 14px;margin-bottom:18px;text-align:center}
+.nt-rate-box .rate{margin:0 auto 6px}
+.nt-rate-hint{font-size:13px;font-weight:600;opacity:.65}
+
+.nt-textarea{width:100%;border:0 !important;background:rgba(127,127,127,.12) !important;color:inherit;font:inherit;font-size:15.5px;line-height:1.45;border-radius:20px !important;padding:14px 16px !important;min-height:96px;resize:vertical;outline:none;margin:0}
+.nt-textarea::placeholder{opacity:.5}
+
+.nt-photo-drop{display:flex;align-items:center;gap:12px;background:rgba(127,127,127,.12);border:1.5px dashed rgba(127,127,127,.3);border-radius:20px;padding:14px 16px;cursor:pointer;transition:background .15s}
+.nt-photo-drop:active{background:rgba(127,127,127,.18)}
+.nt-photo-ic{width:40px;height:40px;border-radius:50%;background:rgba(127,127,127,.16);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.nt-photo-ic svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nt-photo-txt b{display:block;font-size:14.5px;font-weight:700}
+.nt-photo-txt small{display:block;font-size:12px;opacity:.6;margin-top:1px}
+.nt-photo-wrap{position:relative;border-radius:20px;overflow:hidden;background:rgba(127,127,127,.12)}
+.nt-photo-wrap img{width:100%;height:210px;object-fit:cover;display:block}
+.nt-photo-del{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.68);color:#fff;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+.nt-seg{display:flex;background:rgba(127,127,127,.14);border-radius:18px;padding:4px;gap:4px}
+.nt-seg button{flex:1;border:0;background:transparent;color:inherit;font:inherit;font-size:14px;font-weight:700;padding:11px 8px;border-radius:14px;cursor:pointer;opacity:.7;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all .18s ease}
+.nt-seg button.on{background:var(--ac);color:#192A3A;opacity:1;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+
+.nt-hint{font-size:12.5px;opacity:.6;margin-top:8px;padding:0 2px;line-height:1.4}
+.nt-submit{width:100%;border:0;border-radius:16px;background:var(--ac);color:#192A3A;font:inherit;font-size:16px;font-weight:800;padding:16px;margin-top:6px;cursor:pointer;box-shadow:0 6px 20px rgba(229,184,63,.25);transition:transform .15s}
+.nt-submit:active{transform:scale(.98)}
+
+.nt-manual-card{background:rgba(127,127,127,.1);border-radius:22px;padding:16px}
+.nt-manual-card input{border:0 !important;background:rgba(127,127,127,.15) !important;border-radius:16px !important;padding:13px 15px !important;margin-bottom:10px !important}
+
+.nt-recent-hd{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 8px}
+.lb-recent-title{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin:0}
+.nt-recent-item{display:flex;align-items:center;gap:12px;background:rgba(127,127,127,.1);border-radius:18px;padding:12px 14px;margin-bottom:8px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s}
+.nt-recent-item:active{transform:scale(.98)}
+.nt-recent-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;opacity:.55;flex-shrink:0}
+.nt-empty{text-align:center;padding:38px 18px;border-radius:24px;background:rgba(127,127,127,.1);margin-top:10px}
+.nt-empty b{display:block;font-size:18px;margin-bottom:6px}
+.nt-empty p{margin:0;font-size:14px;opacity:.65;line-height:1.45}
+
 @keyframes slideUpSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes fadeInModal{from{opacity:0}to{opacity:1}}
 
@@ -1256,20 +1314,33 @@ function openFilters(){var f=S.filt;document.getElementById("sheet").innerHTML='
 function applyFilters(){closeSheet();doSearch()}
 function resetFilters(){S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};openFilters()}
 
-function resHTML(){if(S.busy)return '<div class="empty">Recherche en cours…</div>';if(S.sr===null)return "";
+function resHTML(){if(S.busy)return '<div class="nt-empty"><b>Recherche en cours…</b></div>';if(S.sr===null)return "";
 var h="";
 var ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
 if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
 var displayList = S.sr;
-if(!displayList.length)h+='<div class="empty">Aucun resto trouvé dans cette zone. Essaie d\'élargir le rayon ou active ta position.</div>';
+if(!displayList.length)h+='<div class="nt-empty"><b>Aucun resto trouvé</b><p>Essaie un autre nom ou ajoute-le manuellement ci-dessous.</p></div>';
 h+=displayList.map(function(p,i){
   var dd=p.d!=null?p.d:p.dc;
   var rightBadge = p.c
-    ? '<div class="stars">'+stars(p.avg)+'</div>'
-    : (p.gRating ? '<span class="who">Google '+String(p.gRating).replace(".",",")+'★ ('+p.gCount+')</span>' : '<span class="who">Pas encore d’avis</span>');
-  return '<div class="card asym" onclick="tapIndex('+i+')"><div class="row"><div class="resto">'+esc(p.n)+dot(p)+'</div>'+rightBadge+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+(dd!=null?' · <span class="dist">'+fmtD(dd)+'</span>':'')+'</div></div>';
+    ? '<span class="s">★</span> '+p.avg.toFixed(1).replace(".",",")+' <small>· '+p.c+' avis</small>'
+    : (p.gRating ? '<small>Google</small> <span class="s">★</span> '+String(p.gRating).replace(".",",")+' <small>('+(p.gCount||0)+')</small>' : '<small>Pas encore d’avis</small>');
+  if(dd!=null) rightBadge += ' <small>· '+fmtD(dd)+'</small>';
+  var c = getRestoColor(p);
+  var thStyle = p.gPhoto
+    ? 'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.35)),url('+p.gPhoto+')'
+    : 'background-image:linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+  return '<div class="mp-card" onclick="tapIndex('+i+')">'+
+    '<div class="mp-th" style="'+thStyle+'">'+(p.gPhoto?'':esc((p.n||"?").charAt(0).toUpperCase()))+'</div>'+
+    '<div class="mp-main">'+
+      '<div class="mp-nm"><span class="t">'+esc(p.n)+'</span>'+dot(p)+'</div>'+
+      '<div class="mp-ad">'+esc(p.a||"Adresse non renseignée")+'</div>'+
+      '<div class="mp-mt">'+rightBadge+'</div>'+
+    '</div>'+
+    '<span class="mp-chev">'+mpi("chev")+'</span>'+
+  '</div>';
 }).join("");
-if(S.tab==="add" || S.noteOpen)h+='<button class="btn alt" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
+if(S.tab==="add" || S.noteOpen)h+='<button class="lgx-cta alt" style="margin-top:6px" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';return h}
 
 function tapIndex(i){
   var p = (S.sr||[])[i];
@@ -1287,8 +1358,8 @@ function tapIndex(i){
 
 function getLoc(){if(!navigator.geolocation){S.locDenied=true;render();return}
 navigator.geolocation.getCurrentPosition(function(p){S.loc={lat:p.coords.latitude,lng:p.coords.longitude};if(S.sr)S.sr=sortP(S.sr);render()},function(){S.locDenied=true;render()},{timeout:10000,maximumAge:300000})}
-function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="sub">📍 Position refusée.</div>';
-return '<div class="card strict"><div class="sub">📍 Autorise ta position pour voir les restos proches.</div><button class="btn" onclick="getLoc()">Activer ma position</button></div>'}
+function locCard(){if(S.loc)return '';if(S.locDenied)return '<div class="mp-banner"><span>Position refusée. Active-la dans les réglages de ton téléphone.</span></div>';
+return '<div class="mp-banner">'+mpi("pin")+'<span>Active ta position pour trouver les restos autour de toi.</span><button onclick="getLoc()">Activer</button></div>'}
 
 function sbar(ph){return '<div class="row2" style="margin-bottom:10px"><input id="sq" placeholder="'+(ph||"Restaurant, adresse, rue, ville…")+'" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()"><button class="btn" onclick="doSearch()">🔍</button><button class="btn alt" onclick="openFilters()" title="Filtres"><svg style="width:16px;height:16px;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>'+(filtOn()?'•':'')+'</button></div>'}
 
@@ -1576,23 +1647,84 @@ function openR(encPid){var pid=decodeURIComponent(encPid);var all=(S.sr||[]);var
 
 function add(){var f=S.form;if(!f.place){
 var h='<h2>J’ai mangé où ?</h2>'+locCard();
-if(S.manual)return h+'<div class="card strict"><div class="sub">Ajoute ton resto toi-même :</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour</button></div>';
+if(S.manual)return h+'<div class="nt-manual-card"><div class="nt-lbl">Ajoute ton resto toi-même</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button class="nt-submit" onclick="manualOk()">Continuer</button><button class="back" style="display:block;margin:10px auto 0" onclick="S.manual=false;render()">← Retour</button></div>';
 return h+sbar()+"<div id='res'>"+resHTML()+"</div>"}
 var p=f.place;
 f.st = (f.st || []).slice(0, MAX_STICKERS);
 var allCatMap=Object.assign({}, STYLE_CAT_MAP, CUISINE_CAT_MAP);
-return '<h2>J’ai mangé où ?</h2><div class="card strict"><div class="row"><div><div class="resto">'+esc(p.n)+dot(p)+'</div><div class="who">📍 '+esc(p.a||"Adresse non renseignée")+'</div></div><button class="chip" onclick="S.form.place=null;render()">Changer</button></div></div>'+
-'<div class="sub">Catégorie :</div><div class="chips" style="margin:0 0 10px">'+Object.keys(allCatMap).map(function(k){return '<button class="chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+';margin-right:4px"></span>':'')+allCatMap[k].label+'</button>'}).join("")+'</div>'+
-'<div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div><div id="rl" class="sub" style="text-align:center">'+rlabel(f.note)+'</div>'+
-'<textarea placeholder="Ton avis..." oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea>'+
-'<div class="sub">📸 Photo (optionnelle) :</div>'+
-'<input type="file" accept="image/*" onchange="handlePhoto(event)" style="margin-bottom:6px">'+
-(f.photo?'<div class="photo-container"><img src="'+f.photo+'" class="photo-preview"><button type="button" class="photo-del" onclick="removePhoto()">✕</button></div>':'')+
-'<div class="sub" style="margin-top:8px">Mode :</div><div class="seg"><button class="chip '+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">'+ICONS.dine+' Sur place</button><button class="chip '+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">'+ICONS.delivery+' Livraison</button></div>'+
-'<div class="sub">Stickers ('+f.st.length+'/'+MAX_STICKERS+' max) :</div><div class="chips" style="margin:0 0 14px">'+stk().map(function(s,i){return '<button class="chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>'}).join("")+'</div>'+
-'<div class="sub">Visibilité :</div><div class="seg"><button class="chip '+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">🌍 Tout le monde</button><button class="chip '+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">🔒 Uniquement mes ligues</button></div>'+
-(f.vis==="lg"?(S.leagues.length?'<div class="sub" style="margin-bottom:4px">Choisis une ou plusieurs ligues :</div><div class="chips" style="margin:0 0 12px">'+S.leagues.map(function(c){return '<button class="chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+(tlsOf().indexOf(c)>-1?'✓ ':'')+esc(leagueLabel(c))+'</button>'}).join("")+'</div>':'<div class="sub">⚠️ Aucune ligue rejointe.</div>'):'<div class="sub" style="margin-bottom:10px">Visible par tous les utilisateurs et dans toutes tes ligues.</div>')+
-'<button class="btn" onclick="send()">Publier</button>'}
+var camSvg='<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
+var globeSvg='<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+var lockSvg='<svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+
+return '<h2>J’ai mangé où ?</h2>'+
+'<div class="nt-place">'+
+  '<div class="nt-place-info">'+
+    '<div class="nt-place-name"><span>'+esc(p.n)+'</span>'+dot(p)+'</div>'+
+    '<div class="nt-place-addr">'+esc(p.a||"Adresse non renseignée")+'</div>'+
+  '</div>'+
+  '<button type="button" class="nt-change-btn" onclick="S.form.place=null;render()">Changer</button>'+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<div class="nt-lbl">Catégorie</div>'+
+  '<div class="nt-chips">'+Object.keys(allCatMap).map(function(k){
+    return '<button type="button" class="nt-chip '+((f.cat||"trad_low")===k?"on":"")+'" onclick="S.form.cat=\''+k+'\';render()">'+(STYLE_CAT_MAP[k]?'<span class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+'"></span>':'')+allCatMap[k].label+'</button>';
+  }).join("")+'</div>'+
+'</div>'+
+
+'<div class="nt-rate-box">'+
+  '<div id="rt" class="rate" onpointerdown="rdown(event)" onpointermove="rmove(event)" onpointerup="rup(event)" onpointercancel="rup(event)">'+rcells(f.note)+'</div>'+
+  '<div id="rl" class="nt-rate-hint">'+rlabel(f.note)+'</div>'+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<textarea class="nt-textarea" placeholder="Raconte ton expérience, les plats commandés…" oninput="S.form.avis=this.value">'+esc(f.avis||"")+'</textarea>'+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<div class="nt-lbl">Photo (optionnelle)</div>'+
+  '<input id="nt-photo-inp" type="file" accept="image/*" onchange="handlePhoto(event)" style="display:none">'+
+  (f.photo
+    ? '<div class="nt-photo-wrap"><img src="'+f.photo+'"><button type="button" class="nt-photo-del" onclick="removePhoto()">✕</button></div>'
+    : '<div class="nt-photo-drop" onclick="document.getElementById(\'nt-photo-inp\').click()">'+
+        '<div class="nt-photo-ic">'+camSvg+'</div>'+
+        '<div class="nt-photo-txt"><b>Ajouter une photo</b><small>Un plat, la devanture ou l’ambiance</small></div>'+
+      '</div>'
+  )+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<div class="nt-lbl">Mode</div>'+
+  '<div class="nt-seg">'+
+    '<button type="button" class="'+(f.mode!=="deliv"?"on":"")+'" onclick="setMode(\'place\')">'+ICONS.dine+' Sur place</button>'+
+    '<button type="button" class="'+(f.mode==="deliv"?"on":"")+'" onclick="setMode(\'deliv\')">'+ICONS.delivery+' Livraison</button>'+
+  '</div>'+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<div class="nt-lbl"><span>Stickers</span><span>'+f.st.length+'/'+MAX_STICKERS+' max</span></div>'+
+  '<div class="nt-chips">'+stk().map(function(s,i){
+    return '<button type="button" class="nt-chip '+(f.st.indexOf(s)>-1?"on":"")+'" onclick="tog('+i+')">'+esc(s)+'</button>';
+  }).join("")+'</div>'+
+'</div>'+
+
+'<div class="nt-sec">'+
+  '<div class="nt-lbl">Visibilité</div>'+
+  '<div class="nt-seg">'+
+    '<button type="button" class="'+(f.vis!=="lg"?"on":"")+'" onclick="S.form.vis=\'pub\';render()">'+globeSvg+' Tout le monde</button>'+
+    '<button type="button" class="'+(f.vis==="lg"?"on":"")+'" onclick="S.form.vis=\'lg\';render()">'+lockSvg+' Mes ligues</button>'+
+  '</div>'+
+  (f.vis==="lg"
+    ? (S.leagues.length
+        ? '<div class="nt-lbl" style="margin-top:12px">Choisis une ou plusieurs ligues</div><div class="nt-chips">'+S.leagues.map(function(c){
+            return '<button type="button" class="nt-chip '+(tlsOf().indexOf(c)>-1?"on":"")+'" onclick="togLgForm(\''+esc(c)+'\')">'+(tlsOf().indexOf(c)>-1?'✓ ':'')+esc(leagueLabel(c))+'</button>';
+          }).join("")+'</div>'
+        : '<div class="nt-hint">⚠️ Aucune ligue rejointe pour l’instant.</div>')
+    : '<div class="nt-hint">Visible par tous les utilisateurs et dans toutes tes ligues.</div>'
+  )+
+'</div>'+
+
+'<button type="button" class="nt-submit" onclick="send()">Publier</button>';}
 
 function tlsOf(){
   if(S.form.tls !== undefined) return S.form.tls;
@@ -2306,115 +2438,59 @@ if(S.pt==="agenda")return h+agenda(mine);
 if(S.pt==="wish")return h+(S.wish.length?grid(S.wish):'<div class="empty">Liste vide.</div>');
 if(S.sub==="friends")return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">Amis & suivis ('+S.friends.length+')</div>'+(S.friends.length?S.friends.map(function(f){var mut=isFollower(f.uid);return '<div class="card strict row"><span style="cursor:pointer" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><b style="text-decoration:underline">'+esc(f.pseudo)+'</b><span class="status-badge">'+(mut?'Ami':'Suivi')+'</span></span><button class="chip" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>'}).join(""):'<div class="empty">Aucun ami.</div>');
 if(S.sub){var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat}});return h+'<button class="back" onclick="S.sub=null;render()">← Retour</button><div class="sh">'+(S.sub==="likes"?"Likes":"Restaurants")+' ('+L.length+')</div>'+(L.length?grid(L):'<div class="empty">Rien.</div>')}
-h+='<div class="card strict"><div class="av edit" onclick="newCol()" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Pas de bio.</span>')+'</div><button class="back" style="display:block;margin:6px auto 0" onclick="editBio()">'+ICONS.edit+' Modifier</button></div>';
+h+='<div class="card strict"><div class="av edit" style="background:'+(S.col||"#E5B83F")+';color:#F4F1E9" onclick="newCol()" title="Changer de couleur">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div><div style="text-align:center">'+(S.bio?esc(S.bio):'<span class="sub">Aucune bio.</span>')+'<div><a style="color:var(--ac);font-size:13px;cursor:pointer" onclick="editBio()">Modifier la bio</a></div></div></div>';
 h+='<div class="sh">Mon top 5</div><div class="podium">'+slot(1)+slot(0)+slot(2)+'</div><div class="pod2">'+slot(3)+slot(4)+'</div>';
-h+='<div class="sh">Derniers avis</div>'+profileReviewsList(mine);
+h+='<div class="sh">Mes derniers avis</div>'+profileReviewsList(mine);
 return h+'<div class="lr" onclick="S.sub=\'rest\';render()" style="margin-top:14px"><span>Restaurants</span><b>'+mr.length+' ›</b></div><div class="lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div><div class="lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+mutualFriendsCount+' ›</b></div>'}
 
-function loadv(){return '<div class="empty">Chargement…</div>'}
-function welcome(){var up=S.wm==="up";
-return '<div class="card strict"><div class="seg"><button class="chip '+(!up?"on":"")+'" onclick="S.wm=\'in\';render()">Connexion</button><button class="chip '+(up?"on":"")+'" onclick="S.wm=\'up\';render()">Inscription</button></div>'+(up?'<input id="wps" placeholder="Ton pseudo unique" value="'+esc(S.pseudo)+'">':'')+'<input id="wem" type="email" placeholder="E-mail"><input id="pw" type="password" placeholder="Mot de passe"><button class="btn" onclick="wSubmit()">'+(up?"Créer mon compte":"Se connecter")+'</button>'+(up?'':'<button class="back" onclick="resetPw()">Mot de passe oublié ?</button>')+'</div><div style="text-align:center"><button class="back" onclick="S.guest=true;render()">Continuer sans compte</button></div>'}
-function onb(){return '<h2>Bienvenue '+esc(S.pseudo)+' 👋</h2><div class="card strict"><div class="sub">📍 Position :</div>'+(S.loc?'<div class="sub">✅ Activée</div>':'<button class="btn" onclick="getLoc()">Activer</button>')+'<input id="odp" placeholder="Département ou ville" value="'+esc(S.dept)+'" oninput="S.dept=this.value"><button class="btn" onclick="onbDone()">Continuer</button><button class="back" onclick="S.dept=\'\';onbDone()">Passer</button></div>'}
-function geocode(q,cb){
-  loadGoogleMaps(function(){
-    if(!window.google){ cb(null); return; }
-    var geo = new google.maps.Geocoder();
-    geo.geocode({address: q, region: "FR"}, function(res, status){
-      if(status === "OK" && res && res[0]){
-        var l = res[0].geometry.location;
-        cb({lat: l.lat(), lng: l.lng()});
-      } else {
-        cb(null);
-      }
-    });
-  });
-}
-function onbDone(){var d=(S.dept||"").trim(),u=S.user;function fin(){if(u)ls("lr_onb_"+u.uid,"1");S.tab="home";save();render()}
-if(!d){S.home=null;fin();return}geocode(d,function(h){if(h)S.home=h;fin()})}
-function setHome(){var d=val("dp");S.dept=d;if(!d){S.home=null;save();render();return}geocode(d,function(h){if(h)S.home=h;save();render()})}
-function wSubmit(){
-  var up=S.wm==="up",e=val("wem"),p=val("pw"),n=up?val("wps"):"";
-  if(!e||!p||(up&&!n)){alert("Champs requis");return}
-  var a=firebase.auth();
-  if(!up){a.signInWithEmailAndPassword(e,p).catch(authErr);return}
-  var createPromise = (a.currentUser&&a.currentUser.isAnonymous)
-    ? a.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(e,p))
-    : a.createUserWithEmailAndPassword(e,p);
-  createPromise.then(function(u){
-    S.user=u.user||u;S.uid=S.user.uid;S.col=newColor();S.guest=false;
-    claimPseudo(n, function(ok, msgOrName){
-      if(!ok){
-        alert(msgOrName);
-        S.pseudo="";
-        S.profLoaded=true;
-        save();
-        S.tab="me";
-        S.pt="set";
-        render();
-        return;
-      }
-      S.pseudo=msgOrName;
-      S.profLoaded=true;
-      save();
-      render();
-    });
-  }).catch(authErr);
-}
-function val(i){var e=document.getElementById(i);return e?e.value.trim():""}
-function authErr(e){alert("Erreur d'authentification : "+(e.code||"inconnue"))}
-function resetPw(){var e=val("wem");if(!e){alert("Entre ton e-mail");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("E-mail envoyé ✉️")}).catch(authErr)}
-function logout(){if(S.unsubFollows){try{S.unsubFollows()}catch(e){}S.unsubFollows=null}S.user=null;S.pseudo="";S.leagues=[];S.league="";S.leagueNames={};S.leaguePhotos={};S.leagueNotifs={};S.leagueOpen=false;S.priv={};S.dept="";S.home=null;S.blocked=[];S.likes=[];S.wish=[];S.friends=[];S.followers=[];S.ignoredFollows=[];S.top=[null,null,null,null,null];S.bio="";S.col=newColor();S.profLoaded=false;S.guest=false;save();firebase.auth().signOut().then(function(){S.tab="me";render()})}
-function delAcc(){if(!confirm("Supprimer ton compte ?"))return;var u=firebase.auth().currentUser;var oldKey=S.pseudo?normalizePseudoKey(S.pseudo):"";var delPseudo=oldKey?S.fdb.collection("pseudos").doc(oldKey).delete().catch(function(){}):Promise.resolve();delPseudo.then(function(){return S.fdb.collection("profiles").doc(u.uid).delete().catch(function(){})}).then(function(){return u.delete()}).then(function(){logout()}).catch(function(){alert("Suppression impossible.")})}
+function openO(i){var p=S.hl[i];if(!p)return;S.sel=p;S.tab="map";render()}
+
 function setP(){
-  var p=document.getElementById("ps").value.trim();
-  if(!p){alert("Pseudo requis");return}
-  claimPseudo(p, function(ok, msgOrName){
-    if(!ok){ alert(msgOrName); return; }
-    S.pseudo=msgOrName;
+  var p = document.getElementById("ps").value.trim();
+  if(!p){ alert("Pseudo requis"); return; }
+  claimPseudo(p, function(ok, res){
+    if(!ok){ alert(res); return; }
+    S.pseudo = res;
     save();
-    S.pt="prof";
-    S.tab="home";
+    if(S.tab==="me" && S.pt==="set") S.pt="prof";
     render();
   });
 }
 
-function allv(){var a=S.all.slice();Object.keys(S.priv).forEach(function(c){a=a.concat(S.priv[c])});var seen={};return a.filter(vis).filter(function(x){var k=x._id||(x.uid+'|'+x.ts+'|'+(x.pid||x.resto));if(seen[k])return false;seen[k]=1;return true})}
-function lrev(c){return S.all.filter(function(x){return lg(x).indexOf(c)>-1}).concat(S.priv[c]||[]).filter(vis)}
-function subL(){
-  if(!S.fdb) return;
-  S.leagues.forEach(function(c){
-    if(S.unsubs[c]) return;
-    S.fdb.collection("leagues").doc(c).onSnapshot(function(doc){
-      if(doc.exists){
-        var d = doc.data() || {};
-        if(d.name) S.leagueNames[c] = d.name;
+function setHome(){var q=document.getElementById("dp").value.trim();S.dept=q;if(!q){S.home=null;save();render();return}
+fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=fr&q="+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(d){S.home=d[0]?{lat:+d[0].lat,lng:+d[0].lon}:null;save();render()}).catch(function(){save();render()})}
+
+function allv(){var m={};S.all.forEach(function(x){m["p_"+x._id]=x});Object.keys(S.priv).forEach(function(c){(S.priv[c]||[]).forEach(function(x){m["l_"+c+"_"+x._id]=x})});return Object.keys(m).map(function(k){return m[k]}).filter(vis)}
+function lrev(c){var m={};S.all.forEach(function(x){if(lg(x).indexOf(c)>-1)m["p_"+x._id]=x});(S.priv[c]||[]).forEach(function(x){m["l_"+c+"_"+x._id]=x});return Object.keys(m).map(function(k){return m[k]}).filter(vis).sort(function(a,b){return b.ts-a.ts})}
+
+function subL(){if(!S.fdb)return;S.leagues.forEach(function(c){
+  if(S.unsubs[c])return;
+  S.unsubs[c]=S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(s){
+    var a=[];s.forEach(function(d){var x=d.data();x._id=d.id;x._p=1;x._lg=c;a.push(x)});S.priv[c]=a;refresh();
+  },function(){});
+  S.fdb.collection("leagues").doc(c).get().then(function(doc){
+    if(doc.exists){
+      var d = doc.data() || {};
+      var changed = false;
+      if(d.name && S.leagueNames[c] !== d.name){ S.leagueNames[c] = d.name; changed = true; }
+      if(typeof d.coverPhoto === "string" && (S.leaguePhotos[c] || "") !== d.coverPhoto){
         if(d.coverPhoto) S.leaguePhotos[c] = d.coverPhoto;
         else delete S.leaguePhotos[c];
-        save();
-        refresh();
+        changed = true;
       }
-    }, function(){});
-    S.unsubs[c] = S.fdb.collection("leagues/"+c+"/reviews").onSnapshot(function(q){
-      S.priv[c] = q.docs.map(function(d){
-        var x = d.data();
-        x._p = true;
-        x._lg = c;
-        x._id = d.id;
-        return x;
-      });
-      refresh();
-    }, function(){});
-  });
-}
+      if(changed){ save(); refresh(); }
+    }
+  }).catch(function(){});
+})}
 
 function subFollows(){
   if(!S.fdb || !S.uid) return;
-  if(S.unsubFollows){ try{ S.unsubFollows(); }catch(e){} S.unsubFollows = null; }
-  S.unsubFollows = S.fdb.collection("follows").where("to", "==", S.uid).onSnapshot(function(q){
+  if(S.unsubFollows){ try{ S.unsubFollows(); }catch(e){} }
+  S.unsubFollows = S.fdb.collection("follows").where("to", "==", S.uid).onSnapshot(function(snap){
     var arr = [];
-    q.forEach(function(doc){
+    snap.forEach(function(doc){
       var d = doc.data() || {};
-      if(d.from && d.from !== S.uid){
+      if(d.from){
         arr.push({uid: d.from, pseudo: d.fromPseudo || "Utilisateur", ts: d.ts || 0});
       }
     });
@@ -2424,985 +2500,672 @@ function subFollows(){
   }, function(){});
 }
 
-function renderLetterboxdFeed(reviews){
-  if(!reviews || reviews.length === 0) return '<div style="text-align:center;padding:20px;color:#888">Aucun avis récent</div>';
+function unsubAll(){Object.keys(S.unsubs).forEach(function(c){try{S.unsubs[c]()}catch(e){}});S.unsubs={};S.priv={};if(S.unsubFollows){try{S.unsubFollows()}catch(e){}S.unsubFollows=null}}
 
-  var html = '<div class="hs">';
-  reviews.slice(0, 20).forEach(function(x){
-    var idx = ri(x);
-    if(x.photo) {
-      html += '<div class="lb-card" style="flex:0 0 155px;scroll-snap-align:start" onclick="openReviewDetail('+idx+')">'+
-        '<img src="'+x.photo+'" class="lb-poster">'+
-        '<div class="lb-info">'+
-          '<div class="lb-resto">'+dot(x)+' '+esc(x.resto)+'</div>'+
-          '<div class="lb-meta"><span>'+esc(x.pseudo)+'</span><div class="stars" style="font-size:10px;">'+stars(x.note)+'</div></div>'+
-        '</div>'+
-      '</div>';
-    } else {
-      html += '<div class="lb-card text-only" style="flex:0 0 155px;scroll-snap-align:start" onclick="openReviewDetail('+idx+')">'+
-        '<div style="font-size:28px;margin-bottom:6px;">🍽️</div>'+
-        '<div class="lb-resto" style="font-size:15px;font-weight:800;margin-bottom:4px;">'+dot(x)+' '+esc(x.resto)+'</div>'+
-        '<div class="lb-meta" style="width:100%;justify-content:center;gap:6px;margin-top:auto;font-size:11px;">'+
-          '<span style="font-weight:700;">'+esc(x.pseudo)+'</span>'+
-          '<div class="stars" style="font-size:10px;">'+stars(x.note)+'</div>'+
-        '</div>'+
-      '</div>';
-    }
+function welcome(){var s=S.wm==="up";return status()+'<div class="big">'+(s?'Créer un compte':'Connexion')+'</div><div class="sub">Retrouve tes avis et tes ligues sur tous tes appareils.</div><div class="card strict"><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Mot de passe'+(s?' (6 caractères min)':'')+'"><button class="btn" onclick="'+(s?'signup()':'login()')+'">'+(s?'S’inscrire':'Se connecter')+'</button>'+(s?'':'<div style="text-align:center;margin-top:10px"><a style="color:var(--ac);font-size:13px;cursor:pointer" onclick="forgot()">Mot de passe oublié ?</a></div>')+'</div><button class="btn alt" onclick="S.wm=\''+(s?'in':'up')+'\';render()">'+(s?'Déjà un compte ? Se connecter':'Pas de compte ? S’inscrire')+'</button><div style="text-align:center;margin-top:14px"><a style="color:var(--mut);font-size:13px;cursor:pointer" onclick="S.guest=true;render()">Continuer sans compte</a></div>'}
+
+function onb(){return '<div class="big">Bienvenue sur Belly </div><div class="sub">Configure ton profil en 10 secondes.</div><div class="card strict"><div class="sub">1. Choisis un pseudo unique</div><input id="obp" placeholder="Ex : Léo, Camille..." value="'+esc(S.pseudo)+'"><div class="sub">2. Ta ville ou département (optionnel)</div><input id="obd" placeholder="Ex : Paris, 69, Lyon..." value="'+esc(S.dept)+'"><button class="btn" onclick="finishOnb()">C’est parti !</button></div>'}
+
+function finishOnb(){
+  var p=document.getElementById("obp").value.trim();
+  if(!p){alert("Choisis un pseudo !");return}
+  var q=document.getElementById("obd").value.trim();
+  claimPseudo(p, function(ok, res){
+    if(!ok){ alert(res); return; }
+    S.pseudo=res;
+    S.dept=q;
+    ls("lr_onb_"+S.user.uid,"1");
+    if(!q){S.home=null;save();render();return}
+    fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=fr&q="+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(d){S.home=d[0]?{lat:+d[0].lat,lng:+d[0].lon}:null;save();render()}).catch(function(){save();render()});
   });
-  html += '</div>';
-  return html;
 }
 
-function loadScripts(u,i,done){if(i>=u.length){done();return}var s=document.createElement("script");s.src=u[i];s.onload=function(){loadScripts(u,i+1,done)};s.onerror=function(){S.state="error";render()};document.head.appendChild(s)}
-var base="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/";
-function startDB(){S.fdb=firebase.firestore();S.state="ready";
-S.fdb.collection("reviews").orderBy("ts","desc").limit(300).onSnapshot(function(q){S.all=q.docs.map(function(d){var x=d.data();x._id=d.id;return x});S.state="ready";refresh()},function(){S.state="error";render()});
-S.fdb.collection("flags").onSnapshot(function(q){S.flags={};q.docs.forEach(function(d){S.flags[d.id]=(d.data().by||[]).length});refresh()},function(){});subL();subFollows()}
+function authErr(e){var c=e&&e.code||"";alert(c==="auth/invalid-email"?"Email invalide.":c==="auth/weak-password"?"Mot de passe trop court (6 caractères min).":c==="auth/email-already-in-use"?"Cet email est déjà utilisé.":c==="auth/wrong-password"||c==="auth/user-not-found"||c==="auth/invalid-credential"?"Email ou mot de passe incorrect.":"Erreur : "+(e.message||c))}
+function signup(){var e=document.getElementById("em").value.trim(),p=document.getElementById("pw").value;if(!e||!p){alert("Email et mot de passe requis.");return}firebase.auth().createUserWithEmailAndPassword(e,p).catch(authErr)}
+function login(){var e=document.getElementById("em").value.trim(),p=document.getElementById("pw").value;if(!e||!p){alert("Email et mot de passe requis.");return}firebase.auth().signInWithEmailAndPassword(e,p).catch(authErr)}
+function forgot(){var e=document.getElementById("em").value.trim();if(!e){alert("Entre ton email d’abord.");return}firebase.auth().sendPasswordResetEmail(e).then(function(){alert("Email de réinitialisation envoyé !")}).catch(authErr)}
+function logout(){firebase.auth().signOut()}
+function delAcc(){var u=S.user;if(!u)return;if(!confirm("Supprimer définitivement ton compte ?"))return;var oldKey = S.pseudo ? normalizePseudoKey(S.pseudo) : "";var pDel = oldKey ? S.fdb.collection("pseudos").doc(oldKey).delete().catch(function(){}) : Promise.resolve();pDel.then(function(){return S.fdb.collection("profiles").doc(u.uid).delete()}).catch(function(){}).then(function(){return u.delete()}).catch(function(){alert("Déconnecte-toi et reconnecte-toi avant de supprimer ton compte.")})}
 
-function loadProfile(u){S.fdb.collection("profiles").doc(u.uid).get().then(function(d){var p=d.exists?d.data():{};
-if(p.pseudo){S.pseudo=p.pseudo;ls("lr_onb_"+u.uid,"1")}(p.leagues||[]).forEach(function(c){if(S.leagues.indexOf(c)<0)S.leagues.push(c)});
-if(p.leagueNames){S.leagueNames=Object.assign({},S.leagueNames||{},p.leagueNames)}
-if(p.leagueNotifs){S.leagueNotifs=Object.assign({},S.leagueNotifs||{},p.leagueNotifs)}
-if(!S.league&&S.leagues.length)S.league=S.leagues[0];(p.blocked||[]).forEach(function(b){if(!isB(b.u))S.blocked.push(b)});if(p.likes)S.likes=p.likes;if(p.wish)S.wish=p.wish;if(p.friends)S.friends=p.friends;if(p.ignoredFollows)S.ignoredFollows=p.ignoredFollows;if(p.top)S.top=p.top;if(p.bio)S.bio=p.bio;if(p.col)S.col=p.col;if(p.dept)S.dept=p.dept;if(p.home)S.home=p.home;save();subL();subFollows()}).catch(function(){}).then(function(){S.profLoaded=true;S.authReady=true;S.tab=S.pseudo?"home":"me";render()})}
-
-render();
-try{if(navigator.permissions)navigator.permissions.query({name:"geolocation"}).then(function(r){if(r.state==="granted")getLoc()}).catch(function(){})}catch(e){}
-loadScripts([base+"firebase-app-compat.min.js",base+"firebase-auth-compat.min.js",base+"firebase-firestore-compat.min.js"],0,function(){
-try{firebase.initializeApp(CFG);firebase.auth().onAuthStateChanged(function(u){
-if(!u){S.user=null;firebase.auth().signInAnonymously().catch(function(){S.state="error";render()});return}
-S.user=u;S.uid=u.uid;if(!S.fdb)startDB();else subFollows();
-if(!u.isAnonymous)loadProfile(u);else{S.authReady=true;render()}})}catch(e){S.state="error";render()}});
-
-// --- Modale "Noter" style Letterboxd ---
-function getRecentSearches(){
-  try { return JSON.parse(localStorage.getItem("lr_recent_searches") || "[]"); }
-  catch(e){ return []; }
+function loadProf(u){S.fdb.collection("profiles").doc(u.uid).get().then(function(d){if(d.exists){var x=d.data();S.pseudo=x.pseudo||S.pseudo;S.leagues=x.leagues||[];S.leagueNames=x.leagueNames||{};S.leagueNotifs=x.leagueNotifs||{};S.league=S.leagues[0]||"";S.dept=x.dept||"";S.home=x.home||null;S.blocked=x.blocked||[];S.likes=x.likes||[];S.wish=x.wish||[];S.friends=x.friends||[];S.ignoredFollows=x.ignoredFollows||[];S.top=x.top||[null,null,null,null,null];S.bio=x.bio||"";if(x.col)S.col=x.col;if(S.pseudo)ls("lr_onb_"+u.uid,"1");ls("lr_pseudo",S.pseudo);ls("lr_leagues",JSON.stringify(S.leagues));ls("lr_league_names",JSON.stringify(S.leagueNames));ls("lr_league_notifs",JSON.stringify(S.leagueNotifs));ls("lr_league",S.league);ls("lr_dept",S.dept);ls("lr_home",JSON.stringify(S.home));ls("lr_blocked",JSON.stringify(S.blocked));ls("lr_likes",JSON.stringify(S.likes));ls("lr_wish",JSON.stringify(S.wish));ls("lr_friends",JSON.stringify(S.friends));ls("lr_ignored_follows",JSON.stringify(S.ignoredFollows));ls("lr_top",JSON.stringify(S.top));ls("lr_bio",S.bio);ls("lr_col",S.col)}else if(S.pseudo){ls("lr_onb_"+u.uid,"1");save()}
+if(S.pseudo && S.fdb){
+  var k = normalizePseudoKey(S.pseudo);
+  if(k) S.fdb.collection("pseudos").doc(k).set({uid: u.uid, pseudo: S.pseudo, updatedAt: Date.now()}, {merge: true}).catch(function(){});
 }
+S.profLoaded=true;subL();subFollows();render()}).catch(function(){S.profLoaded=true;subL();subFollows();render()})}
 
-function saveRecentSearch(term){
-  if(!term) return;
-  var t = String(term).trim();
-  if(t.length < 2) return;
-  var list = getRecentSearches().filter(function(x){ return String(x).toLowerCase() !== t.toLowerCase(); });
-  list.unshift(t);
-  try { localStorage.setItem("lr_recent_searches", JSON.stringify(list.slice(0, 8))); } catch(e){}
-}
+function boot(){try{firebase.initializeApp(CFG);var db=firebase.firestore();S.fdb=db;
+firebase.auth().onAuthStateChanged(function(u){S.authReady=true;unsubAll();S.followers=[];if(u&&!u.isAnonymous){S.user=u;S.uid=u.uid;S.profLoaded=false;loadProf(u)}else{S.user=null;S.profLoaded=false;if(!u)firebase.auth().signInAnonymously().catch(function(){});subL()}render()});
+db.collection("reviews").onSnapshot(function(s){var a=[];s.forEach(function(d){var x=d.data();x._id=d.id;a.push(x)});S.all=a;S.state="ok";refresh()},function(e){S.state="error";S.errMsg=e&&e.code||"";render()});
+db.collection("flags").onSnapshot(function(s){var f={};s.forEach(function(d){f[d.id]=(d.data().by||[]).length});S.flags=f;refresh()},function(){})}catch(e){S.authReady=true;S.state="error";S.errMsg=e&&e.message||"";render()}}
+
+function ld(u){return new Promise(function(ok,ko){var s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=ko;document.head.appendChild(s)})}
+var FB="https://www.gstatic.com/firebasejs/10.12.2/firebase-";
+Promise.all([ld(FB+"app-compat.js").then(function(){return ld(FB+"auth-compat.js")}).then(function(){return ld(FB+"firestore-compat.js")})]).then(boot).catch(function(e){S.authReady=true;S.state="error";S.errMsg=String(e||"load");render()});
+getLoc();
+
+function getRecentSearches(){try{return JSON.parse(ls("lr_recent_sq")||"[]")}catch(e){return[]}}
+function saveRecentSearch(q){if(!q)return;var a=getRecentSearches().filter(function(x){return x.toLowerCase()!==q.toLowerCase()});a.unshift(q);if(a.length>6)a.length=6;ls("lr_recent_sq",JSON.stringify(a))}
+function clearRecentSearches(){ls("lr_recent_sq","[]");updateNoteSheetBody()}
 
 function openNoteSheet(){
-  S.noteOpen = true;
-  S.prevTab = S.tab;
-  if(!S.form) S.form = {note:0, avis:"", mode:"place", st:[], vis:"pub", tls:S.league?[S.league]:[], cat:"trad_low", cuisine:""};
-  S.form.place = null;
-  S.manual = false;
-  S.sq = "";
-  S.sr = null;
+  S.noteOpen=true;
+  S.prevTab=S.tab;
+  S.sq="";
+  S.sr=null;
+  S.manual=false;
+  S.form.place=null;
   renderNoteSheet();
-  setTimeout(function(){
-    var inp = document.getElementById("lb-note-inp");
-    if(inp) inp.focus();
-  }, 60);
 }
 
 function closeNoteSheet(){
-  S.noteOpen = false;
-  S.manual = false;
-  if(S.tab === "add" && S.prevTab && S.prevTab !== "add"){
-    S.tab = S.prevTab;
-  }
-  var el = document.getElementById("lb-note-modal");
-  if(el) el.remove();
+  S.noteOpen=false;
+  var el=document.getElementById("lb-note-modal");
+  if(el)el.remove();
   render();
 }
 
-function onNoteSearchInput(val){
-  S.sq = val;
-  if(!val || !val.trim()){
-    S.sr = null;
-    updateNoteSheetBody();
-    return;
-  }
-  S.busy = true;
+function renderNoteSheet(){
+  var existing=document.getElementById("lb-note-modal");
+  if(existing)existing.remove();
+  var div=document.createElement("div");
+  div.id="lb-note-modal";
+  div.className="lb-modal";
+  div.onclick=function(e){if(e.target===div)closeNoteSheet()};
+  div.innerHTML='<div class="lb-sheet" onclick="event.stopPropagation()">'+
+    '<div class="lb-sheet-hd">'+
+      '<button type="button" class="cancel-btn" onclick="closeNoteSheet()">Annuler</button>'+
+      '<span class="sheet-title">Noter un resto</span>'+
+      '<span style="width:68px"></span>'+
+    '</div>'+
+    '<div id="lb-note-inner" style="display:flex;flex-direction:column;flex:1;overflow:hidden"></div>'+
+  '</div>';
+  document.body.appendChild(div);
   updateNoteSheetBody();
-  searchPlaces(val.trim()).then(function(r){
-    S.sr = applyFilt(r);
-    S.busy = false;
-    updateNoteSheetBody();
-  }).catch(function(){
-    S.sr = [];
-    S.busy = false;
-    updateNoteSheetBody();
-  });
-}
-
-function onNoteSearchKeydown(e){
-  if(e && e.key === "Enter"){
-    e.preventDefault();
-    if(S.sq && String(S.sq).trim()){
-      saveRecentSearch(S.sq);
-    }
-    var inp = document.getElementById("lb-note-inp");
-    if(inp) inp.blur();
-  }
-}
-
-function pickRecentSearch(term){
-  S.sq = term;
-  var inp = document.getElementById("lb-note-inp");
-  if(inp) inp.value = term;
-  onNoteSearchInput(term);
 }
 
 function updateNoteSheetBody(){
-  var body = document.getElementById("lb-sheet-body");
-  var searchBox = document.querySelector(".lb-sheet-search");
-  if(!body) return;
-  var f = S.form;
+  var inner=document.getElementById("lb-note-inner");
+  if(!inner)return;
+  var f=S.form;
+  var searchSvg='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+  var clockSvg='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+  var clearBtn = S.sq ? '<button type="button" class="nt-search-x" onclick="S.sq=\'\';S.sr=null;updateNoteSheetBody()" title="Effacer"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>' : '';
 
-  if(f && f.place){
-    if(searchBox) searchBox.style.display = "none";
-    var h = add();
-    body.innerHTML = h.replace("<h2>J’ai mangé où ?</h2>", "");
-    return;
+  if(!f.place){
+    var recents=getRecentSearches();
+    var recHTML="";
+    if(!S.sq && S.sr===null && recents.length){
+      recHTML='<div class="nt-recent-hd"><div class="lb-recent-title">Recherches récentes</div><button type="button" style="border:0;background:none;color:inherit;opacity:.55;font:inherit;font-size:12px;font-weight:700;cursor:pointer" onclick="clearRecentSearches()">Effacer</button></div>'+
+        recents.map(function(q){
+          return '<div class="nt-recent-item" onclick="S.sq=\''+esc(q).replace(/'/g,"\\'")+'\';doSearchNote()">'+clockSvg+'<span style="flex:1">'+esc(q)+'</span><span style="opacity:.4">↗</span></div>';
+        }).join("");
+    } else if(!S.sq && S.sr===null && !recents.length){
+      recHTML='<div class="nt-empty"><b>Où as-tu mangé ?</b><p>Recherche un restaurant par son nom, son quartier ou son adresse.</p></div>';
+    }
+    var bodyHTML=S.manual
+      ? '<div class="nt-manual-card"><div class="nt-lbl">Ajoute ton resto toi-même</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button type="button" class="nt-submit" onclick="manualOk()">Continuer</button><button type="button" class="back" style="display:block;margin:12px auto 0" onclick="S.manual=false;updateNoteSheetBody()">← Retour</button></div>'
+      : locCard()+"<div id='res'>"+resHTML()+"</div>"+recHTML;
+
+    inner.innerHTML='<div class="lb-sheet-search">'+
+      '<div class="nt-search-box">'+
+        searchSvg+
+        '<input id="sq" placeholder="Nom du resto, adresse, ville…" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearchNote()">'+
+        clearBtn+
+      '</div>'+
+    '</div>'+
+    '<div class="lb-sheet-body">'+bodyHTML+'</div>';
+    var inp=document.getElementById("sq");
+    if(inp && !S.sq && S.sr===null) setTimeout(function(){inp.focus()},50);
+  } else {
+    var content=add().replace(/^<h2>J’ai mangé où \?<\/h2>/,"");
+    inner.innerHTML='<div class="lb-sheet-body">'+content+'</div>';
   }
-
-  if(S.manual){
-    if(searchBox) searchBox.style.display = "none";
-    body.innerHTML = '<div class="card strict"><div class="sub">Ajoute ton resto toi-même :</div><input id="mn" placeholder="Nom du restaurant" value="'+esc(S.sq)+'"><input id="ma" placeholder="Adresse"><button class="btn" onclick="manualOk()">Continuer</button><button class="back" onclick="S.manual=false;render()">← Retour</button></div>';
-    return;
-  }
-
-  if(searchBox) searchBox.style.display = "block";
-
-  if(!S.sq || !String(S.sq).trim()){
-    var recents = getRecentSearches();
-    var recHtml = recents.length
-      ? '<div class="lb-recent-title">Recherches récentes</div>' +
-        recents.map(function(r){
-          var safe = String(r).replace(/'/g, "\\'");
-          return '<div class="lb-recent-row" onclick="pickRecentSearch(\''+safe+'\')"><span>'+esc(r)+'</span></div>';
-        }).join("")
-      : '<div class="empty">C’est désert ici ! Tape le nom d’un restaurant ci-dessus.</div>';
-    body.innerHTML = locCard() + recHtml;
-    return;
-  }
-
-  body.innerHTML = "<div id='res'>" + resHTML() + "</div>";
 }
 
-function renderNoteSheet(){
-  var old = document.getElementById("lb-note-modal");
-  if(old) old.remove();
-  if(!S.noteOpen) return;
-
-  var modal = document.createElement("div");
-  modal.id = "lb-note-modal";
-  modal.className = "lb-modal";
-  modal.innerHTML =
-    '<div class="lb-sheet">' +
-      '<div class="lb-sheet-hd">' +
-        '<button type="button" class="cancel-btn" onclick="closeNoteSheet()">Annuler</button>' +
-        '<div class="sheet-title">Noter un resto</div>' +
-        '<div style="width:55px"></div>' +
-      '</div>' +
-      '<div class="lb-sheet-search">' +
-        '<input id="lb-note-inp" type="search" placeholder="Nom du restaurant, adresse..." value="'+esc(S.sq||"")+'" oninput="onNoteSearchInput(this.value)" onkeydown="onNoteSearchKeydown(event)">' +
-      '</div>' +
-      '<div id="lb-sheet-body" class="lb-sheet-body"></div>' +
-    '</div>';
-  document.body.appendChild(modal);
+function doSearchNote(){
+  var i=document.getElementById("sq"),q=i?i.value.trim():S.sq;
+  if(q)saveRecentSearch(q);
+  S.sq=q;S.busy=true;S.sr=null;S.err=false;S.manual=false;
   updateNoteSheetBody();
+  searchPlaces(q).then(function(r){
+    S.sr=applyFilt(r);
+    S.busy=false;
+    updateNoteSheetBody();
+  }).catch(function(){
+    S.sr=[];
+    S.busy=false;
+    updateNoteSheetBody();
+  });
 }
-</script>
-<script>
-/* ===== Refonte Ligue + Amis ===== */
+
 var LGI={
 back:'<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
 plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
-share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>',
+share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
 more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
 search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
-bell:'<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
-check:'<polyline points="20 6 9 17 4 12"/>',
-copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
 x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
-camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
-trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
+copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+cam:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>'};
 function lgi(k){return '<svg class="lgx-svg" viewBox="0 0 24 24">'+LGI[k]+'</svg>'}
-function lgIni(s){return esc((s||"?").charAt(0).toUpperCase())}
-
-function lgMembers(c){
-  var map={};
-  if(S.uid)map[S.uid]={uid:S.uid,pseudo:S.pseudo||"Moi",col:S.col||hashColor(String(S.uid))};
-  lrev(c).forEach(function(x){
-    if(!x.uid||isB(x.uid))return;
-    if(!map[x.uid])map[x.uid]={uid:x.uid,pseudo:x.pseudo||"Membre",col:x.col||colOf(x)};
-  });
-  return Object.keys(map).map(function(k){return map[k]});
-}
-function lgStack(list,max){
-  return '<div class="lgx-stack">'+list.slice(0,max).map(function(m){return '<span class="lgx-sa" style="background:'+m.col+'">'+lgIni(m.pseudo)+'</span>'}).join("")+(list.length>max?'<span class="lgx-sa more">+'+(list.length-max)+'</span>':'')+'</div>';
+function avBg(uid,pseudo){var m=allv().find(function(x){return x.uid===uid&&x.col});return m?m.col:hashColor(String(uid||pseudo||"?"))}
+function lgMembers(c){var u={};lrev(c).forEach(function(x){if(x.uid&&!u[x.uid])u[x.uid]={uid:x.uid,pseudo:x.pseudo||"?",col:colOf(x)}});if(S.uid&&!u[S.uid])u[S.uid]={uid:S.uid,pseudo:S.pseudo||"Moi",col:S.col||hashColor(S.uid)};return Object.keys(u).map(function(k){return u[k]})}
+function copyCode(c){try{navigator.clipboard.writeText(c);alert("Code copié : "+c)}catch(e){prompt("Code de la ligue :",c)}}
+function lgHeroBg(c){
+  var ph = S.leaguePhotos && S.leaguePhotos[c];
+  if(!ph) return "";
+  return ' style="background-image:linear-gradient(180deg,rgba(12,16,22,.32) 0%,rgba(12,16,22,.82) 100%),url('+ph+');background-size:cover;background-position:center"';
 }
 
-/* Fond jaune #E5B83F uniforme par défaut, ou photo de couverture de la ligue */
-function lgBg(photo){
-  return photo
-    ?'background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(12,16,22,.82)),url('+photo+') center/cover'
-    :'background:#E5B83F';
-}
-
-function lgxTop(title,sub,right){
-  return '<div class="lgx-top"><div><h1>'+title+'</h1><p>'+sub+'</p></div>'+(right||'')+'</div>';
-}
-
-/* Switcher pleine largeur */
-function lgxSwitch(){
-  var f=S.lgTab==="friends";
-  return '<div class="lgx-switch-seg">'+
-    '<button class="lgx-seg-btn '+(!f?"on":"")+'" onclick="S.lgTab=\'leagues\';S.leagueOpen=false;render()">Ligue</button>'+
-    '<button class="lgx-seg-btn '+(f?"on":"")+'" onclick="S.lgTab=\'friends\';S.leagueOpen=false;render()">Amis</button>'+
-  '</div>';
-}
-
-/* ---------- Feuilles ---------- */
-function openLgSheet(){
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" id="lg-sheet" onclick="event.stopPropagation()">'+
-    '<h3 class="lgx-sheet-t">Nouvelle ligue</h3>'+
-    '<input id="lgn" placeholder="Nom de la ligue (ex. Team Burger)">'+
-    '<button class="lgx-cta" onclick="createLeague()">Créer la ligue</button>'+
-    '<div class="lgx-or">ou rejoins celle d’un ami</div>'+
-    '<input id="lg" placeholder="Code ou lien (ex. LG-A7K9-M2P4)" autocapitalize="characters">'+
-    '<button class="lgx-cta alt" onclick="join()">Rejoindre</button>'+
-  '</div></div>';
-}
-
-function lgMenu(code, skipAnim){
-  var c=esc(code);
-  var hasPhoto=!!(S.leaguePhotos&&S.leaguePhotos[code]);
-  var nf=getLeagueNotif(code);
-  var animClass = skipAnim ? "" : " from-left";
-
-  var notifHtml = '<div class="lgx-notif-box">' +
+function openLgSheet(){document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()"><div class="lgx-sheet-t">Nouvelle ligue</div><input id="lgn" maxlength="40" placeholder="Nom de la ligue (ex : Les Gourmets)"><button class="lgx-cta" onclick="closeSheet();createLeague()">Créer</button><div class="lgx-or">ou rejoindre avec un code</div><input id="lg" placeholder="Ex : LG-A1B2-C3D4"><button class="lgx-cta alt" onclick="closeSheet();join()">Rejoindre</button></div></div>'}
+function lgMenu(c, noAnim){
+  var n = getLeagueNotif(c);
+  var hasPhoto = !!(S.leaguePhotos && S.leaguePhotos[c]);
+  var h = '<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet'+(noAnim?'':' from-left')+'" onclick="event.stopPropagation()">';
+  h += '<div class="lgx-sheet-t">'+esc(leagueLabel(c))+'</div>';
+  h += '<button class="lgx-opt" onclick="closeSheet();share(\''+esc(c)+'\')">'+lgi("share")+' Inviter des amis</button>';
+  h += '<button class="lgx-opt" onclick="closeSheet();pickLeaguePhoto(\''+esc(c)+'\')">'+lgi("cam")+' '+(hasPhoto?'Changer la photo de la ligue':'Ajouter une photo à la ligue')+'</button>';
+  if(hasPhoto){
+    h += '<button class="lgx-opt red" onclick="closeSheet();removeLeaguePhoto(\''+esc(c)+'\')">'+ICONS.trash+' Retirer la photo de la ligue</button>';
+  }
+  h += '<button class="lgx-opt" onclick="closeSheet();copyCode(\''+esc(c)+'\')">'+lgi("copy")+' Copier le code · '+esc(c)+'</button>';
+  h += '<div class="lgx-notif-box">' +
     '<label class="lgx-switch-row">' +
-      '<span class="lgx-switch-label">'+lgi("bell")+'<span>Notifications de la ligue</span></span>' +
-      '<span class="lgx-toggle">' +
-        '<input type="checkbox" '+(nf.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+c+'\',this.checked)">' +
-        '<span class="lgx-slider"></span>' +
-      '</span>' +
+      '<span class="lgx-switch-label">'+ICONS.bell+' Notifications</span>' +
+      '<span class="lgx-toggle"><input type="checkbox" '+(n.enabled?'checked':'')+' onchange="toggleLeagueNotifMain(\''+esc(c)+'\', this.checked)"><span class="lgx-slider"></span></span>' +
     '</label>' +
-    (nf.enabled
+    (n.enabled
       ? '<div class="lgx-sub-notifs">' +
-          '<label class="lgx-sub-row">' +
-            '<span>Nouvel avis</span>' +
-            '<span class="lgx-toggle sm">' +
-              '<input type="checkbox" '+(nf.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'reviews\',this.checked)">' +
-              '<span class="lgx-slider"></span>' +
-            '</span>' +
-          '</label>' +
-          '<label class="lgx-sub-row">' +
-            '<span>Nouveau membre</span>' +
-            '<span class="lgx-toggle sm">' +
-              '<input type="checkbox" '+(nf.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+c+'\',\'members\',this.checked)">' +
-              '<span class="lgx-slider"></span>' +
-            '</span>' +
-          '</label>' +
+          '<label class="lgx-sub-row"><span>Nouvel avis publié</span><span class="lgx-toggle sm"><input type="checkbox" '+(n.reviews?'checked':'')+' onchange="toggleLeagueNotifSub(\''+esc(c)+'\', \'reviews\', this.checked)"><span class="lgx-slider"></span></span></label>' +
+          '<label class="lgx-sub-row"><span>Nouvel arrivant</span><span class="lgx-toggle sm"><input type="checkbox" '+(n.members?'checked':'')+' onchange="toggleLeagueNotifSub(\''+esc(c)+'\', \'members\', this.checked)"><span class="lgx-slider"></span></span></label>' +
         '</div>'
-      : '<div class="lgx-notif-hint">Notifications désactivées pour cette ligue.</div>'
+      : '<div class="lgx-notif-hint">Active pour recevoir les alertes de cette ligue.</div>'
     ) +
   '</div>';
-
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet'+animClass+'" onclick="event.stopPropagation()">'+
-    '<h3 class="lgx-sheet-t">'+esc(leagueLabel(code))+'</h3>'+
-    notifHtml+
-    '<button class="lgx-opt" onclick="closeSheet();share(\''+c+'\')">'+lgi("share")+' Inviter des amis (Code : '+c+')</button>'+
-    '<button class="lgx-opt" onclick="closeSheet();pickLeaguePhoto(\''+c+'\')">'+lgi("camera")+' '+(hasPhoto?'Changer la photo de la ligue':'Ajouter une photo à la ligue')+'</button>'+
-    (hasPhoto?'<button class="lgx-opt" onclick="closeSheet();removeLeaguePhoto(\''+c+'\')">'+lgi("trash")+' Retirer la photo (fond jaune)</button>':'')+
-    '<button class="lgx-opt red" onclick="closeSheet();leaveLeague(\''+c+'\')">'+lgi("x")+' Quitter la ligue</button>'+
-    '<button class="back" onclick="closeSheet()">Fermer</button></div></div>';
+  h += '<button class="lgx-opt red" onclick="closeSheet();leaveLeague(\''+esc(c)+'\')">'+ICONS.trash+' Quitter la ligue</button>';
+  h += '</div></div>';
+  document.getElementById("sheet").innerHTML = h;
 }
 
-function lgRvMenu(i){
-  var x=S.rvl[i];if(!x)return;
-  var own=x.uid===S.uid,h='<div class="ov" onclick="closeSheet()"><div class="ovb lgx-sheet" onclick="event.stopPropagation()">';
-  if(own&&x._id){
-    h+='<button class="lgx-opt" onclick="closeSheet();editReview('+i+')">'+lgi("copy")+' Modifier</button>'+
-       '<button class="lgx-opt red" onclick="closeSheet();del('+i+')">'+lgi("x")+' Supprimer</button>';
-  } else {
-    h+='<button class="lgx-opt" onclick="rep('+i+')">Signaler</button>'+
-       '<button class="lgx-opt" onclick="closeSheet();blk('+i+')">Bloquer '+esc(x.pseudo||"")+'</button>';
-    if(isAdmin()&&x._id)h+='<button class="lgx-opt red" onclick="closeSheet();del('+i+')">Supprimer (Admin)</button>';
-  }
-  h+='<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
-  document.getElementById("sheet").innerHTML=h;
-}
-function lgCopy(btn,code){
-  try{navigator.clipboard.writeText(code)}catch(e){}
-  var o=btn.innerHTML;btn.innerHTML=lgi("check")+" Code copié !";
-  setTimeout(function(){if(btn&&btn.isConnected)btn.innerHTML=o},1500);
-}
-
-/* ---------- Vue 1 : Mes ligues ---------- */
-function lgxList(){
-  var right='<button class="lgx-ic" onclick="openLgSheet()" title="Créer ou rejoindre">'+lgi("plus")+'</button>';
-  var h=status()+'<div class="lgx">'+lgxTop("Mes ligues",S.leagues.length?S.leagues.length+(S.leagues.length>1?" ligues actives":" ligue active"):"Crée ou rejoins une ligue",right)+lgxSwitch();
-  if(!S.leagues.length){
-    return h+'<div class="lgx-empty"><b>Aucune ligue pour l’instant</b><p>Crée ta ligue ou rejoins celle de tes amis avec un code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre une ligue</button></div></div>';
-  }
-  h+=S.leagues.map(function(c){
-    var rev=lrev(c),mem=lgMembers(c),photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
-    var nf=getLeagueNotif(c);
-    var bellBtn = '<button class="lgx-ic" title="Notifications" onclick="event.stopPropagation();S.league=\''+ec+'\';lgMenu(\''+ec+'\')">'+lgi("bell")+(nf.enabled?'<span class="bell-dot" style="width:9px;height:9px;min-width:9px;padding:0;background:#34C759"></span>':'')+'</button>';
-    return '<div class="lgx-card '+(photo?'has-photo':'')+'" style="'+lgBg(photo)+'" onclick="openLeagueCard(\''+ec+'\')">'+
-      '<div class="lgx-card-top">'+
-        lgStack(mem,4)+
-        '<div class="lgx-card-acts">'+
-          bellBtn+
-          '<button class="lgx-ic" title="Options" onclick="event.stopPropagation();S.league=\''+ec+'\';lgMenu(\''+ec+'\')">'+lgi("more")+'</button>'+
-        '</div>'+
-      '</div>'+
-      '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
-      '<div class="lgx-card-foot">'+
-        '<div class="lgx-card-sub">'+mem.length+' '+(mem.length>1?'membres':'membre')+' · '+rev.length+' avis</div>'+
-      '</div>'+
-    '</div>';
-  }).join("");
-  return h+'<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
-}
-
-/* ---------- Vue 2 : Détail d’une ligue ---------- */
-function lgxRv(x){
+function lrv(x){
   var idx=ri(x),d=new Date(x.ts),col=colOf(x);
   var ulink=(x.uid&&x.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(x.uid)+'\',\''+encodeURIComponent(x.pseudo||"")+'\')" style="cursor:pointer"':'';
-  var openP='onclick="openReviewDetail('+idx+')"';
   var hasMenu=(x.uid&&x.uid!==S.uid)||(x.uid===S.uid&&x._id);
+  var img=x.photo||"";
   return '<div class="lgx-rv">'+
     '<div class="lgx-rv-top">'+
-      '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+lgIni(x.pseudo)+'</div>'+
+      '<div class="lgx-av" style="background:'+col+'"'+ulink+'>'+esc((x.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
       '<div class="lgx-rv-who"><b'+ulink+'>'+esc(x.pseudo||"Anonyme")+'</b> <span>· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span></div>'+
-      (hasMenu?'<button class="lgx-more" onclick="lgRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
+      (hasMenu?'<button class="lgx-more" onclick="openRvMenu('+idx+')">'+lgi("more")+'</button>':'')+
     '</div>'+
-    '<div class="lgx-rv-body" '+openP+'><div class="lgx-rv-main">'+
-      '<div class="lgx-rv-resto">'+esc(x.resto)+dot(x)+'</div>'+
-      '<span class="stars">'+stars(x.note)+'</span>'+
-      (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
-    '</div>'+(x.photo?'<img class="lgx-rv-img" src="'+x.photo+'" onclick="event.stopPropagation();openLight(\''+x.photo+'\')">':'')+'</div>'+
-  '</div>';
+    '<div class="lgx-rv-body" onclick="openReviewDetail('+idx+')">'+
+      '<div class="lgx-rv-main">'+
+        '<div class="lgx-rv-resto"><span>'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+        '<span class="stars">'+stars(x.note)+'</span>'+
+        (x.avis?'<div class="lgx-rv-txt">'+esc(x.avis)+'</div>':'')+
+        ((x.st&&x.st.length)?'<div class="pg-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+      '</div>'+
+      (img?'<img class="lgx-rv-img" src="'+img+'" onclick="event.stopPropagation();openLight(\''+img+'\')">':'')+
+    '</div></div>';
 }
 
-function lgxRank(list){
-  var by={};
-  list.forEach(function(x){
-    if(!x.uid||isB(x.uid))return;
-    var u=by[x.uid]=by[x.uid]||{uid:x.uid,pseudo:x.pseudo||"?",col:x.col||colOf(x),n:0,s:0};
-    u.n++;u.s+=x.note;
-  });
-  var a=Object.keys(by).map(function(k){return by[k]}).sort(function(x,y){return y.n-x.n||(y.s/y.n)-(x.s/x.n)});
-  if(!a.length)return '<div class="lgx-empty"><b>Aucun classement</b><p>Personne n’a encore noté de resto ici.</p></div>';
-  var pod='',rest=a;
-  if(a.length>=3){
-    var ord=[a[1],a[0],a[2]],cls=["","first",""],pos=[2,1,3];
-    pod='<div class="lgx-pod">'+ord.map(function(u,i){
-      var ulink=(u.uid&&u.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"':'';
-      return '<div class="lgx-pc '+cls[i]+'" style="min-height:'+(pos[i]===1?150:pos[i]===2?120:102)+'px"'+ulink+'><div class="n">'+pos[i]+'</div><div class="t">'+esc(u.pseudo)+'</div><div class="s">'+u.n+' avis · '+(u.s/u.n).toFixed(1)+'</div></div>';
-    }).join("")+'</div>';
-    rest=a.slice(3);
-  }
-  return pod+rest.map(function(u,i){
-    var p=a.length>=3?i+4:i+1;
-    var ulink=(u.uid&&u.uid!==S.uid)?' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"':'';
-    return '<div class="lgx-row"><div class="lgx-rk">'+p+'</div><div class="lgx-av" style="background:'+u.col+'"'+ulink+'>'+lgIni(u.pseudo)+'</div>'+
-      '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">Moyenne '+(u.s/u.n).toFixed(1)+'/5</div></div>'+
-      '<b>'+u.n+' avis</b></div>';
-  }).join("");
-}
-
-function lgxTopReviews(list){
-  var b=list.filter(function(x){return x.note>=4}).sort(function(x,y){return y.note-x.note||y.ts-x.ts});
-  if(!b.length)return '<div class="lgx-empty"><b>Aucun top avis</b><p>Les avis 4 étoiles et plus apparaîtront ici.</p></div>';
-  return b.map(lgxRv).join("");
-}
-
-function lgxMembersView(c){
-  var mem=lgMembers(c),list=lrev(c);
-  return mem.map(function(m){
-    var cnt=list.filter(function(x){return x.uid===m.uid}).length;
-    var isMe=m.uid===S.uid,f=hasFriend(m.uid);
-    var ulink=!isMe?' onclick="openUser(\''+encodeURIComponent(m.uid)+'\',\''+encodeURIComponent(m.pseudo)+'\')"':'';
-    return '<div class="lgx-row"><div class="lgx-av" style="background:'+m.col+'"'+ulink+'>'+lgIni(m.pseudo)+'</div>'+
-      '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(m.pseudo)+'</div><div class="lgx-sub">'+cnt+' '+(cnt>1?'avis':'avis')+'</div></div>'+
-      (isMe?'<span class="lgx-sub">Moi</span>'
-        :'<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+(f?'delFriend(\''+esc(m.uid)+'\')':'addFriend(\''+esc(m.uid)+'\',\''+esc(m.pseudo)+'\')')+'">'+(f?'Suivi':'Suivre')+'</button>')+'</div>';
-  }).join("");
-}
-
-function lgxDetail(){
-  var c=S.league||S.leagues[0],rev=sortReviewsBy(lrev(c),S.lrsort),mem=lgMembers(c);
-  var photo=S.leaguePhotos&&S.leaguePhotos[c],ec=esc(c);
-  var nf=getLeagueNotif(c);
-  var body;
-  if(S.lv==="feed")body=rev.length?(reviewSortBar(S.lrsort,"setLeagueRevSort")+rev.map(lgxRv).join("")):'<div class="lgx-empty"><b>Aucun avis dans cette ligue</b><p>Sois le premier à publier une note ici.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
-  else if(S.lv==="rank")body=lgxRank(rev);
-  else if(S.lv==="best")body=lgxTopReviews(rev);
-  else body=lgxMembersView(c);
-
-  return status()+'<div class="lgx">'+
+function lgDetail(c){
+  var lr=lrev(c),m=lgMembers(c),hasPhoto=!!(S.leaguePhotos&&S.leaguePhotos[c]);
+  var h='<div class="lgx">'+
     '<div class="lgx-bar">'+
-      '<button class="lgx-ic" onclick="closeLeagueCard()" title="Retour">'+lgi("back")+'</button>'+
+      '<button class="lgx-ic" onclick="closeLeagueCard()">'+lgi("back")+'</button>'+
       '<div class="lgx-bar-r">'+
-        '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Notifications">'+lgi("bell")+(nf.enabled?'<span class="bell-dot" style="width:9px;height:9px;min-width:9px;padding:0;background:#34C759"></span>':'')+'</button>'+
-        '<button class="lgx-ic" onclick="share(\''+ec+'\')" title="Inviter">'+lgi("share")+'</button>'+
-        '<button class="lgx-ic" onclick="lgMenu(\''+ec+'\')" title="Options">'+lgi("more")+'</button>'+
+        '<button class="lgx-ic" onclick="share(\''+esc(c)+'\')" title="Inviter">'+lgi("share")+'</button>'+
+        '<button class="lgx-ic" onclick="lgMenu(\''+esc(c)+'\')" title="Options">'+lgi("more")+'</button>'+
       '</div>'+
     '</div>'+
-    '<div class="lgx-hero '+(photo?'has-photo':'')+'" style="'+lgBg(photo)+'">'+
-      '<div class="lgx-hero-top">'+lgStack(mem,5)+'</div>'+
+    '<div class="lgx-hero'+(hasPhoto?' has-photo':'')+'"'+lgHeroBg(c)+'>'+
+      '<div class="lgx-hero-top">'+
+        '<button class="lgx-code-chip" onclick="copyCode(\''+esc(c)+'\')">'+esc(c)+' '+lgi("copy")+'</button>'+
+        '<button class="lgx-photo-btn" onclick="pickLeaguePhoto(\''+esc(c)+'\')" title="Changer la photo de la ligue">'+lgi("cam")+' Photo</button>'+
+      '</div>'+
       '<h1>'+esc(leagueLabel(c))+'</h1>'+
       '<div class="lgx-hero-bot">'+
-        '<div class="lgx-stats"><div><b>'+mem.length+'</b><span>'+(mem.length>1?'membres':'membre')+'</span></div><div><b>'+rev.length+'</b><span>avis</span></div></div>'+
-        '<div class="lgx-hero-bot-r">'+
-          '<button class="lgx-code-chip" title="Copier le code" onclick="event.stopPropagation();lgCopy(this,\''+ec+'\')">'+lgi("copy")+'<span>'+ec+'</span></button>'+
-          '<button class="lgx-photo-btn" onclick="event.stopPropagation();pickLeaguePhoto(\''+ec+'\')">'+lgi("camera")+'<span>'+(photo?'Photo':'Ajouter photo')+'</span></button>'+
-        '</div>'+
+        '<div class="lgx-stats"><div><b>'+lr.length+'</b><span>avis</span></div><div><b>'+m.length+'</b><span>membres</span></div></div>'+
+        '<div class="lgx-stack">'+m.slice(0,4).map(function(u){return '<span class="lgx-sa" style="background:'+u.col+'">'+esc(u.pseudo.charAt(0).toUpperCase())+'</span>'}).join("")+(m.length>4?'<span class="lgx-sa more">+'+(m.length-4)+'</span>':'')+'</div>'+
       '</div>'+
     '</div>'+
-    '<div class="lgx-switch">'+[["feed","Fil"],["rank","Classement"],["best","Top avis"],["members","Membres"]].map(function(t){
-      return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>';
-    }).join("")+'</div>'+
-    body+'</div>';
-}
-
-/* ---------- Vue 3 : Amis (Fil / Classement / Top avis + Amis / Que je suis / Qui me suit) ---------- */
-function lgxFriendRow(uid, pseudo, col){
-  var f = hasFriend(uid);
-  var fol = isFollower(uid);
-  var mut = f && fol;
-  var avCol = col || hashColor(String(uid || pseudo || "?"));
-  var ulink = ' onclick="openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')"';
-  var badge = mut
-    ? '<span class="status-badge">Ami</span>'
-    : (fol ? '<span class="status-badge">Te suit</span>' : '');
-  var subTxt = mut
-    ? 'Vous vous suivez mutuellement'
-    : (fol ? 'Suit ton profil sur Belly' : 'Profil suivi');
-  var btnLabel = f ? 'Suivi' : (fol ? 'Suivre en retour' : 'Suivre');
-  var btnAct = f
-    ? 'delFriend(\''+esc(uid)+'\')'
-    : 'addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')';
-
-  return '<div class="lgx-row">'+
-    '<div class="lgx-av" style="background:'+avCol+'"'+ulink+'>'+lgIni(pseudo)+'</div>'+
-    '<div class="lgx-meta"'+ulink+'><div class="lgx-nm">'+esc(pseudo)+badge+'</div><div class="lgx-sub">'+subTxt+'</div></div>'+
-    '<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+btnAct+'">'+btnLabel+'</button>'+
-  '</div>';
-}
-
-function lgxFriends(){
-  var q = S.userSearchQ || "";
-  var followingList = (S.friends || []).filter(function(f){ return f && f.uid && !isB(f.uid); });
-  var followersList = (S.followers || []).filter(function(f){ return f && f.uid && !isB(f.uid); });
-  var mutualList = followingList.filter(function(f){ return isFollower(f.uid); });
-  var sugg = leagueSuggestions();
-  var unreadCount = followersList.filter(function(f){
-    return !hasFriend(f.uid) && (S.ignoredFollows || []).indexOf(f.uid) < 0;
-  }).length;
-
-  var bellBtn = '<button class="lgx-ic" onclick="openFollowNotifs()" title="Notifications d’abonnés">' +
-    lgi("bell") +
-    (unreadCount ? '<span class="bell-dot">'+(unreadCount>9?'9+':unreadCount)+'</span>' : '') +
-  '</button>';
-
-  var h = status() + '<div class="lgx">' +
-    lgxTop("Amis", mutualList.length + (mutualList.length>1?" amis · ":" ami · ") + followingList.length + " suivis · " + followersList.length + " abonnés", bellBtn) +
-    lgxSwitch();
-
-  // Barre de recherche de personnes par pseudo
-  h += '<div class="lgx-search">' +
-    lgi("search") +
-    '<input class="lgx-in" id="friend-sq" placeholder="Rechercher un pseudo…" value="'+esc(q)+'" oninput="S.userSearchQ=this.value" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">' +
-    (q ? '<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>' : '') +
-    '<button class="lgx-btn pri" style="padding:7px 12px;font-size:13px" onclick="searchUsersByPseudo()">OK</button>' +
-  '</div>';
-
-  if(S.userSearchBusy){
-    h += '<div class="lgx-empty"><b>Recherche en cours…</b></div>';
-  } else if(q && S.userSearchRes !== null){
-    h += '<div class="lgx-h2">Résultats pour « '+esc(q)+' »</div>';
-    if(!S.userSearchRes.length){
-      h += '<div class="lgx-empty"><b>Aucun utilisateur trouvé</b><p>Vérifie l’orthographe du pseudo recherché.</p></div>';
-    } else {
-      h += S.userSearchRes.map(function(u){
-        return lgxFriendRow(u.uid, u.pseudo, hashColor(String(u.uid||u.pseudo)));
-      }).join("");
+    '<div class="lgx-switch">'+[["feed","Avis"],["rank","Classement"],["members","Membres"]].map(function(t){return '<button class="lgx-pill '+(S.lv===t[0]?"on":"")+'" onclick="S.lv=\''+t[0]+'\';render()">'+t[1]+'</button>'}).join("")+'</div>';
+  if(S.lv==="feed"){
+    h += lr.length
+      ? reviewSortBar(S.lrsort,"setLeagueRevSort") + sortReviewsBy(lr, S.lrsort).map(lrv).join("")
+      : '<div class="lgx-empty"><b>Aucun avis ici</b><p>Sois le premier à noter un resto dans cette ligue.</p><button class="lgx-cta" onclick="openNoteSheet()">Noter un resto</button></div>';
+  } else if(S.lv==="rank"){
+    var R=groups(lr).sort(function(a,b){return b.s/b.c-a.s/a.c||b.c-a.c});S.gl=R;
+    if(!R.length)h+='<div class="lgx-empty"><b>Pas encore de classement</b><p>Note des restos pour voir le podium de la ligue.</p></div>';
+    else{
+      var pod=[1,0,2].filter(function(i){return R[i]}).map(function(i){var o=R[i];return '<div class="lgx-pc '+(i===0?'first':'')+'" style="min-height:'+[138,112,96][i]+'px" onclick="openG('+i+')"><div class="n">'+(i+1)+'</div><div class="t">'+esc(o.n)+'</div><div class="s">★ '+(o.s/o.c).toFixed(1).replace(".",",")+'</div></div>'}).join("");
+      h+='<div class="lgx-pod">'+pod+'</div>'+R.slice(3).map(function(o,j){var i=j+3;return '<div class="lgx-row" onclick="openG('+i+')" style="cursor:pointer"><span class="lgx-rk">'+(i+1)+'</span><div class="lgx-meta"><div class="lgx-nm">'+esc(o.n)+' '+dot(o)+'</div><div class="lgx-sub">'+o.c+' avis</div></div><b>'+(o.s/o.c).toFixed(1).replace(".",",")+' ★</b></div>'}).join("");
     }
-  }
-
-  // Pilules façon Ligue : Amis / Que je suis / Qui me suit
-  var fv = S.fv || "friends";
-  h += '<div class="lgx-switch">' +
-    '<button class="lgx-pill '+(fv==="friends"?"on":"")+'" onclick="S.fv=\'friends\';render()">Amis ('+mutualList.length+')</button>' +
-    '<button class="lgx-pill '+(fv==="following"?"on":"")+'" onclick="S.fv=\'following\';render()">Que je suis ('+followingList.length+')</button>' +
-    '<button class="lgx-pill '+(fv==="followers"?"on":"")+'" onclick="S.fv=\'followers\';render()">Qui me suit ('+followersList.length+')</button>' +
-  '</div>';
-
-  // Avis partagés avec les amis / personnes suivies pour Fil & Top avis
-  var circleIds = {};
-  followingList.forEach(function(f){ circleIds[f.uid] = 1; });
-  followersList.forEach(function(f){ circleIds[f.uid] = 1; });
-
-  var circleReviews = allv().filter(function(x){
-    return x.uid && x.uid !== S.uid && circleIds[x.uid];
-  }).sort(function(a,b){ return b.ts - a.ts; });
-
-  if(fv === "friends"){
-    if(!mutualList.length){
-      h += '<div class="lgx-empty"><b>Aucun ami pour l’instant</b><p>Quand toi et une autre personne vous suivez mutuellement, vous apparaissez ici comme amis.</p></div>';
-    } else {
-      h += mutualList.map(function(f){
-        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
-      }).join("");
-    }
-
-    var mutualIds = {};
-    mutualList.forEach(function(f){ mutualIds[f.uid] = 1; });
-    var friendsFeed = allv().filter(function(x){
-      return x.uid && x.uid !== S.uid && mutualIds[x.uid];
-    }).sort(function(a,b){ return b.ts - a.ts; });
-
-    h += '<div class="lgx-h2">Fil de tes amis</div>';
-    h += friendsFeed.length
-      ? friendsFeed.map(lgxRv).join("")
-      : '<div class="lgx-empty"><b>Fil vide</b><p>Les derniers avis de tes amis apparaîtront ici.</p></div>';
-
-    var friendsTop = friendsFeed.filter(function(x){ return x.note >= 4; }).sort(function(a,b){ return b.note - a.note || b.ts - a.ts; });
-    h += '<div class="lgx-h2">Top avis de tes amis</div>';
-    h += friendsTop.length
-      ? friendsTop.map(lgxRv).join("")
-      : '<div class="lgx-empty"><b>Aucun top avis</b><p>Les notes 4★ et plus de tes amis s’afficheront ici.</p></div>';
-  } else if(fv === "following"){
-    if(!followingList.length){
-      h += '<div class="lgx-empty"><b>Tu ne suis personne pour l’instant</b><p>Recherche un pseudo ci-dessus ou suis les membres de tes ligues.</p></div>';
-    } else {
-      h += followingList.map(function(f){
-        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
-      }).join("");
-    }
-
-    var followingReviews = allv().filter(function(x){
-      return x.uid && x.uid !== S.uid && followingList.some(function(f){ return f.uid === x.uid; });
-    }).sort(function(a,b){ return b.ts - a.ts; });
-
-    h += '<div class="lgx-h2">Avis des personnes que je suis</div>';
-    h += followingReviews.length
-      ? followingReviews.map(lgxRv).join("")
-      : '<div class="lgx-empty"><b>Aucun avis récent</b><p>Les personnes que tu suis n’ont pas encore publié d’avis.</p></div>';
-  } else if(fv === "followers"){
-    if(!followersList.length){
-      h += '<div class="lgx-empty"><b>Aucun abonné pour l’instant</b><p>Les personnes qui suivent ton profil apparaîtront ici.</p></div>';
-    } else {
-      h += followersList.map(function(f){
-        return lgxFriendRow(f.uid, f.pseudo, hashColor(String(f.uid||f.pseudo)));
-      }).join("");
-    }
-  }
-
-  if(sugg.length){
-    h += '<div class="lgx-h2">Dans tes ligues</div><div class="lgx-hs">'+sugg.map(function(u){
-      var f=hasFriend(u.uid);
-      var ulink=' onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')" style="cursor:pointer"';
-      return '<div class="lgx-sg"><div class="lgx-av" style="background:'+u.col+'"'+ulink+'>'+lgIni(u.pseudo)+'</div>'+
-        '<div class="lgx-nm"'+ulink+'>'+esc(u.pseudo)+'</div>'+
-        '<div class="lgx-sub">'+esc(u.leagues.join(", "))+'</div>'+
-        '<button class="lgx-btn '+(f?'':'pri')+'" onclick="'+(f?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')')+'">'+(f?'Suivi':'Suivre')+'</button></div>';
-    }).join("")+'</div>';
-  }
-
-  return h+'</div>';
-}
-
-function league(){
-  if(S.lgTab==="friends")return lgxFriends();
-  if(!S.leagues.length)return lgxList();
-  if(!S.leagueOpen)return lgxList();
-  if(S.leagues.indexOf(S.league)<0)S.league=S.leagues[0];
-  return lgxDetail();
-}
-</script>
-<script>
-/* ===== Refonte Profil ===== */
-var PFI={
-back:'<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
-sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
-pencil:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
-more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
-plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
-x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
-trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'};
-function pfi(k){return '<svg class="pf-svg" viewBox="0 0 24 24">'+PFI[k]+'</svg>'}
-function pfIni(s){return esc((s||"?").charAt(0).toUpperCase())}
-function pfBg(p){
-  var gpId = p.gPlaceId || (p.pid && p.pid.indexOf("gp:") === 0 ? p.pid.slice(3) : null);
-  var gDet = gpId ? S.gDetailsCache[gpId] : null;
-  var gGrp = gmap(allv())[keyOf(p)];
-  var myLastPhoto = "";
-  if(gGrp && gGrp.rv){
-    var mineWithPhoto = gGrp.rv
-      .filter(function(r){ return r.uid === S.uid && r.photo; })
-      .sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
-    if(mineWithPhoto.length) myLastPhoto = mineWithPhoto[0].photo;
-  }
-  var restoPhoto = (gDet && gDet.photo) || p.gPhoto || (gGrp && gGrp.gPhoto) || "";
-  var photo = myLastPhoto || restoPhoto || p.photo || "";
-  if(!photo && gpId && !S.gDetailsCache[gpId]){
-    fetchGooglePlaceDetails(p);
-  }
-  if(photo){
-    return 'background:linear-gradient(180deg,rgba(0,0,0,.05) 35%,rgba(12,16,22,.85)),url('+photo+') center/cover';
-  }
-  var c = getRestoColor(p);
-  return 'background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(12,16,22,.6)),linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
-}
-function pfSimple(o){
-  var myLast = (o.rv || [])
-    .filter(function(r){ return r.uid === S.uid && r.photo; })
-    .sort(function(a,b){ return (b.ts||0) - (a.ts||0); })[0];
-  return {
-    pid: o.pid,
-    gPlaceId: o.gPlaceId || null,
-    n: o.n,
-    a: o.a,
-    lat: o.lat,
-    lng: o.lng,
-    cat: o.cat,
-    gPhoto: o.gPhoto || "",
-    photo: myLast ? myLast.photo : ""
-  };
-}
-
-/* ---------- Briques ---------- */
-function pfStat(n,label,act){return '<button class="pf-st" onclick="'+act+'"><b>'+n+'</b><span>'+label+'</span></button>'}
-function pfSwitch(c){
-  return '<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
-    return '<button class="'+(c.pt===t[0]?"on":"")+'" onclick="'+c.setPt(t[0])+'">'+t[1]+'</button>'}).join("")+'</div>';
-}
-var PFC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PFH=[150,120,100];
-function pfPod(i,arr,edit){
-  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
-  return '<div class="pf-pc" style="height:'+PFH[i]+'px;background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><div class="t">'+(p?esc(p.n):(edit?'+':'–'))+'</div></div>';
-}
-function pfRow(i,arr,edit){
-  var p=(arr||[])[i],act=edit?' onclick="pickTop('+i+')"':'';
-  return '<div class="pf-cr" style="background:'+PFC[i]+'"'+act+'><span class="n">'+(i+1)+'</span><span class="t">'+(p?esc(p.n):(edit?'+ Choisir':'–'))+'</span></div>';
-}
-function pfTop(arr,edit,title){
-  var any=(arr||[]).some(Boolean);
-  if(!edit&&!any)return '';
-  return '<div class="pf-h2">'+title+'</div><div class="pf-pod">'+pfPod(1,arr,edit)+pfPod(0,arr,edit)+pfPod(2,arr,edit)+'</div><div class="pf-rows">'+pfRow(3,arr,edit)+pfRow(4,arr,edit)+'</div>';
-}
-function pfIdCard(c,name,col,bio,extra){
-  return '<div class="pf-idc"><div class="pf-av" style="background:'+col+(c.own?'':';cursor:default')+'"'+(c.own?' onclick="newCol()"':'')+'>'+pfIni(name)+(c.own?'<span class="e">'+pfi("pencil")+'</span>':'')+'</div>'+
-    '<div class="pf-bio">'+(bio?esc(bio):'<span style="opacity:.55">Pas de bio.</span>')+'</div>'+extra+'</div>';
-}
-function pfRv(x,own){
-  var idx=ri(x),d=new Date(x.ts);
-  var menu=(own&&x._id)?'<button class="pf-more" onclick="pfRvMenu('+idx+')">'+pfi("more")+'</button>':'';
-  return '<div class="pf-rv"><div class="pf-rv-top"><span class="d">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(x.mode==="deliv"?' · Livraison':' · Sur place')+'</span>'+menu+'</div>'+
-    '<div class="pf-rv-body" onclick="openReviewDetail('+idx+')"><div class="pf-rv-main">'+
-      '<div class="pf-rv-resto">'+esc(x.resto)+dot(x)+'</div><span class="stars">'+stars(x.note)+'</span>'+
-      '<div class="pf-rv-txt">'+(x.avis?esc(x.avis):'<i style="opacity:.55">Sans commentaire</i>')+'</div>'+
-      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
-    '</div>'+(x.photo?'<img class="pf-rv-img" src="'+x.photo+'">':'')+'</div></div>';
-}
-function pfRvMenu(i){
-  var x=S.rvl[i];if(!x)return;
-  document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb" onclick="event.stopPropagation()">'+
-    '<button class="pf-opt" onclick="closeSheet();editReview('+i+')">'+pfi("pencil")+' Modifier</button>'+
-    '<button class="pf-opt red" onclick="closeSheet();del('+i+')">'+pfi("trash")+' Supprimer</button>'+
-    '<button class="back" onclick="closeSheet()">Annuler</button></div></div>';
-}
-function pfAgenda(mine,emptyMsg,own){
-  if(!mine.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Chaque resto noté apparaît ici, mois par mois.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
-  var h="",cur="";
-  mine.forEach(function(x){
-    var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
-    if(mo!==cur){cur=mo;h+='<div class="pf-month">'+esc(mo)+'</div>'}
-    var note=typeof x.note==="number"?String(x.note).replace(".",",")+"/5":"";
-    h+='<div class="pf-ag" onclick="openO('+hp(pl(x))+')"><div class="dt"><b>'+d.getDate()+'</b><span>'+esc(d.toLocaleDateString("fr-FR",{month:"short"}))+'</span></div>'+
-      '<div class="tx"><div class="pf-nm"><span class="t">'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
-      '<div class="pf-sub">'+(x.mode==="deliv"?'Livraison':'Sur place')+(x.addr?' · '+esc(x.addr):'')+'</div>'+
-      '<div style="margin-top:4px"><span class="stars">'+stars(x.note)+'</span> <b style="font-size:13px">'+note+'</b></div>'+
-      ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
-    '</div></div>';
-  });
-  return h;
-}
-function pfGrid(list,emptyMsg,own){
-  if(!list.length)return '<div class="pf-empty" style="margin-top:16px"><b>'+emptyMsg+'</b>'+(own?'<p>Garde ici les restos que tu veux essayer.</p><button onclick="go(\'map\')">Explorer la carte</button>':'')+'</div>';
-  return '<div class="pf-grid" style="margin-top:14px">'+list.map(function(p){
-    return '<div class="pf-gc" style="'+pfBg(p)+'" onclick="openO('+hp(p)+')">'+esc(p.n)+'</div>';
-  }).join("")+'</div>';
-}
-function pfPerson(p,sub){
-  var uid=p.uid,pseudo=p.pseudo||"Utilisateur",isMe=uid===S.uid;
-  var following=!isMe&&hasFriend(uid),followsMe=!isMe&&isFollower(uid),mutual=following&&followsMe;
-  var col=p.col||hashColor(String(uid||pseudo));
-  var open='openUser(\''+encodeURIComponent(uid)+'\',\''+encodeURIComponent(pseudo)+'\')';
-  var btn="";
-  if(!isMe)btn=following
-    ?'<button class="pf-btn" onclick="event.stopPropagation();delFriend(\''+esc(uid)+'\')">'+(mutual?'Ami ✓':'Suivi')+'</button>'
-    :'<button class="pf-btn pri" onclick="event.stopPropagation();addFriend(\''+esc(uid)+'\',\''+esc(pseudo)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
-  return '<div class="pf-row"><div class="pf-pav" style="background:'+col+'" onclick="'+open+'">'+pfIni(pseudo)+'</div><div class="pf-meta click" style="cursor:pointer" onclick="'+open+'"><div class="pf-nm"><span class="t">'+esc(pseudo)+(isMe?' (moi)':'')+'</span></div><div class="pf-sub">'+esc(sub||(mutual?"Ami · suivi réciproque":(followsMe?"Te suit":"Suivi")))+'</div></div>'+btn+'</div>';
-}
-
-/* ---------- Corps commun (profil perso et profil d'un ami) ---------- */
-function pfSub(c){
-  var title=c.sub==="likes"?"Likes":c.sub==="friends"?"Amis & suivis":"Restos";
-  var cnt=c.sub==="likes"?c.likes.length:c.sub==="friends"?c.friends.length:c.mr.length;
-  var h='<div class="pf"><div class="pf-bar"><button class="pf-ic" onclick="'+c.clearSub+'">'+pfi("back")+'</button><h1>'+title+' <small>'+cnt+'</small></h1></div>';
-  if(c.sub==="friends"){
-    h+=c.friends.length?c.friends.map(function(f){return pfPerson(f,c.own?(isFollower(f.uid)?"Ami · suivi réciproque":"En attente de suivi en retour"):"")}).join(""):'<div class="pf-empty"><b>Aucun ami pour l’instant</b></div>';
-  } else if(c.sub==="likes"){
-    h+=pfGrid(c.likes,"Aucun like pour l’instant",false);
   } else {
-    h+=pfGrid(c.mr.map(pfSimple),"Aucun resto noté pour l’instant",false);
-  }
-  return h+'</div>';
-}
-function pfTabs(c){
-  var h=pfSwitch(c);
-  if(c.pt==="agenda")return h+pfAgenda(c.mine,c.own?"Ton agenda est vide":"Son agenda est vide",c.own);
-  if(c.pt==="wish")return h+pfGrid(c.wish,c.own?"Ta liste est vide":"Aucun resto à tester",c.own);
-  h+=c.idcard;
-  h+=pfTop(c.top,c.own,c.own?"Mon top 5":"Son top 5");
-  h+='<div class="pf-h2">Derniers avis'+(c.mine.length>4?'<button onclick="'+c.setPt("agenda")+'">Tout voir</button>':'')+'</div>';
-  h+=c.mine.length?c.mine.slice(0,3).map(function(x){return pfRv(x,c.own)}).join(""):'<div class="pf-empty"><b>'+(c.own?"Tu n’as encore rien noté":"Aucun avis pour l’instant")+'</b>'+(c.own?'<p>Note ton premier resto pour remplir ton profil.</p><button onclick="openNoteSheet()">Noter un resto</button>':'')+'</div>';
-  return h+pfLinks(c);
-}
-function pfLinks(c){
-  function row(l,n,act){return '<div class="pf-lr" onclick="'+act+'"><span>'+l+'</span><b>'+n+' ›</b></div>'}
-  return '<div class="pf-card pf-links">'+row("Restaurants",c.mr.length,c.setSub("rest"))+row("Likes",c.likes.length,c.setSub("likes"))+row("Amis",c.nfr,c.setSub("friends"))+'</div>';
-}
-/* ---------- Mon profil ---------- */
-function me(){
-  if(S.viewUser)return userView(S.viewUser);
-  if(S.pt==="set")return pfSettings();
-  var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
-  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-  var c={own:true,mine:mine,mr:mr,likes:S.likes,wish:S.wish,friends:S.friends,top:S.top,
-    pt:S.pt,sub:S.sub,nfr:S.friends.filter(function(f){return isFollower(f.uid)}).length,
-    clearSub:"S.sub=null;render()"};
-  c.setPt=function(t){return "S.pt='"+t+"';S.sub=null;render()"};
-  c.setSub=function(t){return "S.sub='"+t+"';render()"};
-  if(c.sub)return pfSub(c);
-  c.idcard=pfIdCard(c,S.pseudo,S.col||"#E5B83F",S.bio,'<button class="pf-edit" onclick="editBio()">'+pfi("pencil")+' Modifier</button>');
-  return '<div class="pf"><div class="pf-top"><button class="pf-ic" onclick="S.pt=\'set\';render()">'+pfi("sliders")+'</button><h1>'+esc(S.pseudo||"Profil")+'</h1><span class="sp"></span></div>'+pfTabs(c)+'</div>';
-}
-
-/* ---------- Profil d'un autre utilisateur ---------- */
-function userView(u){
-  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
-  var mine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts});
-  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
-  var col=prof.col||(mine.length&&mine[0].col)||hashColor(String(u.uid||name));
-  var bio=prof.bio||"",top=prof.top||[null,null,null,null,null];
-  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
-  var back='S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()';
-  var c={own:false,mine:mine,mr:mr,top:top,
-    likes:Array.isArray(prof.likes)?prof.likes:[],wish:Array.isArray(prof.wish)?prof.wish:[],friends:Array.isArray(prof.friends)?prof.friends:[],
-    pt:S.viewPt||"prof",sub:S.viewSub||null,clearSub:"S.viewSub=null;render()"};
-  c.setPt=function(t){return "S.viewPt='"+t+"';S.viewSub=null;render()"};
-  c.setSub=function(t){return "S.viewSub='"+t+"';render()"};
-  c.nfr=c.friends.length;
-  if(isM&&c.sub)return pfSub(c);
-  var follow=isF
-    ?'<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">'+(isM?'Ami ✓ · Ne plus suivre':'Suivi ✓ · Ne plus suivre')+'</button>'
-    :'<button class="pf-follow" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')">'+(followsMe?'Suivre en retour':'Suivre')+'</button>';
-  c.idcard=pfIdCard(c,name,col,bio,follow);
-  var head='<div class="pf-top"><button class="pf-ic" onclick="'+back+'">'+pfi("back")+'</button><h1>'+esc(name)+'</h1><span class="sp"></span></div>';
-  if(isM)return '<div class="pf">'+head+pfTabs(c)+'</div>';
-  return '<div class="pf">'+head+c.idcard+pfTop(top,false,"Top 5")+
-    '<div class="pf-card pf-links" style="margin-top:18px"><div class="pf-lr" style="cursor:default"><span>Restaurants notés</span><b>'+mr.length+'</b></div></div>'+
-    '<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses restos à tester.</div></div>';
-}
-
-/* ---------- Réglages ---------- */
-function pfSettings(){
-  var acc=S.user&&!S.user.isAnonymous,dark=ls("lr_theme")==="dark";
-  var h='<div class="pf pf-set-page"><div class="pf-bar"><button class="pf-ic" onclick="S.pt=\'prof\';render()">'+pfi("back")+'</button><h1>Réglages</h1></div>';
-  h+='<div class="pf-h2" style="margin-top:6px">Apparence</div><div class="pf-card"><div class="pf-set"><span class="l">Mode sombre</span><button class="pf-toggle '+(dark?"on":"")+'" onclick="toggleTheme()"><i></i></button></div></div>';
-  h+='<div class="pf-h2">Pseudo</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="ps" placeholder="Ton pseudo unique" value="'+esc(S.pseudo)+'"><button class="pf-btn pri" onclick="setP()">Enregistrer</button></div></div>';
-  h+='<div class="pf-h2">Ma zone</div><div class="pf-card"><div class="pf-set col"><input class="pf-in" id="dp" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="pf-btn pri" onclick="setHome()">Enregistrer</button></div>'+
-    '<div class="pf-set"><span class="l">Position</span>'+(S.loc?'<span class="s">Activée ✓</span>':'<button class="pf-btn" onclick="getLoc()">Activer</button>')+'</div></div>';
-  h+='<div class="pf-h2">Compte</div><div class="pf-card">';
-  if(acc){
-    h+='<div class="pf-set"><span class="l">E-mail</span><span class="s">'+esc(S.user.email||"")+'</span></div>'+
-       '<div class="pf-set"><button class="link" onclick="logout()">Se déconnecter</button></div>'+
-       '<div class="pf-set"><button class="link red" onclick="delAcc()">Supprimer mon compte</button></div>';
-  } else {
-    h+='<div class="pf-set"><button class="link" onclick="S.guest=false;render()">Se connecter / S’inscrire</button></div>';
-  }
-  h+='</div>';
-  if(S.blocked.length){
-    h+='<div class="pf-h2">Bloqués</div>'+S.blocked.map(function(b,k){
-      return '<div class="pf-row"><div class="pf-meta"><div class="pf-nm"><span class="t">'+esc(b.n)+'</span></div></div><button class="pf-btn" onclick="unblk('+k+')">Débloquer</button></div>';
+    h+=m.map(function(u){var me=u.uid===S.uid,isF=hasFriend(u.uid);
+      return '<div class="lgx-row"><div class="lgx-av" style="background:'+u.col+'" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+esc(u.pseudo.charAt(0).toUpperCase())+'</div>'+
+        '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')"><div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">'+(me?'Toi':isMutualFriend(u.uid)?'Ami':'Membre')+'</div></div>'+
+        (me?'':'<button class="lgx-btn '+(isF?'':'pri')+'" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')')+'">'+(isF?'Suivi':'Suivre')+'</button>')+'</div>';
     }).join("");
   }
   return h+'</div>';
 }
-</script>
-<script>
-/* ===== Refonte Carte ===== */
-var MPI={
-search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
-filter:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
-x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
-target:'<circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/>',
-pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
-chev:'<polyline points="9 18 15 12 9 6"/>'};
-function mpi(k){return '<svg class="mp-svg" viewBox="0 0 24 24">'+MPI[k]+'</svg>'}
 
-function mpThumb(o){
-  var photo=o.gPhoto||"";
-  if(!photo&&o.rv)o.rv.some(function(x){if(x.photo){photo=x.photo;return true}});
-  var gp=o.gPlaceId||(o.pid&&o.pid.indexOf("gp:")===0?o.pid.slice(3):null);
-  if(!photo&&gp&&S.gDetailsCache[gp]&&S.gDetailsCache[gp].photo)photo=S.gDetailsCache[gp].photo;
-  var c=getRestoColor(o);
-  return photo
-    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.35)),url('+photo+')'
-    :'background-image:linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
-}
-function mpCard(o,act,rating,count){
-  var dd=o.d!=null?o.d:o.dc;
-  var hasPhoto=!!(o.gPhoto||(o.rv&&o.rv.some(function(x){return x.photo})));
-  var meta="";
-  if(rating!=null)meta='<span class="s">★</span> '+rating.toFixed(1).replace(".",",")+' <small>· '+count+' avis</small>';
-  else if(o.gRating)meta='<small>Google</small> <span class="s">★</span> '+String(o.gRating).replace(".",",")+' <small>('+(o.gCount||0)+')</small>';
-  else meta='<small>Pas encore d’avis</small>';
-  if(dd!=null)meta+=' <small>· '+fmtD(dd)+'</small>';
-  return '<div class="mp-card" onclick="'+act+'"><div class="mp-th" style="'+mpThumb(o)+'">'+(hasPhoto?'':esc((o.n||"?").charAt(0).toUpperCase()))+'</div>'+
-    '<div class="mp-main"><div class="mp-nm"><span class="t">'+esc(o.n)+'</span>'+dot(o)+'</div><div class="mp-ad">'+esc(o.a||"Adresse non renseignée")+'</div><div class="mp-mt">'+meta+'</div></div><span class="mp-chev">'+mpi("chev")+'</span></div>';
-}
-function mpResults(){
-  if(S.busy)return '<div class="mp-empty">Recherche en cours…</div>';
-  if(S.sr!==null){
-    var h='<div class="mp-h"><h3>Résultats <small>'+S.sr.length+'</small></h3><button onclick="mpClear()">Effacer</button></div>';
-    if(!S.sr.length)return h+'<div class="mp-empty"><b>Aucun resto trouvé</b>Élargis le rayon ou active ta position.</div>';
-    return h+S.sr.map(function(p,i){return mpCard(p,'tapIndex('+i+')',p.c?p.avg:null,p.c)}).join("");
+function lgFriends(){
+  var q=(S.userSearchQ||"").trim(),sug=leagueSuggestions().filter(function(u){return !hasFriend(u.uid)}),hasQ=q.length>0;
+  var h='<div class="lgx-search">'+lgi("search")+'<input id="friend-sq" class="lgx-in" placeholder="Rechercher un pseudo…" value="'+esc(S.userSearchQ||"")+'" oninput="S.userSearchQ=this.value;searchUsersByPseudo()" onkeydown="if(event.key===\'Enter\')searchUsersByPseudo()">'+(hasQ?'<button class="lgx-x" onclick="S.userSearchQ=\'\';S.userSearchRes=null;render()">'+lgi("x")+'</button>':'')+'</div>';
+  if(hasQ){
+    if(S.userSearchBusy)return h+'<div class="empty">Recherche…</div>';
+    var res=S.userSearchRes||[];
+    if(!res.length)return h+'<div class="lgx-empty"><b>Aucun résultat</b><p>Aucun utilisateur trouvé pour « '+esc(q)+' ».</p></div>';
+    return h+res.map(function(u){var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),fMe=isFollower(u.uid);
+      return '<div class="lgx-row"><div class="lgx-av" style="background:'+avBg(u.uid,u.pseudo)+'" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+esc(u.pseudo.charAt(0).toUpperCase())+'</div>'+
+        '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')"><div class="lgx-nm">'+esc(u.pseudo)+'</div><div class="lgx-sub">'+(isM?'Ami':fMe?'Te suit':'Belly')+'</div></div>'+
+        '<button class="lgx-btn '+(isF?'':'pri')+'" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')')+'">'+(isF?'Suivi':fMe?'Suivre':'Suivre')+'</button></div>';
+    }).join("");
   }
-return mapPopularWeekHTML();
-}
-function mpClear(){S.sr=null;S.sq="";S.busy=false;S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};render()}
-function mpLocate(){
-  if(S.loc&&S.map){try{S.map.panTo({lat:S.loc.lat,lng:S.loc.lng});S.map.setZoom(15)}catch(e){}return}
-  getLoc();
-}
-function mpChips(){
-  var styleLine = '<div class="hm-chips">' + STYLE_CATS.map(function(c){
-    var on = S.filt.cats.indexOf(c.key) > -1 ? " on" : "";
-    return '<button class="hm-chip' + on + '" onclick="searchCat(\'' + c.key + '\')"><img src="' + c.img + '" alt="" onerror="this.style.display=\'none\'">' + esc(c.label) + '</button>';
-  }).join("") + '</div>';
-
-  var cuisineLine = '<div class="hm-chips" style="margin-top:4px">' + CUISINE_CATS.map(function(c){
-    var on = S.filt.cuisine.indexOf(c.key) > -1 ? " on" : "";
-    return '<button class="hm-chip' + on + '" onclick="searchCat(\'' + c.key + '\')"><img src="' + c.img + '" alt="" onerror="this.style.display=\'none\'">' + esc(c.label) + '</button>';
-  }).join("") + '</div>';
-
-  return styleLine + cuisineLine;
-}
-
-function mapPopularWeek(){
-  var now = new Date();
-  var startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7)).getTime();
-  var weekReviews = allv().filter(function(x){ return (x.ts || 0) >= startOfWeek; });
-  var list = groups(weekReviews).sort(function(a, b){
-    return b.c - a.c || (b.s / b.c) - (a.s / a.c);
-  }).slice(0, 12);
-
-  list.forEach(function(o){
-    if(o.gPlaceId && !o.gPhoto && !S.gDetailsCache[o.gPlaceId]){
-      fetchGooglePlaceDetails(o);
-    }
-  });
-  return list;
-}
-
-function getPlaceOnlyPhoto(o){
-  var gpId = o.gPlaceId || (o.pid && o.pid.indexOf("gp:") === 0 ? o.pid.slice(3) : null);
-  var gDet = gpId ? S.gDetailsCache[gpId] : null;
-  return (gDet && gDet.photo) || o.gPhoto || o.photo || "";
-}
-function mapPopularWeekHTML(){
-  if(S.sr !== null || S.busy) return "";
-  var list = mapPopularWeek();
-  if(!list.length){
-    return '<h2>Populaires cette semaine</h2><div class="empty">Aucun avis cette semaine.</div>';
+  if(sug.length){
+    h+='<div class="lgx-h2">Dans tes ligues</div><div class="lgx-hs">'+sug.slice(0,12).map(function(u){var fMe=isFollower(u.uid);
+      return '<div class="lgx-sg"><div class="lgx-av" style="background:'+avBg(u.uid,u.pseudo)+'" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+esc(u.pseudo.charAt(0).toUpperCase())+'</div>'+
+        '<div class="lgx-nm" style="cursor:pointer" onclick="openUser(\''+encodeURIComponent(u.uid)+'\',\''+encodeURIComponent(u.pseudo)+'\')">'+esc(u.pseudo)+'</div>'+
+        '<div class="lgx-sub">'+esc(u.leagues[0]||"")+'</div>'+
+        '<button class="lgx-btn pri" onclick="addFriend(\''+esc(u.uid)+'\',\''+esc(u.pseudo)+'\')">'+(fMe?'Suivre':'Suivre')+'</button></div>';
+    }).join("")+'</div>';
   }
-  return '<h2>Populaires cette semaine</h2>' + list.map(function(o){
-    var p = {pid: o.pid, gPlaceId: o.gPlaceId, n: o.n, a: o.a, lat: o.lat, lng: o.lng, cat: o.cat, gPhoto: getPlaceOnlyPhoto(o)};
-    var avg = (o.s / o.c).toFixed(1).replace(".", ",");
-    var d = (S.loc && num(o.lat) && num(o.lng)) ? dist(S.loc.lat, S.loc.lng, o.lat, o.lng) : null;
-    var thumb = getPlaceOnlyPhoto(o);
-    var thumbHtml = thumb
-      ? '<img src="'+thumb+'" alt="" style="width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0">'
-      : '<div style="width:52px;height:52px;border-radius:8px;background:'+getRestoColor(o)+';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">'+ini(o.n)+'</div>';
-
-    return '<div class="card strict" onclick="openO('+hp(p)+')">' +
-      '<div style="display:flex;gap:10px;align-items:center">' +
-        thumbHtml +
-        '<div style="flex:1;min-width:0">' +
-          '<div class="row"><div class="resto">'+esc(o.n)+dot(o)+'</div><span class="who">★ '+avg+'</span></div>' +
-          '<div class="who">'+(o.a ? esc(o.a)+' · ' : '')+o.c+' avis'+(d != null ? ' · <span class="dist">'+fmtD(d)+'</span>' : '')+'</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+  var mutualList = (S.friends || []).filter(function(f){ return !isB(f.uid) && isFollower(f.uid); });
+  h+='<div class="lgx-h2">Mes amis'+(mutualList.length?' · '+mutualList.length:'')+'</div>';
+  if(!mutualList.length)return h+'<div class="lgx-empty"><b>Aucun ami pour l’instant</b><p>Tes amis apparaissent ici quand vous vous suivez mutuellement.</p></div>';
+  return h+mutualList.map(function(f){
+    return '<div class="lgx-row"><div class="lgx-av" style="background:'+avBg(f.uid,f.pseudo)+'" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
+      '<div class="lgx-meta" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><div class="lgx-nm">'+esc(f.pseudo)+'</div><div class="lgx-sub">Ami</div></div>'+
+      '<button class="lgx-btn" onclick="delFriend(\''+esc(f.uid)+'\')">Suivi</button></div>';
   }).join("");
 }
 
-function explore(){
-  if(S.sel)return place(S.sel);
-  var hasQ=!!(S.sq||S.sr!==null);
-  var bar='<div class="mp-bar"><div class="mp-search">'+mpi("search")+'<input id="sq" placeholder="Restaurant, adresse, ville…" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()">'+
-    (hasQ?'<button class="mp-x" onclick="mpClear()">'+mpi("x")+'</button>':'')+'</div>'+
-    '<button class="mp-ic" onclick="openFilters()">'+mpi("filter")+(filtOn()?'<i class="mp-dot"></i>':'')+'</button></div>';
-  var legend='<div class="mp-legend">'+Object.keys(STYLE_CAT_MAP).map(function(k){return '<span><i class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+'"></i>'+esc(STYLE_CAT_MAP[k].label)+'</span>'}).join("")+'</div>';
-  var banner=S.loc?'':(S.locDenied?'<div class="mp-banner"><span>Position refusée. Active-la dans les réglages de ton téléphone.</span></div>':
-    '<div class="mp-banner">'+mpi("pin")+'<span>Active ta position pour voir les restos proches.</span><button onclick="getLoc()">Activer</button></div>');
-  return status()+'<div class="mp">'+bar+mpChips()+
-    '<div class="mp-map"><div id="map"></div><button class="mp-loc" onclick="mpLocate()" title="Ma position">'+mpi("target")+'</button></div>'+legend+banner+
-    '<div id="mp-res">'+mpResults()+'</div></div>';
+function league(){
+  if(S.lgTab==="leagues"&&S.leagueOpen&&S.league)return lgDetail(S.league);
+  var ignored=S.ignoredFollows||[];
+  var pending=(S.followers||[]).filter(function(f){return !isB(f.uid)&&!hasFriend(f.uid)&&ignored.indexOf(f.uid)<0}).length;
+  var isL=S.lgTab!=="friends";
+  var h=status()+'<div class="lgx">'+
+    '<div class="lgx-top"><div><h1>'+(isL?'Ligues':'Amis')+'</h1><p>'+(isL?'Tes groupes privés de restos':'Suis tes proches et découvre leurs tables')+'</p></div>'+
+      (isL?'<button class="lgx-ic" onclick="openLgSheet()" title="Nouvelle ligue">'+lgi("plus")+'</button>'
+          :'<button class="lgx-ic" onclick="openFollowNotifs()" title="Abonnés">'+ICONS.bell+(pending?'<span class="bell-dot">'+pending+'</span>':'')+'</button>')+
+    '</div>'+
+    '<div class="lgx-switch-seg">'+
+      '<button class="lgx-seg-btn '+(isL?'on':'')+'" onclick="S.lgTab=\'leagues\';S.leagueOpen=false;render()">Mes ligues</button>'+
+      '<button class="lgx-seg-btn '+(!isL?'on':'')+'" onclick="S.lgTab=\'friends\';S.leagueOpen=false;render()">Amis</button>'+
+    '</div>';
+  if(!isL)return h+lgFriends()+'</div>';
+  if(!S.leagues.length)return h+'<div class="lgx-empty"><b>Aucune ligue</b><p>Crée un groupe privé ou rejoins tes amis avec leur code.</p><button class="lgx-cta" onclick="openLgSheet()">Créer ou rejoindre</button></div></div>';
+  var cards=S.leagues.map(function(c){var n=lrev(c).length,m=lgMembers(c),hasPhoto=!!(S.leaguePhotos&&S.leaguePhotos[c]);
+    return '<div class="lgx-card'+(hasPhoto?' has-photo':'')+'"'+lgHeroBg(c)+' onclick="openLeagueCard(\''+esc(c)+'\')">'+
+      '<div class="lgx-card-top"><button class="lgx-code-chip" onclick="event.stopPropagation();copyCode(\''+esc(c)+'\')">'+esc(c)+' '+lgi("copy")+'</button>'+
+        '<div class="lgx-card-acts">'+
+          '<button class="lgx-ic" onclick="event.stopPropagation();pickLeaguePhoto(\''+esc(c)+'\')" title="Photo de la ligue">'+lgi("cam")+'</button>'+
+          '<button class="lgx-ic" onclick="event.stopPropagation();share(\''+esc(c)+'\')" title="Inviter">'+lgi("share")+'</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="lgx-card-name">'+esc(leagueLabel(c))+'</div>'+
+      '<div class="lgx-card-foot"><span class="lgx-card-sub">'+n+' avis · '+m.length+' membre'+(m.length>1?'s':'')+'</span>'+
+        '<div class="lgx-stack">'+m.slice(0,4).map(function(u){return '<span class="lgx-sa" style="background:'+u.col+'">'+esc(u.pseudo.charAt(0).toUpperCase())+'</span>'}).join("")+(m.length>4?'<span class="lgx-sa more">+'+(m.length-4)+'</span>':'')+'</div>'+
+      '</div></div>';
+  }).join("");
+  return h+cards+'<button class="lgx-ghost" onclick="openLgSheet()"><span class="i">'+lgi("plus")+'</span><span>Créer ou rejoindre une ligue</span></button></div>';
 }
 
-function upRes(){
-  var m=document.getElementById("mp-res");if(m)m.innerHTML=mpResults();
-  var e=document.getElementById("res");if(e)e.innerHTML=resHTML();
-  var c=document.getElementById("cl");if(c)c.innerHTML=mapPopularWeekHTML();
+/* ====== NOUVELLE PAGE CARTE & RECHERCHE (style moderne) ====== */
+var MPI={
+  search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+  loc:'<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+  chev:'<polyline points="9 18 15 12 9 6"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>'
+};
+function mpi(k){return '<svg class="mp-svg" viewBox="0 0 24 24">'+MPI[k]+'</svg>'}
+
+function toggleCuisineChip(k){
+  var i=S.filt.cuisine.indexOf(k);
+  if(i>-1)S.filt.cuisine.splice(i,1);
+  else{S.filt.cuisine=[k];S.filt.cats=[]}
+  if(!S.filt.cuisine.length&&!S.sq){S.sr=null;render();return}
+  doSearch();
+}
+function clearMapSearch(){
+  S.sq="";S.sr=null;S.filt={rad:3000,cats:[],cuisine:[],sort:"auto"};render();
+}
+function centerOnMe(){
+  if(S.loc&&S.map){S.map.panTo({lat:S.loc.lat,lng:S.loc.lng});S.map.setZoom(15)}
+  else getLoc();
+}
+
+function mpPlaceCard(p, onclick){
+  var dd=p.d!=null?p.d:p.dc;
+  var c=getRestoColor(p);
+  var gpId=p.gPlaceId||(p.pid&&p.pid.indexOf("gp:")===0?p.pid.slice(3):null);
+  var gDet=gpId?S.gDetailsCache[gpId]:null;
+  var gPhoto=(gDet&&gDet.photo)||p.gPhoto||"";
+  var thStyle=gPhoto
+    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.35)),url('+gPhoto+')'
+    :'background-image:linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+  var meta=p.c
+    ?'<span class="s">★</span> '+p.avg.toFixed(1).replace(".",",")+' <small>· '+p.c+' avis</small>'
+    :(p.gRating?'<small>Google</small> <span class="s">★</span> '+String(p.gRating).replace(".",",")+' <small>('+(p.gCount||0)+')</small>':'<small>Pas encore d’avis</small>');
+  if(dd!=null)meta+=' <small>· '+fmtD(dd)+'</small>';
+  return '<div class="mp-card" onclick="'+onclick+'">'+
+    '<div class="mp-th" style="'+thStyle+'">'+(gPhoto?'':esc((p.n||"?").charAt(0).toUpperCase()))+'</div>'+
+    '<div class="mp-main">'+
+      '<div class="mp-nm"><span class="t">'+esc(p.n)+'</span>'+dot(p)+'</div>'+
+      '<div class="mp-ad">'+esc(p.a||"Adresse non renseignée")+'</div>'+
+      '<div class="mp-mt">'+meta+'</div>'+
+    '</div>'+
+    '<span class="mp-chev">'+mpi("chev")+'</span>'+
+  '</div>';
+}
+
+function resHTML(){
+  if(S.tab!=="map"){
+    if(S.busy)return '<div class="nt-empty"><b>Recherche en cours…</b></div>';if(S.sr===null)return "";
+    var h="",ML={street:"Rue",address:"Lieu / adresse",city:"Ville",postcode:"Code postal"};
+    if(S.smode&&S.smode!=="poi")h+='<div class="sub">📍 '+ML[S.smode]+' : <b>'+esc(S.slabel)+'</b></div>';
+    if(!S.sr.length)h+='<div class="nt-empty"><b>Aucun resto trouvé</b><p>Essaie un autre nom ou ajoute-le manuellement ci-dessous.</p></div>';
+    h+=S.sr.map(function(p,i){
+      var dd=p.d!=null?p.d:p.dc;
+      var rightBadge=p.c
+        ?'<span class="s">★</span> '+p.avg.toFixed(1).replace(".",",")+' <small>· '+p.c+' avis</small>'
+        :(p.gRating?'<small>Google</small> <span class="s">★</span> '+String(p.gRating).replace(".",",")+' <small>('+(p.gCount||0)+')</small>':'<small>Pas encore d’avis</small>');
+      if(dd!=null)rightBadge+=' <small>· '+fmtD(dd)+'</small>';
+      var c=getRestoColor(p);
+      var thStyle=p.gPhoto
+        ?'background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(12,16,22,.35)),url('+p.gPhoto+')'
+        :'background-image:linear-gradient(135deg,'+c+','+mixHex(c,"#192A3A",.6)+')';
+      return '<div class="mp-card" onclick="tapIndex('+i+')">'+
+        '<div class="mp-th" style="'+thStyle+'">'+(p.gPhoto?'':esc((p.n||"?").charAt(0).toUpperCase()))+'</div>'+
+        '<div class="mp-main">'+
+          '<div class="mp-nm"><span class="t">'+esc(p.n)+'</span>'+dot(p)+'</div>'+
+          '<div class="mp-ad">'+esc(p.a||"Adresse non renseignée")+'</div>'+
+          '<div class="mp-mt">'+rightBadge+'</div>'+
+        '</div>'+
+        '<span class="mp-chev">'+mpi("chev")+'</span>'+
+      '</div>';
+    }).join("");
+    if(S.tab==="add"||S.noteOpen)h+='<button class="lgx-cta alt" style="margin-top:6px" onclick="S.manual=true;render()">Je ne trouve pas mon resto</button>';
+    return h;
+  }
+  if(S.busy)return '<div class="mp-empty"><b>Recherche en cours…</b></div>';
+  if(S.sr===null)return "";
+  var h='<div class="mp-h"><h3>Résultats <small>('+S.sr.length+')</small></h3><button onclick="clearMapSearch()">Effacer</button></div>';
+  if(!S.sr.length)return h+'<div class="mp-empty"><b>Aucun resto trouvé</b>Élargis le rayon de recherche ou essaie un autre mot-clé.</div>';
+  return h+S.sr.map(function(p,i){return mpPlaceCard(p,'tapIndex('+i+')')}).join("");
+}
+
+function commList(){
+  if(S.sr!==null||S.busy)return "";
+  var G=groups(allv());
+  G.forEach(function(o){
+    o.d=(S.loc&&num(o.lat))?dist(S.loc.lat,S.loc.lng,o.lat,o.lng):null;
+    o.avg=o.s/o.c;
+    if(o.gPlaceId&&!o.gPhoto&&!S.gDetailsCache[o.gPlaceId])fetchGooglePlaceDetails(o);
+  });
+  G.sort(function(a,b){if(S.loc&&a.d!=null&&b.d!=null)return a.d-b.d;return b.avg-a.avg||b.c-a.c});
+  S.gl=G;
+  return '<div class="mp-h"><h3>'+(S.loc?'Autour de toi':'Restos notés')+'</h3></div>'+
+    (G.length?G.map(function(o,i){return mpPlaceCard(o,'openG('+i+')')}).join("")
+      :'<div class="mp-empty"><b>Aucun avis ici</b>Cherche un resto et sois le premier à le noter !</div>');
 }
 
 function openFilters(){
   var f=S.filt;
   document.getElementById("sheet").innerHTML='<div class="ov" onclick="closeSheet()"><div class="ovb mp-sheet" onclick="event.stopPropagation()" style="max-height:82vh;overflow:auto">'+
-    '<h3 class="mp-sh-t">Filtres</h3>'+
-    '<div class="mp-sh-l"><span>Rayon de recherche</span><b id="radv">'+fmtR(f.rad)+'</b></div>'+
+    '<div class="mp-sh-t">Filtres</div>'+
+    '<div class="mp-sh-l"><span>Rayon</span><b id="radv">'+fmtR(f.rad)+'</b></div>'+
     '<input type="range" min="500" max="10000" step="500" value="'+f.rad+'" oninput="S.filt.rad=+this.value;document.getElementById(\'radv\').textContent=fmtR(+this.value)">'+
     '<div id="fc">'+catChips()+'</div>'+
-    '<div class="mp-sh-l"><span>Classement</span></div><div class="chips" style="margin:0" id="fs">'+sortChips()+'</div>'+
-    '<button class="mp-cta" onclick="applyFilters()">Appliquer</button><button class="back" style="display:block;margin:10px auto 0" onclick="resetFilters()">Réinitialiser</button></div></div>';
+    '<div class="sub">Classement</div><div class="chips" style="margin:0 0 8px" id="fs">'+sortChips()+'</div>'+
+    '<button class="mp-cta" onclick="applyFilters()">Appliquer</button>'+
+    '<button class="back" style="display:block;margin:10px auto 0" onclick="resetFilters()">Réinitialiser</button>'+
+  '</div></div>';
 }
 
-function initMap(){
-  loadGoogleMaps(function(){
-    var el=document.getElementById("map");
-    if(S.tab!=="map"||!el)return;
-    var c=S.focus?{lat:S.focus.lat,lng:S.focus.lng}:S.loc?{lat:S.loc.lat,lng:S.loc.lng}:S.home?{lat:S.home.lat,lng:S.home.lng}:{lat:48.8566,lng:2.3522};
-    var z=S.focus?16:S.loc?14:S.home?11:13;
-    var isDark=ls("lr_theme")==="dark";
-    S.map=new google.maps.Map(el,{center:c,zoom:z,disableDefaultUI:true,zoomControl:false,mapTypeControl:false,fullscreenControl:false,streetViewControl:false,gestureHandling:"greedy",clickableIcons:false,styles:isDark?GMAPS_DARK_STYLE:[]});
-    S.gInfo=new google.maps.InfoWindow();
-    S.gMarkers=[];
-    if(S.loc){
-      S.gMarkers.push(new google.maps.Marker({position:{lat:S.loc.lat,lng:S.loc.lng},map:S.map,title:"Toi",
-        icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:"#4285F4",fillOpacity:1,strokeColor:"#FFFFFF",strokeWeight:3}}));
-    }
-    drawMarkers();
+function explore(){
+  if(S.sel)return place(S.sel);
+  var hasQ=!!(S.sq&&S.sq.trim());
+  var chips='<div class="hm-chips">'+CUISINE_CATS.map(function(c){
+    var on=S.filt.cuisine.indexOf(c.key)>-1;
+    return '<button class="hm-chip '+(on?'on':'')+'" onclick="toggleCuisineChip(\''+c.key+'\')"><img src="'+c.img+'" alt="" onerror="this.style.display=\'none\'">'+esc(c.label)+'</button>';
+  }).join("")+'</div>';
+  var legend='<div class="mp-legend">'+Object.keys(STYLE_CAT_MAP).map(function(k){
+    return '<span><i class="dot-badge" style="background:'+STYLE_CAT_MAP[k].color+'"></i>'+STYLE_CAT_MAP[k].label+'</span>';
+  }).join("")+'</div>';
+  var banner=!S.loc&&!S.locDenied?'<div class="mp-banner">'+mpi("pin")+'<span>Active ta position pour voir les restos proches</span><button onclick="getLoc()">Activer</button></div>':'';
+
+  return status()+'<div class="mp">'+
+    '<div class="mp-bar">'+
+      '<div class="mp-search">'+mpi("search")+
+        '<input id="sq" placeholder="Resto, adresse, ville…" value="'+esc(S.sq)+'" oninput="S.sq=this.value" onkeydown="if(event.key===\'Enter\')doSearch()">'+
+        (hasQ?'<button class="mp-x" onclick="clearMapSearch()" title="Effacer">'+mpi("x")+'</button>':'')+
+      '</div>'+
+      '<button class="mp-ic" onclick="openFilters()" title="Filtres">'+mpi("sliders")+(filtOn()?'<span class="mp-dot"></span>':'')+'</button>'+
+    '</div>'+
+    chips+
+    '<div class="mp-map"><div id="map"></div><button class="mp-loc" onclick="centerOnMe()" title="Ma position">'+mpi("loc")+'</button></div>'+
+    legend+banner+
+    '<div id="res">'+resHTML()+'</div>'+
+    '<div id="cl">'+commList()+'</div>'+
+  '</div>';
+}
+
+/* ====== NOUVELLE PAGE PROFIL (style moderne) ====== */
+var PFI={
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+  back:'<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>',
+  pen:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>'
+};
+function pfi(k){return '<svg class="pf-svg" viewBox="0 0 24 24">'+PFI[k]+'</svg>'}
+
+function pfBar(title,count,backFn){
+  return '<div class="pf-bar"><button class="pf-ic" onclick="'+backFn+'">'+pfi("back")+'</button><h1>'+esc(title)+(count!=null?' <small>('+count+')</small>':'')+'</h1></div>';
+}
+
+function pfCardBg(p){
+  var gpId=p.gPlaceId||(p.pid&&p.pid.indexOf("gp:")===0?p.pid.slice(3):null);
+  var gDet=gpId?S.gDetailsCache[gpId]:null;
+  var gPhoto=(gDet&&gDet.photo)||p.gPhoto||"";
+  var c=getRestoColor(p);
+  return gPhoto
+    ?'background-image:linear-gradient(180deg,rgba(0,0,0,.12),rgba(12,16,22,.85)),url('+gPhoto+');background-size:cover;background-position:center'
+    :'background-image:linear-gradient(145deg,'+c+','+mixHex(c,"#192A3A",.62)+')';
+}
+
+var PFC=["#E5B83F","#C9CED6","#D9915A","#8FB8E8","#8FD1A8"],PFH=[154,122,98];
+function pfPod(i,arr,editable){
+  var p=(arr||[])[i],oc=editable?' onclick="pickTop('+i+')"':(p?' onclick="openO('+hp(p)+')"':'');
+  if(!p)return '<div class="pf-pc e" style="height:'+PFH[i]+'px;background:'+PFC[i]+';opacity:.45"'+oc+'><span class="n">'+(i+1)+'</span><span class="t">'+(editable?'＋':'–')+'</span></div>';
+  return '<div class="pf-pc" style="height:'+PFH[i]+'px;background:'+PFC[i]+'"'+oc+'><span class="n">'+(i+1)+'</span><span class="t">'+esc(p.n)+'</span></div>';
+}
+function pfRow5(i,arr,editable){
+  var p=(arr||[])[i],oc=editable?' onclick="pickTop('+i+')"':(p?' onclick="openO('+hp(p)+')"':'');
+  return '<div class="pf-cr" style="background:'+PFC[i]+(p?'':';opacity:.45')+'"'+oc+'><span class="n">'+(i+1)+'</span><span>'+(p?esc(p.n):(editable?'＋ Choisir':'–'))+'</span></div>';
+}
+
+function pfRv(x,own){
+  var idx=ri(x),d=new Date(x.ts),img=x.photo||"";
+  var hasMenu=(x.uid&&x.uid!==S.uid)||(own&&x._id);
+  return '<div class="pf-rv">'+
+    '<div class="pf-rv-top">'+
+      '<span>'+(x.mode==="deliv"?ICONS.delivery+' Livraison':ICONS.dine+' Sur place')+'</span>'+
+      '<span class="d">· '+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span>'+
+      (hasMenu?'<button class="pf-more" onclick="openRvMenu('+idx+')">'+pfi("more")+'</button>':'')+
+    '</div>'+
+    '<div class="pf-rv-body" onclick="openO('+hp(pl(x))+')">'+
+      '<div class="pf-rv-main">'+
+        '<div class="pf-rv-resto"><span>'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+        '<span class="stars">'+stars(x.note)+'</span>'+
+        (x.avis?'<div class="pf-rv-txt">'+esc(x.avis)+'</div>':'')+
+        ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+      '</div>'+
+      (img?'<img class="pf-rv-img" src="'+img+'" onclick="event.stopPropagation();openLight(\''+img+'\')">':'')+
+    '</div></div>';
+}
+
+function pfAgenda(mine,emptyTitle,emptySub){
+  if(!mine.length)return '<div class="pf-empty"><b>'+emptyTitle+'</b><p>'+emptySub+'</p></div>';
+  var h="",cur="";
+  mine.forEach(function(x){
+    var d=new Date(x.ts),mo=d.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+    if(mo!==cur){cur=mo;h+='<div class="pf-month">'+esc(mo)+'</div>'}
+    h+='<div class="pf-ag" onclick="openO('+hp(pl(x))+')">'+
+      '<div class="dt"><b>'+d.getDate()+'</b><span>'+esc(d.toLocaleDateString("fr-FR",{month:"short"}))+'</span></div>'+
+      '<div class="tx">'+
+        '<div class="pf-nm"><span class="t">'+esc(x.resto)+'</span>'+dot(x)+'</div>'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span class="stars">'+stars(x.note)+'</span><span class="pf-sub">'+(x.mode==="deliv"?'Livraison':'Sur place')+'</span></div>'+
+        ((x.st&&x.st.length)?'<div class="pf-tags">'+x.st.slice(0,MAX_STICKERS).map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>':'')+
+      '</div></div>';
   });
+  return h;
+}
+
+function pfGrid(l,emptyTitle,emptySub){
+  if(!l.length)return '<div class="pf-empty"><b>'+emptyTitle+'</b><p>'+emptySub+'</p></div>';
+  l.forEach(function(p){if(p.gPlaceId&&!p.gPhoto&&!S.gDetailsCache[p.gPlaceId])fetchGooglePlaceDetails(p)});
+  return '<div class="pf-grid">'+l.map(function(p){
+    return '<div class="pf-gc" style="'+pfCardBg(p)+'" onclick="openO('+hp(p)+')">'+esc(p.n)+'</div>';
+  }).join("")+'</div>';
+}
+
+function settings(){
+  var acc=S.user&&!S.user.isAnonymous,isDark=ls("lr_theme")==="dark";
+  var h='<div class="pf">'+pfBar("Réglages",null,"S.pt='prof';render()");
+  h+='<div class="pf-h2">Apparence</div><div class="pf-card"><div class="pf-set"><div><div class="l">Mode sombre</div><div class="s">'+(isDark?'Activé':'Désactivé')+'</div></div>'+
+     '<button class="pf-toggle '+(isDark?'on':'')+'" onclick="toggleTheme()"><i></i></button></div></div>';
+  h+='<div class="pf-h2">Pseudo</div><div class="pf-card"><div class="pf-set col"><input id="ps" class="pf-in" placeholder="Ton pseudo" value="'+esc(S.pseudo)+'"><button class="lgx-cta" onclick="setP()">Enregistrer</button></div></div>';
+  h+='<div class="pf-h2">Ma zone</div><div class="pf-card"><div class="pf-set col"><input id="dp" class="pf-in" placeholder="Département ou ville" value="'+esc(S.dept)+'"><button class="lgx-cta alt" onclick="setHome()">Enregistrer</button></div>'+
+     '<div class="pf-set"><div><div class="l">Position GPS</div><div class="s">'+(S.loc?'Activée':'Désactivée')+'</div></div>'+
+     (S.loc?'<span class="pf-sub">OK</span>':'<button class="pf-btn pri" onclick="getLoc()">Activer</button>')+'</div></div>';
+  h+='<div class="pf-h2">Compte</div><div class="pf-card">'+
+     (acc?'<div class="pf-set"><div><div class="l">Connecté</div><div class="s">'+esc(S.user.email)+'</div></div></div>'+
+          '<div class="pf-set"><button class="link" onclick="logout()">Se déconnecter</button></div>'+
+          '<div class="pf-set"><button class="link red" onclick="delAcc()">Supprimer mon compte</button></div>'
+         :'<div class="pf-set"><button class="link" onclick="S.guest=false;render()">Se connecter / S’inscrire</button></div>')+
+     '</div>';
+  if(S.blocked.length){
+    h+='<div class="pf-h2">Utilisateurs bloqués</div><div class="pf-card">'+
+       S.blocked.map(function(b,k){return '<div class="pf-set"><span class="l">'+esc(b.n)+'</span><button class="pf-btn" onclick="unblk('+k+')">Débloquer</button></div>'}).join("")+'</div>';
+  }
+  return h+'</div>';
+}
+
+function userView(u){
+  var prof=S.viewProf||{},name=prof.pseudo||u.pseudo||"Utilisateur";
+  var uMine=allv().filter(function(x){return x.uid===u.uid}).sort(function(a,b){return b.ts-a.ts});
+  var uMr=groups(uMine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var uCol=prof.col||(uMine.length&&uMine[0].col)||hashColor(String(u.uid||name));
+  var uBio=prof.bio||"",uTop=prof.top||[null,null,null,null,null];
+  var isF=hasFriend(u.uid),isM=isMutualFriend(u.uid),followsMe=isFollower(u.uid);
+  var backBtn='<button class="pf-ic" onclick="S.viewUser=null;S.viewProf=null;S.viewPt=\'prof\';S.viewSub=null;render()">'+pfi("back")+'</button>';
+
+  if(!isM){
+    var h='<div class="pf"><div class="pf-top">'+backBtn+'<h1>'+esc(name)+'</h1><span class="sp"></span></div>'+
+      '<div class="pf-idc">'+
+        '<div class="pf-av" style="background:'+uCol+';cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div>'+
+        '<div class="pf-bio">'+(uBio?esc(uBio):'<span style="opacity:.55">Pas de bio.</span>')+'</div>'+
+        '<button class="pf-follow '+(isF?'on':'')+'" onclick="'+(isF?'delFriend(\''+esc(u.uid)+'\')':'addFriend(\''+esc(u.uid)+'\',\''+esc(name)+'\')')+'">'+(isF?'Suivi · Ne plus suivre':(followsMe?'Suivre en retour':'Suivre'))+'</button>'+
+      '</div>';
+    if(uTop.some(Boolean)){
+      h+='<div class="pf-h2">Son top 5</div><div class="pf-pod">'+pfPod(1,uTop,false)+pfPod(0,uTop,false)+pfPod(2,uTop,false)+'</div>'+pfRow5(3,uTop,false)+pfRow5(4,uTop,false);
+    }
+    h+='<div class="pf-card pf-links" style="margin-top:20px"><div class="pf-lr" style="cursor:default"><span>Restaurants</span><b>'+uMr.length+'</b></div></div>'+
+       '<div class="pf-hint">Suivez-vous mutuellement pour voir son agenda, ses likes et ses avis.</div></div>';
+    return h;
+  }
+
+  var uLikes=Array.isArray(prof.likes)?prof.likes:[],uWish=Array.isArray(prof.wish)?prof.wish:[],uFriends=Array.isArray(prof.friends)?prof.friends:[];
+  var vpt=S.viewPt||"prof",vsub=S.viewSub||null;
+  var h='<div class="pf"><div class="pf-top">'+backBtn+'<h1>'+esc(name)+'</h1><span class="sp"></span></div>';
+
+  if(vsub==="friends"){
+    return h+pfBar("Amis & suivis",uFriends.length,"S.viewSub=null;render()")+
+      (uFriends.length?uFriends.map(function(f){var isMeRow=f.uid===S.uid;
+        return '<div class="pf-row '+(isMeRow?'':'click')+'" '+(isMeRow?'':'onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo||"")+'\')"')+'>'+
+          '<div class="pf-pav" style="background:'+avBg(f.uid,f.pseudo)+'">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
+          '<div class="pf-meta"><div class="pf-nm"><span class="t">'+esc(f.pseudo||"Utilisateur")+'</span></div><div class="pf-sub">'+(isMeRow?'Toi':'Belly')+'</div></div></div>';
+      }).join(""):'<div class="pf-empty"><b>Aucun ami</b><p>Cette liste est vide.</p></div>')+'</div>';
+  }
+  if(vsub){
+    var L=vsub==="likes"?uLikes:uMr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat,gPhoto:o.gPhoto}});
+    return h+pfBar(vsub==="likes"?"Likes":"Restaurants",L.length,"S.viewSub=null;render()")+pfGrid(L,"Liste vide","Aucun restaurant ici.")+'</div>';
+  }
+
+  h+='<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+    return '<button class="'+(vpt===t[0]?"on":"")+'" onclick="S.viewPt=\''+t[0]+'\';S.viewSub=null;render()">'+t[1]+'</button>';
+  }).join("")+'</div>';
+  if(vpt==="agenda")return h+pfAgenda(uMine,"Agenda vide","Aucun resto enregistré pour le moment.")+'</div>';
+  if(vpt==="wish")return h+pfGrid(uWish,"Aucun resto à tester","Sa liste d’envies est vide.")+'</div>';
+
+  h+='<div class="pf-idc">'+
+    '<div class="pf-av" style="background:'+uCol+';cursor:default">'+esc(name.charAt(0).toUpperCase())+'</div>'+
+    '<div class="pf-bio">'+(uBio?esc(uBio):'<span style="opacity:.55">Pas de bio.</span>')+'</div>'+
+    '<button class="pf-follow on" onclick="delFriend(\''+esc(u.uid)+'\')">Ami · Ne plus suivre</button>'+
+  '</div>';
+  h+='<div class="pf-h2">Son top 5</div><div class="pf-pod">'+pfPod(1,uTop,false)+pfPod(0,uTop,false)+pfPod(2,uTop,false)+'</div>'+pfRow5(3,uTop,false)+pfRow5(4,uTop,false);
+  h+='<div class="pf-h2">Derniers avis</div>'+(uMine.length?uMine.slice(0,3).map(function(x){return pfRv(x,false)}).join(""):'<div class="pf-empty"><b>Aucun avis</b><p>Aucun avis publié pour l’instant.</p></div>');
+  h+='<div class="pf-card pf-links" style="margin-top:20px">'+
+    '<div class="pf-lr" onclick="S.viewSub=\'rest\';render()"><span>Restaurants</span><b>'+uMr.length+' ›</b></div>'+
+    '<div class="pf-lr" onclick="S.viewSub=\'likes\';render()"><span>Likes</span><b>'+uLikes.length+' ›</b></div>'+
+    '<div class="pf-lr" onclick="S.viewSub=\'friends\';render()"><span>Amis</span><b>'+uFriends.length+' ›</b></div>'+
+  '</div></div>';
+  return h;
+}
+
+function me(){
+  if(S.viewUser)return userView(S.viewUser);
+  if(S.pt==="set")return settings();
+  var mine=allv().filter(function(x){return x.uid===S.uid}).sort(function(a,b){return b.ts-a.ts});
+  var mr=groups(mine).sort(function(a,b){return b.s/b.c-a.s/a.c});
+  var mutualFriendsCount=S.friends.filter(function(f){return isFollower(f.uid)}).length;
+  var h='<div class="pf"><div class="pf-top"><button class="pf-ic" onclick="S.pt=\'set\';render()" title="Réglages">'+pfi("gear")+'</button><h1>'+esc(S.pseudo||"Profil")+'</h1><span class="sp"></span></div>';
+
+  if(S.sub==="friends"){
+    return h+pfBar("Amis & suivis",S.friends.length,"S.sub=null;render()")+
+      (S.friends.length?S.friends.map(function(f){var mut=isFollower(f.uid);
+        return '<div class="pf-row"><div class="pf-pav" style="background:'+avBg(f.uid,f.pseudo)+'" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')">'+esc((f.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
+          '<div class="pf-meta" onclick="openUser(\''+encodeURIComponent(f.uid)+'\',\''+encodeURIComponent(f.pseudo)+'\')"><div class="pf-nm"><span class="t">'+esc(f.pseudo)+'</span></div><div class="pf-sub">'+(mut?'Ami':'Suivi')+'</div></div>'+
+          '<button class="pf-btn" onclick="delFriend(\''+esc(f.uid)+'\')">Retirer</button></div>';
+      }).join(""):'<div class="pf-empty"><b>Aucun ami</b><p>Cherche tes proches depuis l’onglet Ligue.</p></div>')+'</div>';
+  }
+  if(S.sub){
+    var L=S.sub==="likes"?S.likes:mr.map(function(o){return{pid:o.pid,n:o.n,a:o.a,lat:o.lat,lng:o.lng,cat:o.cat,gPhoto:o.gPhoto}});
+    return h+pfBar(S.sub==="likes"?"Likes":"Restaurants",L.length,"S.sub=null;render()")+pfGrid(L,"Liste vide","Ajoute des restos depuis la carte ou en publiant un avis.")+'</div>';
+  }
+
+  h+='<div class="pf-seg">'+[["prof","Profil"],["agenda","Agenda"],["wish","À tester"]].map(function(t){
+    return '<button class="'+(S.pt===t[0]?"on":"")+'" onclick="S.pt=\''+t[0]+'\';S.sub=null;render()">'+t[1]+'</button>';
+  }).join("")+'</div>';
+  if(S.pt==="agenda")return h+pfAgenda(mine,"Ton agenda est vide","Chaque resto que tu notes s’ajoute ici par mois.")+'</div>';
+  if(S.pt==="wish")return h+pfGrid(S.wish,"Aucun resto à tester","Enregistre tes prochaines adresses avec le signet sur leur fiche.")+'</div>';
+
+  h+='<div class="pf-idc">'+
+    '<div class="pf-av" style="background:'+(S.col||"#E5B83F")+'" onclick="newCol()" title="Changer de couleur">'+esc((S.pseudo||"?").charAt(0).toUpperCase())+'</div>'+
+    '<div class="pf-bio">'+(S.bio?esc(S.bio):'<span style="opacity:.55">Aucune bio pour le moment.</span>')+'</div>'+
+    '<button class="pf-edit" onclick="editBio()">'+pfi("pen")+' Modifier la bio</button>'+
+  '</div>';
+
+  h+='<div class="pf-h2">Mon top 5</div><div class="pf-pod">'+pfPod(1,S.top,true)+pfPod(0,S.top,true)+pfPod(2,S.top,true)+'</div>'+pfRow5(3,S.top,true)+pfRow5(4,S.top,true);
+
+  h+='<div class="pf-h2"><span>Mes derniers avis</span>'+(mine.length>3?'<button onclick="S.pt=\'agenda\';render()">Tout voir</button>':'')+'</div>'+
+     (mine.length?mine.slice(0,3).map(function(x){return pfRv(x,true)}).join("")
+       :'<div class="pf-empty"><b>Aucun avis</b><p>Note ton premier resto pour le voir ici.</p><button onclick="openNoteSheet()">Noter un resto</button></div>');
+
+  h+='<div class="pf-card pf-links" style="margin-top:20px">'+
+    '<div class="pf-lr" onclick="S.sub=\'rest\';render()"><span>Restaurants</span><b>'+mr.length+' ›</b></div>'+
+    '<div class="pf-lr" onclick="S.sub=\'likes\';render()"><span>Likes</span><b>'+S.likes.length+' ›</b></div>'+
+    '<div class="pf-lr" onclick="S.sub=\'friends\';render()"><span>Amis</span><b>'+mutualFriendsCount+' ›</b></div>'+
+  '</div></div>';
+  return h;
 }
 </script>
 </body>
